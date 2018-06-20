@@ -1,0 +1,56 @@
+package com.bonc.pure.web.action.rpt.scxy;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+
+public class OutLineAction extends CwCommon{
+	private String monthId;
+	
+	public String execute() {
+		init();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+	public void querytitle(){
+		Map map = new HashMap();
+		list = daoHelper.queryForList("cw.rpt.scxy.queryOutTitle", this);
+		map.put("list", list);
+		returnMapAsJson(map);
+	}
+	public String queryOutTable() {
+		list = daoHelper.queryForList("cw.rpt.scxy.queryOutLine", this);
+		return "table";
+	}
+	/**
+	 * 获取移动离网率柱状图数据
+	 * @return
+	 */
+	public void queryOutLineChart() {
+		Map map = new HashMap();
+		List barList = daoHelper.queryForList("cw.rpt.scxy.queryChart", this);
+		map.put("barList", barList);
+		returnMapAsJson(map);
+	}
+	public String getMonthId() {
+		return monthId;
+	}
+	public void setMonthId(String monthId) {
+		if (monthId != null) {
+			this.monthId = monthId.replaceAll("-", "");
+		}
+	}
+}

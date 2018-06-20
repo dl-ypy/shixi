@@ -1,0 +1,58 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%
+response.setHeader("Pragma","No-cache"); 
+response.setHeader("Cache-Control","no-cache");
+%>
+<%String contextPath = request.getContextPath();%>
+<div style="width:100%;">
+<table class="grid" style="width:99%;" >
+	<thead>
+		<tr>
+			<th width="8%" align="center" rowspan="3">省份</th>
+			<th width="10%" align="center" colspan="2">综合得分</th>
+			<th width="10%" align="center" colspan="2">收入规模类</th>
+			<th width="10%" align="center" colspan="2">效益价值类</th>
+			<th width="10%" align="center" colspan="2">年度重点类</th>
+			<th width="10%" align="center" colspan="2">加减分事项</th>
+		</tr>
+		<tr>
+			<th width="10%" align="center" colspan="2">100</th>
+			<th width="10%" align="center" colspan="2">38</th>
+			<th width="10%" align="center" colspan="2">42</th>
+			<th width="10%" align="center" colspan="2">20</th>
+			<th width="10%" align="center" colspan="2">+5~-10</th>
+		</tr>
+		<tr>
+			<th width="5%" align="center">得分</th>
+			<th width="5%" align="center">排名</th>
+			<th width="5%" align="center">得分</th>
+			<th width="5%" align="center">排名</th>
+			<th width="5%" align="center">得分</th>
+			<th width="5%" align="center">排名</th>
+			<th width="5%" align="center">得分</th>
+			<th width="5%" align="center">排名</th>
+			<th width="5%" align="center">得分</th>
+			<th width="5%" align="center">排名</th>
+		</tr>
+	</thead>
+	<tbody>
+	    <s:iterator value="list" var="data">
+			<tr onMouseOut="this.bgColor=''" onMouseOver="this.bgColor='#DFEfFf'">
+				<td align="center" width="8%"><s:property escapeHtml="false" value="ORG_NAME"/></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_1_001,'###,###,##0.00')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_1_002,'###,###,##0','-')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_2_001,'###,###,##0.00')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_2_002,'###,###,##0','-')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_3_001,'###,###,##0.00')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_3_002,'###,###,##0','-')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_4_001,'###,###,##0.00')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_4_002,'###,###,##0','-')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_5_001,'###,###,##0.00')}" /></td>
+				<td align="center" width="5%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_5_002,'###,###,##0','-')}" /></td>
+				
+			</tr>
+		</s:iterator>
+	</tbody>
+</table>
+</div>

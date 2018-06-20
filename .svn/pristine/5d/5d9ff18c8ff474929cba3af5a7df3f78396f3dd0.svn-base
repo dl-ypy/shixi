@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"  
+    xsi:schemaLocation="  
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd  
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd  
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd  
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"  
+    >
+
+	 <!-- 属性配置 -->
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>/WEB-INF/cfg.db.properties</value>
+				<value>/WEB-INF/cfg.pure.properties</value>
+			</list>
+		</property>
+		<property name="fileEncoding" value="utf-8"/>
+	</bean>
+	
+	<import resource="applicationContext-adapter.xml"/>
+	
+    <import resource="applicationContext-database-config.xml"/>    
+    <import resource="applicationContext-orm-hibernate.xml"/>     
+    <import resource="applicationContext-pure.xml"/>  
+    <import resource="applicationContext-forum.xml"/>
+    
+    <import resource="applicationContext-orm-ibatis.xml"/>    
+    <import resource="applicationContext-base.xml"/>     
+    <import resource="applicationContext-chartStyle.xml"/>
+
+</beans>

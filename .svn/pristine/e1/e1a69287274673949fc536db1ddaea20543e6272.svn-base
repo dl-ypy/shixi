@@ -1,0 +1,312 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="b" uri="/bonc-tags" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="p" uri="/pure-tags"%>
+
+<%
+response.setHeader("Pragma","No-cache"); 
+response.setHeader("Cache-Control","no-cache");
+String contextPath = request.getContextPath();
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>不含2I2C市场毛利率同比变动</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<link rel="stylesheet" type="text/css" href="../../../resources/css/bootstrap/3.3.6/bootstrap.min.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="../../../resources/frame/jedate-6.0.2/skin/jedate.css">
+	<link href="<s:url value="/struts/pure/css/grey.css?ver=1.5.1-SNAPSHOT"/>" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="../../../resources/js/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../resources/js/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../resources/frame/jedate-6.0.2/jquery.jedate.min.js"></script>
+    <script type="text/javascript" src="../../../resources/frame/echarts-3.8.4/echarts.min.js"></script>
+    <script type="text/javascript" src="../../../resources/frame/echarts-3.8.4/map/henan.js"></script>
+
+<style type="text/css">
+    html,body{
+       width: 100%;
+       text-align: center;
+    }
+    div{
+       margin: 0px;
+       padding: 0px;
+    }
+
+</style>
+<script type="text/javascript">
+     var monthId ;
+	 jQuery(document).ready(function(){
+	    	jQuery("#monthId").jeDate({
+	       	   format:"YYYY-MM"
+	        });
+	    	$("#Describle").hide();
+	    	querytitle();
+	    	querytable();
+	    	queryChart(); 
+	    });
+	 function query(){
+		 $("#Describle").hide();
+		 querytitle();
+		 querytable();
+	     queryChart();
+	    	
+	 }
+function querytitle(){
+	var monthId = jQuery('#monthId').val();
+	jQuery.ajax({
+ 		url: '<%=contextPath%>/rpt/scxy/MarketingNet/Non2i2cChanges!querytitle.action',
+ 	    type: "POST",
+ 	    data: {
+ 			"monthId": monthId
+ 		},
+ 		dataType: "json",
+ 		cache:false,
+ 		success:function(data){
+ 			 var monthId1 = jQuery('#monthId').val();
+	    	 var mon = monthId1.substr(4);
+	    	 if(mon!=01){
+	    		 mon ="01"+mon;
+	    	 }else{
+	    		 mon="01";
+	    	 }
+	    	 document.getElementById("part").innerHTML = mon;
+	    	 if(data.list.length>0){
+	 			    var title = data.list[0];
+	 			        document.getElementById("part1").innerHTML = title.KPI_05;
+	 			        //增加 or 减少
+	 			        document.getElementById("part2").innerHTML = title.KPI_00;
+	 			        document.getElementById("part3").innerHTML = title.LAST_THREE;
+	 			        document.getElementById("part4").innerHTML = title.FIRST_THREE;
+		    	 }else{
+		    		    document.getElementById("part1").innerHTML = "--";
+		    		    document.getElementById("part2").innerHTML = "--";
+				        document.getElementById("part3").innerHTML = "--";
+				        document.getElementById("part4").innerHTML = "--";
+		    	 }
+ 		}
+ 	});
+}
+	 function querytable(){
+	 	var monthId = jQuery('#monthId').val();
+	 	jQuery.ajax({
+	 		url: '<%=contextPath%>/rpt/scxy/MarketingNet/Non2i2cChanges!queryOutTable.action',
+	 	    type: "POST",
+	 	    data: {
+	 			"monthId": monthId
+	 		},
+	 		cache:false,
+	 		success:function(html){
+	 			jQuery("#TableDiv").html(html);
+	 		}
+	 	});
+	 }
+	function queryChart(){
+		var monthId = jQuery('#monthId').val();
+		jQuery.ajax({
+			url: '<%=contextPath%>/rpt/scxy/MarketingNet/Non2i2cChanges!queryOutLineChart.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId
+			},
+			dataType: "json",
+			cache:false,
+			success:function(data) {
+				barChart(data,"不含2I2C市场毛利率%","LineDiv");
+			}
+		});
+	}
+	function barChart(data, chartName, chartDivId) {
+		var bar1List = data.barList;
+		var bar1Data = [];
+		var line1Data = [];
+		var xData = [];
+		for (var i = 0; i < bar1List.length; i++) {
+			bar1Data.push(bar1List[i].KPI_03);
+			line1Data.push(bar1List[i].KPI_01);
+			xData.push(bar1List[i].LEVEL_NAME);
+		}
+
+		jQuery("#" + chartDivId).empty();
+		jQuery("#" + chartDivId).removeAttr("_echarts_instance_");
+
+	    // 基于准备好的dom，初始化echarts实例
+	    var lineChart = echarts.init(document.getElementById(chartDivId));
+	    lineChart.showLoading({text: '正在努力加载中...'});
+	    // 指定图表的配置项和数据
+		var option = {
+			 	title: {
+			        left: 'center',
+			        text: chartName,
+			    },
+				grid: {
+			        left: '2%',
+			        right: '0%',
+			        top: '10%',
+			        bottom: '15%',
+			        containLabel: true
+			    },
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            type: 'cross',
+			            crossStyle: {
+			                color: '#999'
+			            }
+			        }
+			    },
+			    legend: {
+			        data:['同比变动','本年累计'],
+			        y:'bottom',
+			    },
+			    xAxis: {
+			    	type: 'category',
+			        data: xData,
+			        axisLabel:{
+			        	rotate:45,
+			        	interval:0
+			        }
+			    },
+			    yAxis: [
+			        {
+			            type: 'value',
+			            name: '同比变动',
+			            axisLabel: {
+			                formatter: '{value}'
+			            }
+			        },
+			        {
+			            type: 'value',
+			            name: '本年累计',
+			            axisLabel: {
+			                formatter: "{value}%"
+			            }
+			        }
+			    ],
+			    series: [
+			        {
+			            name:'同比变动',
+			            type:'bar',
+			            data:bar1Data,
+			            itemStyle : {  
+							normal : {  
+								lineStyle:{  
+									color:'#3FA7DC' 
+								},
+								color:'#3FA7DC'
+							}  
+						}
+			        },
+			        {
+			            name:'本年累计',
+			            type:'line',
+			            data:line1Data,
+			            itemStyle : {  
+							normal : {  
+								lineStyle:{  
+									color:'#EE7600',
+									width: 2
+								},
+								color:'#EE7600'
+							}  
+						},
+						yAxisIndex: 1,
+						label: {
+			                normal: {
+			                    show: true,
+			                    position: 'top'
+			                }
+			            }
+			        }
+			    ]
+			};
+
+	    // 使用刚指定的配置项和数据显示图表。
+		lineChart.setOption(option);
+		lineChart.hideLoading();
+	}  
+	function getSubList(obj,regionId){
+		var monthId = jQuery('#monthId').val();
+	 	jQuery.ajax({
+	 		url: '<%=contextPath%>/rpt/scxy/MarketingNet/Non2i2cChanges!getLastInfo.action',
+	 	    type: "POST",
+	 	    data: {
+	 			"monthId": monthId,
+	 			"orgId":regionId
+	 		},
+	 		dataType: "json",
+	 		cache:false,
+	 		success:function(data){
+	 			$("#Describle").show();
+	 			var list = data.lastlist[0];
+	 			if(list.KPI_02>=0){
+	 				list.KPI_02 = "同期提升"+Math.abs(list.KPI_02)+"%"; 
+	 			}else if(list.KPI_02<0){
+	 				list.KPI_02 ="同期降低"+Math.abs(list.KPI_02)+"%";
+	 			}
+	 			if(list.KPI>0){
+	 				list.KPI = "，高于全省均值"+Math.abs(list.KPI)+" pp。";
+	 			}else if(list.KPI<0){
+	 				list.KPI = "，低于全省均值"+Math.abs(list.KPI)+" pp。";
+	 			}else{
+	 				list.KPI="";
+	 			}
+	 			 document.getElementById("de1").innerHTML = list.LEVEL_NAME+list.KPI_02;
+	 			 document.getElementById("de2").innerHTML = list.KPI;
+	 		}
+	 	});
+	}
+</script>
+  </head>
+  <body>
+     <div class="container" style="width: 98%;margin-top:15px;height: 0px;">
+        <div class="row" style="height: 0px;">
+		  <div style="float:right;" > 
+		      <form class="form-inline"  style="margin: 0px;">
+		         <div class="form-group">
+		             <label for="monthId">时间</label>
+                     <input type="text" class="form-control workinput" id="monthId" value="${monthId}" style="width: 70px;height: 25px;font-size: 12px;padding: 0px;">
+		         </div>
+		         <button type="button" class="btn btn-info btn-sm" style="width: 60px;height: 25px;line-height: 10px;" onclick="query()">查询</button>
+		      </form>
+		  </div>
+		</div>
+	 </div>
+	 <div class="container" style="width: 98%;margin-top:2%;" id="homeframe-container">
+		<div class="row" style="height: 30px;margin-top: 10px;">
+			<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+				<table style="border-collapse: collapse;height: 28px;padding: 0px;margin: auto;width: 100%;">
+					<tr>
+						<td style="background-color: #C00000;width: 28px;"></td>
+						<td style="width: 3px;"></td>
+						<td style="background-color: #BFBFBF;text-align: left;padding-left: 10px;font-weight: bold;font-size: 14px;">不含2I2C市场毛利率同比变动</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row" style="text-align: left;margin-left:5px;font-weight: bold;font-size: 14px;padding-top:1%;">
+		      <span id="part"></span>月，全省不含2I2C市场毛利率<span id="part1">---</span>%，同比增加<span id="part2">---</span>PP<br>
+		 </div>
+		   <hr style="border:none;border-top:2px solid #FF6A6A;"/>
+		   <div class="row" style="text-align: left;;margin-left:5px;margin-top:10px;font-size: 13px;">   
+		       <span style="font-weight: bold;">从分市完成情况看：</span><br>
+		      &nbsp; &nbsp; &nbsp; &nbsp;<span id="part3" style="color:EE7600;">---</span>同比改善幅度排名后三；&nbsp;&nbsp;<span id="part4" style="color:EE7600;">---</span>排名前三。
+		   </div>
+		   <hr style="border:none;border-top:1px solid #FF6A6A;"/>
+		<div class="row" style="margin-top:20px;">
+			<div class="col-xs-4 col-sm-4 col-md-4" id="TableDiv"></div>
+			<div class="col-xs-8 col-sm-8 col-md-8">
+				<div id="LineDiv" style="height: 380px; margin-top: 50px; padding:20px;"></div>
+			</div>
+		</div>
+		<div class="row" id="Describle" style='background:#FCD5B5; padding:20px; height:50px; width:80%;margin-left:10%;margin-top:2%;margin-bottom:3%;font-size:14px'>
+				<div  style="float:center;margin-left:20px;">
+				<span id="de1"></span><span id="de2"></span>
+				</div>
+		</div>
+	 </div>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+package com.bonc.pure.web.action.rpt.xjlts.salescashinflow;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+/**
+ * 折扣退费
+ */
+public class DiscountReturnAction extends CwCommon {
+
+	private String monthId;
+	private String areaNo;
+	
+	public String execute() {
+		init();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+	
+	/**
+	 * 折扣退费表格数据
+	 * @return
+	 */
+	public String getDiscountReturnTable() {
+		list = daoHelper.queryForList("cw.rpt.xjlts.salescashinflow.DiscountReturnTable", this);
+		return "table";
+	}
+	
+	/**
+	 * 折扣退费折线图数据
+	 * @return
+	 */
+	public void getDiscountReturnChart() {
+		Map map = new HashMap();
+		List lineList = daoHelper.queryForList("cw.rpt.xjlts.salescashinflow.DiscountReturnChart", this);
+		map.put("lineList", lineList);
+		returnMapAsJson(map);
+	}
+	
+	public String getMonthId() {
+		return monthId;
+	}
+
+	public void setMonthId(String monthId) {
+		if(monthId != null){
+			monthId = monthId.replaceAll("-", "");
+		}
+		this.monthId = monthId;
+	}
+
+	public String getAreaNo() {
+		return areaNo;
+	}
+
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+	
+}

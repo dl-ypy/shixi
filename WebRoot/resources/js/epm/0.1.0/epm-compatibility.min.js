@@ -1,0 +1,2 @@
+/*! epm - v0.1.0 - 2016-01-04 */
+!function(a){a(function(){"placeholder"in document.createElement("input")||a("input[placeholder],textarea[placeholder]").each(function(){var b=a(this),c=b.attr("placeholder");""===b.val()&&b.val(c).addClass("placeholder"),b.focus(function(){b.val()===c&&b.val("").removeClass("placeholder")}).blur(function(){""===b.val()&&b.val(c).addClass("placeholder")}).closest("form").submit(function(){b.val()===c&&b.val("")})})})}(jQuery);

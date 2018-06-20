@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.xjlts.xjlOverview">
+	<!-- 现金收入比 -->
+	<select id="querytarget" resultClass="java.util.HashMap">
+		<!-- <isNotEqual property="areaNo" compareValue="root"> -->
+		select round(KPI_01*100,2) kpi_01,
+		kpi_02,
+		round((kpi_01 - kpi_03),2)
+		kpi,
+		case
+		when kpi_01 - kpi_03 <![CDATA[ < ]]>
+		0 then
+		'低于预算目标'
+		else
+		'高于预算目标'
+		end target
+		from CW_DM.CW_RPT_XJL_ZL_1_2
+		where
+		org_id = #areaNo#
+		and month_id = #monthId#
+		<!-- </isNotEqual> <isEqual property="areaNo" compareValue="root"> SELECT 
+			round(KPI_01*100,2) kpi_01, KPI_02 FROM CW_DM.CW_RPT_XJL_ZL_1_2 where ORG_ID 
+			= #areaNo# and MONTH_ID = #monthId# </isEqual> -->
+	</select>
+	<select id="queryThree" resultClass="java.util.HashMap">
+		SELECT T.ORG_ID,
+		T1.DESCRIPTION ORG_NAME, T.KPI_02
+		FROM CW_DM.CW_RPT_XJL_ZL_1_2 T,
+		HN_DMCODE.DMCODE_AREA T1
+		WHERE T.PARENT_ORG_ID = #areaNo#
+		AND T.MONTH_ID
+		= #monthId#
+		AND T.ORG_ID = T1.AREA_ID
+		ORDER BY T.KPI_02
+	</select>
+	<select id="targetCity" resultClass="java.util.HashMap">
+		select t.org_id, t1.description org_name
+		from CW_DM.CW_RPT_XJL_ZL_1_2
+		t, HN_DMCODE.DMCODE_AREA t1
+		where kpi_01-kpi_03 <![CDATA[ < ]]>
+		0
+		and t.parent_org_id=#areaNo#
+		and t.month_id = #monthId#
+		and t.org_id =
+		t1.area_id
+
+	</select>
+	<select id="queryCashIncome" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		T.KPI_ID,
+		T1.KPI_NAME,
+		T1.ORD,
+		T1.RST1,
+		T1.RST2,
+		T.KPI_01,
+		T.KPI_02,
+		T.KPI_03,
+		T.KPI_04,
+		T.KPI_05
+		FROM CW_DM.CW_RPT_XJL_ZL_1_1 T,
+		(SELECT
+		kpi_id, NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME,ORD,RST1,RST2
+		FROM
+		HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID = 'xjl.part0.1'
+		AND
+		IS_VALID='1') T1
+		WHERE MONTH_ID = #monthId#
+		AND ORG_ID = #areaNo#
+		AND
+		T.KPI_ID=T1.KPI_ID
+		ORDER BY T1.ORD
+	</select>
+	<select id="queryCashChart" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_01
+		FROM HN_DMCODE.CODE_MONTH A,
+		(SELECT
+		SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_01, 0) KPI_01
+		FROM
+		CW_DM.CW_RPT_XJL_ZL_1_1 T
+		WHERE T.KPI_ID = #kpiCode#
+		AND T.ORG_ID =
+		#areaNo#
+		AND T.MONTH_ID LIKE #year#
+		AND T.MONTH_ID <![CDATA[ <= ]]>
+		#monthId#) B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)
+		ORDER BY A.ORD
+
+	</select>
+	<!-- 营运资本变动 -->
+	<select id="queryService" resultClass="java.util.HashMap">
+		SELECT T.KPI_ID,
+		T1.KPI_NAME, T1.ORD, T.KPI_01, T.KPI_02, T.KPI_03
+		FROM
+		CW_DM.CW_RPT_XJL_ZL_2_1 T,
+		(SELECT kpi_id, NVL(KPI_NAME_SHOW, KPI_NAME)
+		KPI_NAME, ORD
+		FROM HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID =
+		'xjlts.zl.2.1'
+		AND IS_VALID = '1') T1
+		WHERE MONTH_ID = #monthId#
+		AND
+		ORG_ID = #areaNo#
+		AND T.KPI_ID = T1.KPI_ID
+		ORDER BY T1.ORD
+	</select>
+	<!-- 营运资本变动的预警部分 -->
+	<select id="queryWarning" resultClass="java.util.HashMap">
+		SELECT T1.KPI_ID,
+		T1.KPI_NAME, T1.ORD,
+		T.FIRST_THREE,T.KPI_01,KPI_02,KPI_03
+		FROM
+		CW_DM.CW_RPT_XJL_ZL_2_2 T,
+		(SELECT kpi_id, NVL(KPI_NAME_SHOW,
+		KPI_NAME)KPI_NAME, ORD
+		FROM
+		HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID
+		='xjlts.zl.2.2'
+		AND IS_VALID
+		='1') T1
+		WHERE T.KPI_ID(+) = T1.KPI_ID
+		AND
+		MONTH_ID = #monthId# AND ORG_ID = #areaNo#
+		ORDER BY T1.ORD
+	</select>
+	<select id="querycityWarning" resultClass="java.util.HashMap">
+		SELECT T1.KPI_ID,
+		CASE
+		WHEN T.KPI_02 <![CDATA[ < ]]>
+		0 THEN
+		REPLACE(T1.KPI_NAME, '高于', '低于')
+		ELSE
+		REPLACE(T1.KPI_NAME, '低于',
+		'高于')
+		END KPI_NAME,
+		T1.ORD,
+		T.FIRST_THREE,
+		T.KPI_01,
+		t.KPI_02,
+		t.KPI_03
+		FROM
+		CW_DM.CW_RPT_XJL_ZL_2_2 T,
+		(SELECT kpi_id, NVL(KPI_NAME_SHOW, KPI_NAME)
+		KPI_NAME, ORD
+		FROM
+		HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID =
+		'xjlts.zl.2.2'
+		AND IS_VALID ='1') T1
+		WHERE T.KPI_ID(+) = T1.KPI_ID
+		AND
+		MONTH_ID = #monthId#
+		AND ORG_ID = #areaNo#
+		ORDER BY T1.ORD
+
+	</select>
+	<!-- 现金收款情况的表格 -->
+	<select id="querycashCollect" resultClass="java.util.HashMap">
+
+		SELECT T.KPI_ID,
+		T1.KPI_NAME, T1.ORD, T1.RST1, T.KPI_01, T.KPI_02, T.KPI_03
+		FROM
+		CW_DM.CW_RPT_XJL_ZL_3_1 T,
+		(SELECT kpi_id, NVL(KPI_NAME_SHOW, KPI_NAME)
+		KPI_NAME, ORD,RST1
+		FROM HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID =
+		'xjl.part0.3'
+		AND IS_VALID = '1') T1
+		WHERE MONTH_ID = #monthId#
+		AND
+		ORG_ID = #areaNo#
+		AND T.KPI_ID = T1.KPI_ID
+		ORDER BY T1.ORD
+	</select>
+	<!-- 现金收款情况的折线图 -->
+	<select id="queryCollectChart" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_01
+		FROM HN_DMCODE.CODE_MONTH A,
+		(SELECT
+		SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_01, 0) KPI_01
+		FROM
+		CW_DM.CW_RPT_XJL_ZL_3_1 T
+		WHERE T.KPI_ID = #kpiCode#
+		AND T.ORG_ID =
+		#areaNo#
+		AND T.MONTH_ID LIKE #year#
+		AND T.MONTH_ID <![CDATA[ <= ]]>
+		#monthId#) B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)
+		ORDER BY A.ORD
+	</select>
+	<!-- 饼图 -->
+	<select id="queryPie" resultClass="java.util.HashMap">
+		select T.ORG_ID, T2.LEVEL_NAME
+		AREA_NAME, T.KPI_ID, T1.KPI_NAME, T.KPI_01
+		from CW_DM.CW_RPT_XJL_ZL_3_1
+		T,
+		HN_DMCODE.DIM_NODE_ID_N_STATIC_V T2,
+		(SELECT kpi_id,
+		NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME, ORD
+		FROM HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID = 'xjl.part0.3'
+		AND IS_VALID = '1') T1
+		WHERE MONTH_ID =
+		#monthId#
+		AND ORG_ID = #areaNo#
+		AND T.KPI_ID = T1.KPI_ID
+		AND T.ORG_ID =
+		T2.LEVEL_ID
+		AND T.KPI_ID not in ('KPI_005')
+		ORDER BY T1.ORD
+	</select>
+	<select id="queryPie2" resultClass="java.util.HashMap">
+		select T.ORG_ID,
+		T2.LEVEL_NAME
+		AREA_NAME, T.KPI_ID, T1.KPI_NAME, round(T.KPI_VALUE,2)
+		KPI_01
+		from CW_DM.CW_RPT_XJL_ZL_3_2 T,
+		HN_DMCODE.DIM_NODE_ID_N_STATIC_V
+		T2,
+		(SELECT kpi_id, NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME, ORD
+		FROM
+		HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID = 'xjl.part0.4'
+		AND IS_VALID =
+		'1') T1
+		WHERE MONTH_ID = #monthId#
+		AND ORG_ID = #areaNo#
+		AND T.KPI_ID =
+		T1.KPI_ID
+		AND T.ORG_ID = T2.LEVEL_ID
+		ORDER BY T1.ORD
+	</select>
+	<select id="querymapWarning" resultClass="java.util.HashMap">
+		SELECT ORG_ID,
+		KPI_01,  <!-- 营业欠款占收比 -->
+		KPI_02,   <!-- 其中前三 -->
+		KPI_03,
+		KPI_03_1,
+		KPI_03_2,
+		KPI_03_3,
+		KPI_04,
+		KPI_05,
+		KPI_06,
+		KPI_07,
+		KPI_07_1,
+		KPI_07_2,
+		KPI_07_3,
+		KPI_08,
+		KPI_08_1,
+		KPI_08_2,
+		KPI_08_3,
+		KPI_09,
+		KPI_10,
+		KPI_11,
+		KPI_11_1,
+		KPI_11_2,
+		KPI_11_3
+		FROM CW_DM.CW_RPT_XJL_ZL_4_1
+		WHERE MONTH_ID = #monthId#
+		AND ORG_ID = #areaNo#
+
+
+	</select>
+	<select id="querylevel" resultClass="java.util.HashMap">
+		select bm_level from
+		HN_DMCODE.DIM_NODE_ID_N_STATIC_V T where t.level_id = #areaNo#
+
+	</select>
+	<select id="querymapdiv" resultClass="java.util.HashMap">
+		select T.ORG_ID,
+		T1.DESCRIPTION ORG_NAME,
+		KPI_01,KPI_04,KPI_09
+		FROM
+		CW_DM.CW_RPT_XJL_ZL_4_1 T,
+		HN_DMCODE.DMCODE_AREA T1
+		WHERE MONTH_ID =
+		#monthId#
+		AND KPI_ID= #kpiCode#
+		AND PARENT_ORG_ID = 'root'
+		AND T.ORG_ID
+		=T1.AREA_ID
+	</select>
+	<select id="queryCash" resultClass="java.util.HashMap">
+		SELECT T1.KPI_ID,
+		T1.KPI_NAME,
+		T.ORG_ID,
+		NVL(T.KPI_01, 0) KPI_01,
+		NVL(T.KPI_02, 0) KPI_02,
+		NVL(T.KPI_03, 0) KPI_03,
+		NVL(T.KPI_04, 0) KPI_04,
+		NVL(T.KPI_05, 0) KPI_05,
+		T.PART_ID,
+		T1.RST2
+		FROM (SELECT *
+		FROM CW_DM.CW_RPT_XJL_ZTQK_0_1
+		WHERE
+		MONTH_ID = #monthId#
+		AND PART_ID = #partId#
+		AND ORG_ID = #areaNo#
+		) T,
+		(SELECT KPI_ID, NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME, RST2,ORD
+		FROM
+		HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID = 'xjlts.ztqk.0.1'
+		AND IS_VALID
+		= '1' AND RST1 =  #partId#) T1
+		WHERE T.KPI_ID(+) = T1.KPI_ID
+		ORDER BY T1.ORD
+
+	</select>
+	<select id="queryOrgCash" resultClass="java.util.HashMap">
+	  SELECT T1.AREA_NO   ORG_ID,
+       T1.AREA_DESC AREA_NAME,
+       '$kpiCode$' KPI_ID,
+       '$partId$' PART_ID,
+       T.KPI_01,
+       T.KPI_02,
+       T.KPI_03,
+       T.KPI_04,
+       T.KPI_05
+  FROM (SELECT *
+          FROM CW_DM.CW_RPT_XJL_ZTQK_0_1
+         WHERE MONTH_ID = #monthId#
+           AND PARENT_ORG_ID = 'root'
+           AND KPI_ID = #kpiCode#
+           AND PART_ID = #partId#) T,
+       (SELECT T.AREA_NO, T.AREA_DESC,T.TABLE_ORD
+          FROM HN_DMCODE.DMCODE_AREA_CW_VIEW T
+         WHERE T.CHART_SHOW = '1') T1
+ WHERE T.ORG_ID(+) = T1.AREA_NO
+ ORDER BY T1.TABLE_ORD
+	
+	
+	</select>
+	<select id="getMap" resultClass="java.util.HashMap">
+		select T1.AREA_ID ORG_ID,
+		T1.DESCRIPTION ORG_NAME, round(NVL(T.KPI_03, 0),4) KPI_03
+		FROM (SELECT T.ORG_ID,
+		T.KPI_03
+		FROM CW_DM.CW_RPT_XJL_ZTQK_0_1 T
+		WHERE MONTH_ID = #monthId#
+		AND
+		KPI_ID = #kpiCode#
+		AND PART_ID = #partId#
+		AND PARENT_ORG_ID = 'root') T,
+		HN_DMCODE.DMCODE_AREA T1
+		WHERE T1.AREA_ID = T.ORG_ID(+)
+		ORDER BY
+		T.KPI_03 DESC
+
+	</select>
+	<select id="getLineChart" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_01
+		FROM HN_DMCODE.CODE_MONTH A,
+		(SELECT
+		SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_01, 0) KPI_01
+		FROM
+		CW_DM.CW_RPT_XJL_ZTQK_0_1 T
+		WHERE T.KPI_ID = #kpiCode#
+		AND T.ORG_ID =
+		#areaNo#
+		AND T.PART_ID=#partId#
+		AND T.MONTH_ID LIKE #year#
+		AND T.MONTH_ID <![CDATA[ <= ]]>
+		#monthId#) B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)
+		ORDER BY A.ORD
+
+	</select>
+	<select id="queryfreetext" resultClass="java.util.HashMap">
+		SELECT T.ORG_ID,
+		round(T.KPI_01,2) KPI_01,
+		T.PART_ID,
+		round(T.KPI_02*100,2) KPI_02,
+		T.KPI_03,
+		round(T.KPI_04*100,2) KPI_04,
+	    round(T.KPI_05,2) KPI_05 ,
+		CASE
+		WHEN T.KPI_05 > 0 THEN
+		'高于预算'
+		ELSE
+		'低于预算'
+		END TARGET
+		FROM CW_DM.CW_RPT_XJL_ZTQK_0_0 T
+		WHERE
+		T.ORG_ID = #areaNo#
+		AND T.MONTH_ID = #monthId#
+		AND T.PART_ID = #partId#
+
+
+
+
+	</select>
+</sqlMap>

@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+	">
+	<bean class="com.bonc.base.util.SystemProperties">
+		<property name="properties">
+			<map>
+			<!-- 该配置已不建议使用，建议使用struts2的head标签。 -->
+				<entry key="headIncludes">
+					<map>
+						<entry key="default">
+							<value>
+								<![CDATA[
+								<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+								<!--[if lte IE 6]>
+								<style type="text/css">
+								  body {
+								    behavior: url("$contextPath$/csshover3.htc");
+								  }
+								</style>
+								<script type="text/javascript">
+								if(document.execCommand){
+									document.execCommand('BackgroundImageCache',false,true);
+								}
+								</script>
+								<![endif]-->
+								<link href="$contextPath$/struts/commons/css/commons.css?ver=#version#" rel="stylesheet" type="text/css"/>
+								<link href="$contextPath$/struts/pure/css/<@s.property value='@com.bonc.pure.SystemConfigProperty@THEME'/>.css?ver=#version#" rel="stylesheet" type="text/css" />
+								<script type="text/javascript" src="$contextPath$/struts/jquery/jquery-1.7.1.min.js?ver=#version#"></script>
+								<script type="text/javascript" src="$contextPath$/struts/jquery/jquery-plugins/jquery.bgiframe.min.js?ver=#version#"></script>
+								<script type="text/javascript" src="$contextPath$/struts/jquery/jquery-plugins/jquery.metadata.js?ver=#version#"></script>
+								<script type="text/javascript" src="$contextPath$/struts/jquery/jquery-plugins/jquery.validate.min.js?ver=#version#"></script>
+								<script type="text/javascript" src="$contextPath$/struts/jquery/jquery-plugins/jquery.event.drag.min.js?ver=#version#"></script>
+								<script type="text/javascript" src="$contextPath$/struts/jquery/jquery-plugins/messages_cn.js?ver=#version#"></script>
+								<script type="text/javascript">$j = jQuery.noConflict();</script>
+								<script type="text/javascript" src="$contextPath$/struts/My97DatePicker/WdatePicker.js?ver=#version#" defer="defer"></script>
+								<script type="text/javascript" src="$contextPath$/struts/commons/js/commons.js?ver=#version#"></script>
+								<script type="text/javascript">jQuery.extend(Bonc.Constants,{WEB_APP_CONTEXT_PATH:Bonc._getContextPath('/struts/commons/js/commons.js'),WEB_APP_ACTION_EXTENSION:'action',BLANK_IMAGE_URL:Bonc._getContextPath('/struts/commons/js/commons.js')+'/struts/commons/s.gif'});</script>
+								<script type="text/javascript" src="$contextPath$/struts/pure/js/pure.js?ver=#version#"></script>
+								]]>
+							</value>
+						</entry>
+						<entry key="ext">
+							<value>
+								<![CDATA[
+								<link href="$contextPath$/struts/ext3/resources/css/ext-all.css" rel="stylesheet" type="text/css"/>
+								<script type="text/javascript" src="$contextPath$/struts/ext3/adapter/ext/ext-base.js"></script>
+								<script type="text/javascript" src="$contextPath$/struts/ext3/ext-all.js"></script>
+								<script type="text/javascript" src="$contextPath$/struts/ext3/src/locale/ext-lang-zh_CN.js"></script>
+								<script type="text/javascript">Ext.BLANK_IMAGE_URL=Bonc.Constants.BLANK_IMAGE_URL;</script>
+								]]>
+							</value>
+						</entry>
+					</map>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	 
+	<!-- 一级地域 -->
+	<!-- 
+	<bean id="areaOptions"
+		class="com.bonc.xframe.factory.GeneralOptionsFactory">
+		<property name="daoHelper" ref="daoHelper" />
+		<property name="sqlMapSelectId" value="xframe.domain.dim.getAreaOptions"/>
+	</bean>
+	-->
+	<!-- 带权限的一级地域 -->
+	<!--
+	<bean id="uareaOptions"
+		class="com.bonc.xframe.factory.UserAwareAreaOptionsFactory">
+		<property name="areaOptions" ref="areaOptions" />
+	</bean>
+	 -->
+	<!-- 部门编码 -->
+	<!--
+	<bean id="deptOptions"
+		class="com.bonc.xframe.factory.GeneralOptionsFactory">
+		<property name="daoHelper" ref="daoHelper" />
+		<property name="sqlMapSelectId" value="xframe.domain.dim.getDepartmentOptions"/>
+	</bean>
+	-->
+	<!-- 地域联动 -->
+	<!--
+	<bean id="areaHProvider" class="com.bonc.xframe.service.select.RegionSelectHProvider"/>
+	-->
+</beans>

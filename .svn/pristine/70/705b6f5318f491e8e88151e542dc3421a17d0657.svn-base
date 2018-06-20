@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 曾玉菊 -->
+<sqlMap namespace="cw.rpt.xjlts.salescashinflow">
+	<!-- 李林林 -->
+	<select id="drillTableByOrg1" resultClass="java.util.HashMap">
+		SELECT T.LEVEL_NAME KPI_NAME,
+		       T.LEVEL_ID,
+		       A.KPI_ID,
+		       T.KPI_01,
+		       T.KPI_02,
+		       T.KPI_03
+		  FROM (SELECT M.*, N.*
+		          FROM (select T.*
+		                  from CW_DM.CW_RPT_XJL_XJLR_0_1 T
+		                 WHERE T.MONTH_ID = #monthId#
+		                   AND T.PARENT_ORG_ID = #areaNo#
+		                   AND T.PART_ID = '1') M,
+		               (SELECT A.*
+		                  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		                 WHERE A.PARENT_ID = #areaNo#) N
+		         WHERE M.ORG_ID(+) = N.LEVEL_ID) T,
+		       (SELECT A.*
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'xjlts.xjlr.0.1'
+		           AND A.IS_VALID = '1'
+		           AND A.KPI_ID = #kpiId#) A
+		 WHERE T.KPI_ID(+) = A.KPI_ID
+		
+	</select>
+	<select id="drillTableByOrg2" resultClass="java.util.HashMap">
+		SELECT T.LEVEL_NAME KPI_NAME,
+		       T.LEVEL_ID,
+		       A.KPI_ID,
+		       T.KPI_01,
+		       T.KPI_02,
+		       T.KPI_03
+		  FROM (SELECT M.*, N.*
+		          FROM (select T.*
+		                  from CW_DM.CW_RPT_XJL_XJLR_0_1 T
+		                 WHERE T.MONTH_ID = #monthId#
+		                   AND T.PARENT_ORG_ID = #areaNo#
+		                   AND T.PART_ID = '2') M,
+		               (SELECT A.*
+		                  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		                 WHERE A.PARENT_ID = #areaNo#) N
+		         WHERE M.ORG_ID(+) = N.LEVEL_ID) T,
+		       (SELECT A.*
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'xjlts.xjlr.0.2'
+		           AND A.IS_VALID = '1'
+		           AND A.KPI_ID = #kpiId#) A
+		 WHERE T.KPI_ID(+) = A.KPI_ID
+		
+	</select>
+	<select id="SalesCashInflowZlTable1" resultClass="java.util.HashMap">
+	   SELECT A.KPI_ID,
+	   		  T.ORG_ID,
+              NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME,
+              T.KPI_01,
+              T.KPI_02,
+              T.KPI_03
+         FROM (SELECT *
+                 FROM CW_DM.CW_RPT_XJL_XJLR_0_1 T
+                WHERE T.MONTH_ID = #monthId#
+                  AND T.ORG_ID = #areaNo#
+                  AND T.PART_ID = '1') T,
+              (SELECT A.*
+                 FROM HN_DMCODE.DMCODE_CW_KPI A
+                WHERE A.MODULE_ID = 'xjlts.xjlr.0.1'
+                  AND A.IS_VALID = '1'
+               ) A
+        WHERE T.KPI_ID(+) = A.KPI_ID
+        ORDER BY A.KPI_ID
+	</select>
+	<select id="SalesCashInflowZlTable2" resultClass="java.util.HashMap">
+	   SELECT A.KPI_ID,
+	          T.ORG_ID,
+              NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME,
+              T.KPI_01,
+              T.KPI_02,
+              T.KPI_03,
+              T.PART_ID
+         FROM (SELECT *
+                 FROM CW_DM.CW_RPT_XJL_XJLR_0_1 T
+                WHERE T.MONTH_ID = #monthId#
+                  AND T.ORG_ID = #areaNo#
+                  AND T.PART_ID = '2') T,
+              (SELECT A.*
+                 FROM HN_DMCODE.DMCODE_CW_KPI A
+                WHERE A.MODULE_ID = 'xjlts.xjlr.0.2'
+                  AND A.IS_VALID = '1'
+               ) A
+        WHERE T.KPI_ID(+) = A.KPI_ID
+        ORDER BY A.KPI_ID
+	</select>
+	<select id="SalesCashInflowZlLine1" resultClass="java.util.HashMap" >
+		SELECT A.MONTH_ID, TO_CHAR(B.KPI_01, '9999999990.99') AS KPI_01
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_01
+		          FROM CW_DM.CW_RPT_XJL_XJLR_0_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#
+		           AND T.PART_ID = '1') B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+	</select>
+	<select id="SalesCashInflowZlLine2" resultClass="java.util.HashMap" >
+		SELECT A.MONTH_ID, TO_CHAR(B.KPI_01, '9999999990.99') AS KPI_01
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_01
+		          FROM CW_DM.CW_RPT_XJL_XJLR_0_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#
+		           AND T.PART_ID = '2') B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+	</select>
+	<select id="SalesCashInflowZlPie1" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME,TO_CHAR(T.KPI_01, '9999999990.99') AS KPI_01
+		  FROM (SELECT *
+		          FROM CW_DM.CW_RPT_XJL_XJLR_0_1 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.PART_ID = '1') T,
+		       (SELECT A.*
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'xjlts.xjlr.0.1'
+		           AND A.IS_VALID = '1'
+		           AND A.KPI_ID != 'KPI_05') A
+		 WHERE T.KPI_ID(+) = A.KPI_ID
+		 ORDER BY A.KPI_ID
+	</select>
+	<select id="SalesCashInflowZlPie2" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME, TO_CHAR(T.KPI_01, '9999999990.99') AS KPI_01
+		  FROM (SELECT *
+		          FROM CW_DM.CW_RPT_XJL_XJLR_0_1 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.PART_ID = '2') T,
+		       (SELECT A.*
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'xjlts.xjlr.0.2'
+		           AND A.IS_VALID = '1'
+		           AND A.KPI_ID != 'KPI_11') A
+		 WHERE T.KPI_ID(+) = A.KPI_ID
+		 ORDER BY A.KPI_ID
+	</select>
+    <!-- END -->
+	<!-- 销售现金流入报表 -->
+   	<select id="InflowReportTable" resultClass="java.util.HashMap">
+	  SELECT T.MONTH_ID, A.LEVEL_ID, A.LEVEL_NAME,
+	         T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+	         T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12,
+	         T.KPI_13, T.KPI_14, T.KPI_15, T.KPI_16
+	    FROM (SELECT *
+          		FROM CW_DM.CW_RPT_XJL_XJLR_1_1 T
+         	   WHERE T.MONTH_ID = #monthId#) T, 
+	    	 (SELECT *
+	            FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+	           WHERE A.LEVEL_ID = #areaNo#
+	              OR A.PARENT_ID = #areaNo#
+	           ORDER BY A.PARENT_ID, A.ORD) A
+	   WHERE T.ORG_ID(+) = A.LEVEL_ID
+    </select>
+    
+    <!-- 专业销售现金流入分析 -->
+   	<select id="InflowAnalysisTable" resultClass="java.util.HashMap">
+	  SELECT T.MONTH_ID, A.LEVEL_ID, A.LEVEL_NAME,
+	         T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+	         T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12,
+	         T.KPI_13, T.KPI_14, T.KPI_15, T.KPI_16
+	    FROM (SELECT *
+          		FROM CW_DM.CW_RPT_XJL_XJLR_2_1 T
+         	   WHERE T.MONTH_ID = #monthId#
+         	     AND T.ZYX_ID = #zyxId#) T, 
+	    	 (SELECT *
+	            FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+	           WHERE A.LEVEL_ID = #areaNo#
+	              OR A.PARENT_ID = #areaNo#
+	           ORDER BY A.PARENT_ID, A.ORD) A
+	  WHERE T.ORG_ID(+) = A.LEVEL_ID
+    </select>
+    
+    <!-- 现金流入渠道分析-表格 -->
+   	<select id="InflowChannelAnalysisTable" resultClass="java.util.HashMap">
+   	  SELECT T.MONTH_ID, A.LEVEL_ID, A.LEVEL_NAME,
+	         T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05,
+	         T.KPI_06, T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, 
+	         T.KPI_11, T.KPI_12
+	    FROM CW_DM.CW_RPT_XJL_XJLR_3_1 T, 
+	    	 HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+	   WHERE T.MONTH_ID = #monthId#
+	     AND T.ORG_ID = A.LEVEL_ID
+	   ORDER BY A.LEVEL_ID
+    </select>
+    
+    <!-- 现金流入渠道分析-饼图 -->
+   	<select id="InflowChannelAnalysisChart" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		       A.LEVEL_ID, 
+		       A.LEVEL_NAME,
+		       ROUND(T.KPI_01, 2) KPI_01,
+		       ROUND(T.KPI_02, 2) KPI_02,
+		       ROUND(T.KPI_03, 2) KPI_03,
+		       ROUND(T.KPI_04, 2) KPI_04,
+		       ROUND(T.KPI_05, 2) KPI_05,
+		       ROUND(T.KPI_06, 2) KPI_06,
+		       ROUND(T.KPI_07, 2) KPI_07,
+		       ROUND(T.KPI_08, 2) KPI_08,
+		       ROUND(T.KPI_09, 2) KPI_09,
+		       ROUND(T.KPI_10, 2) KPI_10
+		  FROM CW_DM.CW_RPT_XJL_XJLR_3_1 T, 
+		       HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+		   AND T.ORG_ID = A.LEVEL_ID
+    </select>
+    		
+	<!-- 折扣退费   杨佩钰 -->
+	<select id="DiscountReturnTable" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC,T.ORG_ID, 
+             T.KPI_01/10000 KPI_01,T.KPI_02,T.KPI_03,T.KPI_04,T.KPI_05,T.KPI_06,T.KPI_07 
+             FROM CW_DM.CW_RPT_XJL_XJLR_4_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+             WHERE T.MONTH_ID = #monthId#
+             AND T.ORG_ID = A.AREA_NO
+             ORDER BY A.SELECT_ORD
+	</select>
+	
+	<select id="DiscountReturnChart" resultClass="java.util.HashMap">
+             SELECT 
+             TO_CHAR(B.KPI_02*100,'9999999990.99') AS KPI_02,
+			 TO_CHAR(B.KPI_04*100,'9999999990.99') AS KPI_04
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_02, T.KPI_04
+		          FROM CW_DM.CW_RPT_XJL_XJLR_4_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.ORG_ID = #orgId#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+	</select>
+	
+	<select id="DiscountReturnChart2" resultClass="java.util.HashMap">
+             SELECT 
+             TO_CHAR(T.KPI_02*100,'9999999990.99') AS KPI_02,
+			 TO_CHAR(T.KPI_04*100,'9999999990.99') AS KPI_04,
+			 A.AREA_DESC
+		  FROM HN_DMCODE.DMCODE_AREA_CW_VIEW A,CW_DM.CW_RPT_XJL_XJLR_4_1 T
+		  WHERE T.MONTH_ID = #monthId#
+		  AND T.ORG_ID = A.AREA_NO
+		 ORDER BY A.SELECT_ORD
+	</select>
+</sqlMap>

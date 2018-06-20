@@ -1,0 +1,591 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>模块4</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+
+    <style type="text/css">
+       .shouruTable{
+          border-collapse: collapse;
+          font-size: 12px;
+          width: 100%;
+          padding: 1px;
+       }
+       .shouruTable tr td{
+          text-align: center;
+          height: 18px;
+       }
+       .shouruTable tr th{
+          text-align: center;
+       }
+       .shouruTable .leftBorder{
+          border-left: 1px solid #FF7F7F;
+       }
+       .shouruTable .topBorder{
+          border-top: 1px solid #FF7F7F;
+       }
+       .shouruTable .rightBorder{
+          border-right: 1px solid #FF7F7F;
+       }
+       .shouruTable .bottomBorder{
+          border-bottom: 1px solid #FF7F7F;
+       }
+       .shouruTable .bottomBorderB{
+          border-bottom: 2px solid #FF7F7F;
+       }
+       .shouruTable .textLeftAlign{
+          text-align: left;
+       }
+       .shouruTable .colorGray{
+          background-color: #D9D9D9;
+       }
+       .shouruTable .colorRed{
+          background-color: #F8CBAD;
+       }
+       
+    </style>
+    <script type="text/javascript">
+    function part4_initTable(){
+    	var areaNo = jQuery("#areaNo").val();
+    	var monthId = jQuery("#monthId").val();
+    	var url = '<%=basePath%>/ws/home/children/HomePart4!initTableData.action';
+	    jQuery.ajax({
+	  		    type:'post',
+	 			async:true,
+	 			url:url,
+	 			data:{
+	 				"areaNo":areaNo,
+	 				"monthId":monthId
+	 			},
+	 			dataType:"html",
+	 			success:function(data){
+	 			   if(data != ""){
+	 				  jQuery("#part4Area").html(jQuery("#areaNo").find("option:selected").text() + "：");
+	 				   var dataJSON = eval("("+data+")");
+	 				   analysisTableJson(dataJSON);
+	 			   }
+	 			}
+	       });  
+    }
+    
+    function analysisTableJson(dataJSON){
+    	//alert("开始解析数据啦");
+    	for(var i=0;i<dataJSON.length;i++){
+    		var itemObject = dataJSON[i];
+    		var kpiId = itemObject["KPI_ID"];
+    		var kpi02 = itemObject["KPI_02"];
+    		jQuery("#part4_" + kpiId + "-KPI_02").html(kpi02);
+    		
+    		//var kpi03 = itemObject["KPI_03"];
+    		//jQuery("#part4_" + kpiId + "-KPI_03").html(kpi03);
+    		//var kpi04 = itemObject["KPI_04"];
+    		//jQuery("#part4_" + kpiId + "-KPI_04").html(kpi04);
+    		
+    		var kpi05 = itemObject["KPI_05"];
+    		jQuery("#part4_" + kpiId + "-KPI_05").html(kpi05);
+    		var kpi06 = itemObject["KPI_06"];
+    		jQuery("#part4_" + kpiId + "-KPI_06").html(kpi06);
+    	}
+    }
+    
+    function part4_initBar(parmater){
+    	var url = '<%=basePath%>/ws/home/children/HomePart4!initBar.action';
+    	jQuery.ajax({
+	 	       url: url,
+	 	       type: "post",
+	 	       data: parmater,
+	 	       dataType: "html",
+	 	       success: function(data){
+	 	    		jQuery("#part4-bar").height(340);
+	 	    	    jQuery("#part4-bar").empty();
+	 	    		jQuery("#part4-bar").removeAttr("_echarts_instance_");
+	 	    	    var dataJSON = eval("("+data+")");
+	 	    	    var myChart = echarts.init(document.getElementById("part4-bar"));
+	 	    	   	var option = {
+	 	    	   		    tooltip : {
+	 	    	   		        trigger: 'axis'
+	 	    	   		    },
+	 	    	   		    calculable : true,
+	 		    	   		grid :{
+	 	                     	left: 50,
+	 	                     	top :40,
+	 	                     	right:50,
+	 	                     	borderWidth: 0
+	 	                    },
+	 	    	   		    legend: {
+	 	    	   		        x : 'center',
+	 	    	   		        y : 'bottom',
+	 	    	   		        textStyle:{
+	                              fontSize:10
+	 	   		                },
+	 	   		             data:dataJSON["legendData"]
+	 	    	   		    },
+	 	    	   		    xAxis : [
+	 	    	   		        {
+	 	    	   		            type : 'category',
+	 	    	   		         splitLine:{
+	 	              	        　　　　show:false
+	 	              	        　　},
+	 	              	      axisLine:{
+	 						    	 lineStyle:{
+	 						    		     type:'solid',
+	 						    		    color:'#CCCCCC'
+	 						    	 }
+	 						     },
+	 						     axisTick:{
+	                       	 lineStyle:{
+	 	         						    type:'solid',
+	 	         						    color:'#CCCCCC'
+	 	         					    }
+	                        },
+	 						    axisLabel:{
+	 	    	   		              interval:0,
+	 	    	   		                rotate:48,
+	 	    	   		             textStyle:{
+	 	    	   		            	      color:'#848684',
+	 	                                   fontSize:10
+	 	    	   		             }
+	 	    	   		        },
+	 	    	   		            data : dataJSON["axisData"]
+	 	    	   		        }
+	 	    	   		    ],
+	 	    	   		    yAxis : [
+	 	    	   		        {
+	 	    	   		            type : 'value',
+	 	    	   		            name : '得分',
+	 	    	   		         axisLine:{
+	  						    	 lineStyle:{
+	  						    		     type:'solid',
+	  						    		    color:'#CCCCCC'
+	  						    	 }
+	  						     },
+	  						     axisTick:{
+	                              	 lineStyle:{
+	  	         						    type:'solid',
+	  	         						    color:'#CCCCCC'
+	  	         					    }
+	                               },
+	                               axisLabel:{
+	                             	  formatter: '{value}',
+	 	    	   		             textStyle:{
+	 	    	   		            	      color:'#848684',
+	 	                                   fontSize:10
+	 	    	   		             }
+	 	    	   		          },
+	 	    	   		          splitLine:{
+	 					        　　　　                  show:true,
+	 					        　　　　           lineStyle:{
+	 									    type:'dotted',
+	 									    color:'#B3B3B3'
+	 								    }
+	 					        　　              }
+	 	    	   		        }
+	 	    	   		    ],
+	 	    	   		    series : [
+	 	    	   		           {
+		 	    	   		            name:'得分',
+		 	    	   		            type:'bar',
+		 	    	   		            markLine:{
+		 	    	   		                data : [
+		 	    	   			               {type : 'average', name: '平均值'}
+		 	    	   			            ],
+		 	    	   			            lineStyle:{
+		 	    	   		                      normal:{
+		 	    	   	                             color:'#CD5955'
+		 	    	   	                          }
+		 	    	   	                    }
+		 	    	   		            },
+			 	    	   		        itemStyle:{
+			 	    	   		           normal:{
+			 	    	   		        	  color:'#3FA7DC'
+			 	    	   		           }
+			 	    	   		        },
+		 	    	   		            barWidth: '60%',
+		 	    	   		            data:dataJSON["seriesDataArray"]
+		 	    	   		        }
+		 	    	   		    ]
+	 	    	   		    	
+	 	    	   		};
+	 	    	    myChart.setOption(option); 
+	 	       },
+	 	       error: function(XMLHttpRequest, textStatus, errorThrown){
+	 	           alert("wait a minute......");
+	 	       }
+	 	 });
+    }
+    
+    function part4_initBarTitle(parmater){
+    	var url = '<%=basePath%>/ws/home/children/HomePart4!initBarTitle.action';
+	    jQuery.ajax({
+	  		    type:'post',
+	 			async:true,
+	 			url:url,
+	 			data:parmater,
+	 			dataType:"html",
+	 			success:function(data){
+	 			   if(data != ""){
+	 				   var dataJSON = eval("("+data+")");
+	 				   var kpiName = dataJSON[0]["KPI_NAME"];
+	 				   var kpiValueDesc = dataJSON[0]["KPI_VALUE_DESC"];
+	 				   var tsFSDesc = dataJSON[0]["TS_FS_DES"];
+	 				   var tsMCDesc = dataJSON[0]["TS_PM_DES"];
+	 				   var tsFS = dataJSON[0]["TS_FS"];
+	 				   var tsMC = dataJSON[0]["TS_PM"];
+	 				   jQuery("#part4-bar-t").html(kpiName);
+	 				   jQuery("#part4-bar-t-df").html(kpiValueDesc);
+	 				   jQuery("#part4-bar-ts-mc").html(tsMCDesc + tsMC);
+	 				   jQuery("#part4-bar-ts-fs").html(tsFSDesc + tsFS);
+	 			   }
+	 			}
+	       });
+    }
+    
+    function part4_click_kpi(kpiId,kpiLevel){
+    	var areaNo = jQuery("#areaNo").val();
+    	var monthId = jQuery("#monthId").val();
+    	//areaNo = 'root';
+    	var parmater = {
+    			"areaNo":areaNo,
+ 				"monthId":monthId,
+ 				"kpiId":kpiId,
+ 				"kpiLevel":kpiLevel
+    	};
+    	part4_initBarTitle(parmater);
+    	parmater["areaNo"]= 'root';
+    	part4_initBar(parmater);
+    }
+    
+    jQuery(document).ready(function(){
+    	part4_initTable();
+    	part4_click_kpi('KPI_019','3');
+    });
+    </script>
+  </head>
+  
+  <body>
+      <div class="container" style="width: 100%;margin-top: 10px;">
+          <div class="row" style="height: 30px;">
+             <div class="col-xs-6 col-sm-6 col-md-6">
+                 <table class="shouruTable">
+                    <thead>
+                       <tr style="border-bottom: 2px solid #D61821;">
+                          <th style="text-align: center; color: red;" id="part4Area"></th>
+                          <th colspan="2" style="text-align: center;width: 40%;border-right: 1px solid #D61821;">指标</th>
+                          <th>分值</th>
+                          <th>完成值</th>
+                          <!--  
+                          <th>得分</th>
+                          <th>加减分</th>
+                          -->
+                          <th>得分</th>
+                          <th>得分排名</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 第一行 -->
+                       <tr>
+                           <td rowspan="5" style="border: 1px solid #FF7F7F;border-left: 0px;">收入规<br/>模类</td>
+                           <td rowspan="5" style="border: 1px solid #FF7F7F;" >主营业<br/>务收入</td>
+                           <td class="rightBorder textLeftAlign colorRed" >
+                              <a href="###" onclick="part4_click_kpi('KPI_001','2')">小计</a></td>
+                           <td class="colorRed">38+8</td>
+                           <td class="colorRed">-</td>
+                           <!--  
+                           <td class="colorRed" id="part4_KPI_001-KPI_03"></td>
+                           <td class="colorRed" id="part4_KPI_001-KPI_04"></td>
+                           -->
+                           <td class="colorRed" id="part4_KPI_001-KPI_05"></td>
+                           <td class="colorRed" id="part4_KPI_001-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder textLeftAlign" >
+                               <a href="###" onclick="part4_click_kpi('KPI_002','3')">收入预算完成率（%）</a>
+                           </td>
+                           <td>30+6</td>
+                           <td id="part4_KPI_002-KPI_02"></td>
+                           <!--  
+                           <td id="part4_KPI_002-KPI_03"></td>
+                           <td id="part4_KPI_002-KPI_04"></td>
+                           -->
+                           <td id="part4_KPI_002-KPI_05"></td>
+                           <td id="part4_KPI_002-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder textLeftAlign colorGray" >
+                              <a href="###" onclick="part4_click_kpi('KPI_003','3')">2I2C业务转化率（%）</a>
+                           </td>
+                           <td class="colorGray">3</td>
+                           <td class="colorGray" id="part4_KPI_003-KPI_02"></td>
+                           <!--  
+                           <td class="colorGray" id="part4_KPI_003-KPI_03"></td>
+                           <td class="colorGray" id="part4_KPI_003-KPI_04"></td>
+                           -->
+                           <td class="colorGray" id="part4_KPI_003-KPI_05"></td>
+                           <td class="colorGray" id="part4_KPI_003-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder textLeftAlign" >
+                             <a href="###" onclick="part4_click_kpi('KPI_004','3')">收入增幅对标（%）</a>
+                           </td>
+                           <td>2+2</td>
+                           <td id="part4_KPI_004-KPI_02"></td>
+                           <!--  
+                           <td id="part4_KPI_004-KPI_03"></td>
+                           <td id="part4_KPI_004-KPI_04"></td>
+                           -->
+                           <td id="part4_KPI_004-KPI_05"></td>
+                           <td id="part4_KPI_004-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder bottomBorder textLeftAlign colorGray" >
+                              <a href="###" onclick="part4_click_kpi('KPI_005','3')">收入贡献度（%）</a>
+                           </td>
+                           <td class="colorGray bottomBorder">3</td>
+                           <td class="colorGray bottomBorder" id="part4_KPI_005-KPI_02"></td>
+                           <!--  
+                           <td class="colorGray bottomBorder" id="part4_KPI_005-KPI_03"></td>
+                           <td class="colorGray bottomBorder" id="part4_KPI_005-KPI_04"></td>
+                           -->
+                           <td class="colorGray bottomBorder" id="part4_KPI_005-KPI_05"></td>
+                           <td class="colorGray bottomBorder" id="part4_KPI_005-KPI_06"></td>
+                       </tr>
+                     <!-- 第二行 -->
+                       <tr>
+                           <td rowspan="6" style="border: 1px solid #FF7F7F;border-left: 0px;">
+                              <a href="###" onclick="part4_click_kpi('KPI_006_011','1')"></a>效益价<br/>值类
+                           </td>
+                           <td rowspan="4" style="border: 1px solid #FF7F7F;">利润总<br/>额</td>
+                           <td class="rightBorder textLeftAlign colorRed" >
+                              <a href="###" onclick="part4_click_kpi('KPI_006','2')">小计</a></td>
+                           <td class="colorRed">38+8</td>
+                           <td class="colorRed">-</td>
+                           <!--  
+                           <td class="colorRed" id="part4_KPI_006-KPI_03"></td>
+                           <td class="colorRed" id="part4_KPI_006-KPI_04"></td>
+                           -->
+                           <td class="colorRed" id="part4_KPI_006-KPI_05"></td>
+                           <td class="colorRed" id="part4_KPI_006-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder textLeftAlign colorGray" >
+                             <a href="###" onclick="part4_click_kpi('KPI_007','3')">利润预算完成率（%）</a>
+                           </td>
+                           <td class="colorGray">30+6</td>
+                           <td class="colorGray" id="part4_KPI_007-KPI_02"></td>
+                           <!--  
+                           <td class="colorGray" id="part4_KPI_007-KPI_03"></td>
+                           <td class="colorGray" id="part4_KPI_007-KPI_04"></td>
+                           -->
+                           <td class="colorGray" id="part4_KPI_007-KPI_05"></td>
+                           <td class="colorGray" id="part4_KPI_007-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder textLeftAlign" >
+                             <a href="###" onclick="part4_click_kpi('KPI_008','3')">收入利润率改善（%）</a>
+                           </td>
+                           <td>3+2</td>
+                           <td id="part4_KPI_008-KPI_02"></td>
+                           <!--  
+                           <td id="part4_KPI_008-KPI_03"></td>
+                           <td id="part4_KPI_008-KPI_04"></td>
+                           -->
+                           <td id="part4_KPI_008-KPI_05"></td>
+                           <td id="part4_KPI_008-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder bottomBorder textLeftAlign colorGray" >
+                             <a href="###" onclick="part4_click_kpi('KPI_009','3')">利润贡献度（%）</a>
+                           </td>
+                           <td class="colorGray bottomBorder">5</td>
+                           <td class="colorGray bottomBorder" id="part4_KPI_009-KPI_02"></td>
+                           <!--  
+                           <td class="colorGray bottomBorder" id="part4_KPI_009-KPI_03"></td>
+                           <td class="colorGray bottomBorder" id="part4_KPI_009-KPI_04"></td>
+                           -->
+                           <td class="colorGray bottomBorder" id="part4_KPI_009-KPI_05"></td>
+                           <td class="colorGray bottomBorder" id="part4_KPI_009-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td rowspan="2" style="border: 1px solid #FF7F7F;">
+                             <a href="###" onclick="part4_click_kpi('KPI_010_011','2')"></a>EVA
+                           </td>
+                           <td class="rightBorder textLeftAlign" >
+                             <a href="###" onclick="part4_click_kpi('KPI_010','3')">EVA（亿元）</a>
+                           </td>
+                           <td>4</td>
+                           <td id="part4_KPI_010-KPI_02"></td>
+                           <!--  
+                           <td id="part4_KPI_010-KPI_03"></td>
+                           <td id="part4_KPI_010-KPI_04"></td>
+                           -->
+                           <td id="part4_KPI_010-KPI_05"></td>
+                           <td id="part4_KPI_010-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder bottomBorder textLeftAlign colorGray" >
+                             <a href="###" onclick="part4_click_kpi('KPI_011','3')">ΔEVA（亿元）</a>
+                           </td>
+                           <td class="colorGray bottomBorder">-</td>
+                           <td class="colorGray bottomBorder" id="part4_KPI_011-KPI_02"></td>
+                           <!--  
+                           <td class="colorGray bottomBorder">-</td>
+                           <td class="colorGray bottomBorder">-</td>
+                           -->
+                           <td class="colorGray bottomBorder">-</td>
+                           <td class="colorGray bottomBorder" id="part4_KPI_011-KPI_06"></td>
+                       </tr>
+                     <!-- 第三行 -->
+                       <tr>
+                           <td class="bottomBorderB" rowspan="7" style="border: 1px solid #FF7F7F;border-bottom: 2px solid #FF7F7F;border-left: 0px;">
+                             <a href="###" onclick="part4_click_kpi('KPI_012_018','1')"></a>年度重<br/>点类
+                           </td>
+                           <td class="rightBorder textLeftAlign" colspan="2" >
+                             <a href="###" onclick="part4_click_kpi('KPI_012','3')">移动业务出账用户净增（%）</a>
+                           </td>
+                           <td>3</td>
+                           <td id="part4_KPI_012-KPI_02"></td>
+                           <!--  
+                           <td id="part4_KPI_012-KPI_03"></td>
+                           <td id="part4_KPI_012-KPI_04"></td>
+                           -->
+                           <td id="part4_KPI_012-KPI_05"></td>
+                           <td id="part4_KPI_012-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder textLeftAlign colorGray"  colspan="2">
+                             <a href="###" onclick="part4_click_kpi('KPI_013','3')">4G渗透率（%）</a>
+                           </td>
+                           <td class="colorGray">5</td>
+                           <td class="colorGray" id="part4_KPI_013-KPI_02"></td>
+                           <!--  
+                           <td class="colorGray" id="part4_KPI_013-KPI_03"></td>
+                           <td class="colorGray" id="part4_KPI_013-KPI_04"></td>
+                           -->
+                           <td class="colorGray" id="part4_KPI_013-KPI_05"></td>
+                           <td class="colorGray" id="part4_KPI_013-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder textLeftAlign" colspan="2">
+                             <a href="###" onclick="part4_click_kpi('KPI_014','3')">宽带有效用户净增（%）</a>
+                           </td>
+                           <td>4</td>
+                           <td id="part4_KPI_014-KPI_02"></td>
+                           <!--  
+                           <td id="part4_KPI_014-KPI_03"></td>
+                           <td id="part4_KPI_014-KPI_04"></td>
+                           -->
+                           <td id="part4_KPI_014-KPI_05"></td>
+                           <td id="part4_KPI_014-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder textLeftAlign colorGray" colspan="2">
+                             <a href="###" onclick="part4_click_kpi('KPI_015','3')">融合业务渗透率（%）</a>
+                           </td>
+                           <td class="colorGray">2</td>
+                           <td class="colorGray" id="part4_KPI_015-KPI_02"></td>
+                           <!--  
+                           <td class="colorGray" id="part4_KPI_015-KPI_03"></td>
+                           <td class="colorGray" id="part4_KPI_015-KPI_04"></td>
+                           -->
+                           <td class="colorGray" id="part4_KPI_015-KPI_05"></td>
+                           <td class="colorGray" id="part4_KPI_015-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder bottomBorder textLeftAlign" colspan="2">
+                             <a href="###" onclick="part4_click_kpi('KPI_016','3')">申诉率（件/百万用户）</a>
+                           </td>
+                           <td class="bottomBorder">4</td>
+                           <td class="bottomBorder" id="part4_KPI_016-KPI_02"></td>
+                           <!--  
+                           <td class="bottomBorder" id="part4_KPI_016-KPI_03"></td>
+                           <td class="bottomBorder" id="part4_KPI_016-KPI_04"></td>
+                           -->
+                           <td class="bottomBorder" id="part4_KPI_016-KPI_05"></td>
+                           <td class="bottomBorder" id="part4_KPI_016-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="bottomBorderB" rowspan="2" style="border: 1px solid #FF7F7F;border-bottom: 2px solid #FF7F7F;">
+                             <a href="###" onclick="part4_click_kpi('KPI_017_018','2')"></a>NPS
+                           </td>
+                           <td class="rightBorder textLeftAlign colorGray" >
+                             <a href="###" onclick="part4_click_kpi('KPI_017','3')">移网NPS改善</a>
+                           </td>
+                           <td class="colorGray">1</td>
+                           <td class="colorGray" id="part4_KPI_017-KPI_02"></td>
+                           <!--  
+                           <td class="colorGray" id="part4_KPI_017-KPI_03"></td>
+                           <td class="colorGray" id="part4_KPI_017-KPI_04"></td>
+                           -->
+                           <td class="colorGray" id="part4_KPI_017-KPI_05"></td>
+                           <td class="colorGray" id="part4_KPI_017-KPI_06"></td>
+                       </tr>
+                       <tr>
+                           <td class="rightBorder bottomBorderB textLeftAlign" >
+                             <a href="###" onclick="part4_click_kpi('KPI_018','3')">固网NPS改善</a>
+                           </td>
+                           <td class="bottomBorderB">1</td>
+                           <td class="bottomBorderB" id="part4_KPI_018-KPI_02"></td>
+                           <!--  
+                           <td class="bottomBorderB" id="part4_KPI_018-KPI_03"></td>
+                           <td class="bottomBorderB" id="part4_KPI_018-KPI_04"></td>
+                           -->
+                           <td class="bottomBorderB" id="part4_KPI_018-KPI_05"></td>
+                           <td class="bottomBorderB" id="part4_KPI_018-KPI_06"></td>
+                       </tr>
+                       <!-- 第四行 -->
+                       <tr>
+                           <td class="rightBorder" colspan="3">
+                             <a href="###" onclick="part4_click_kpi('KPI_019','3')">总计</a>
+                           </td>
+                           <td>100</td>
+                           <td >-</td>
+                           <!--  
+                           id="part4_KPI_019-KPI_02"
+                           <td id="part4_KPI_019-KPI_03"></td>
+                           <td id="part4_KPI_019-KPI_04"></td>
+                           -->
+                           <td id="part4_KPI_019-KPI_05"></td>
+                           <td id="part4_KPI_019-KPI_06"></td>
+                       </tr>
+                    </tbody>
+                 </table>
+             </div>
+             <div class="col-xs-6 col-sm-6 col-md-6">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-12" style="height: 30px;">
+                         <table style="border-collapse: collapse;margin: 0px;height: 0px;margin: auto;width: 100%;">
+                            <tr>
+                               <td style="text-align: left;font-weight: bold;color: red;height: 30px;font-size: 12px;padding-left: 25px;">
+                                   <span id="part4-bar-t">主营业务收入</span>
+                                   <span>得分（小计，基本分</span>
+                                   <span id="part4-bar-t-df">38</span>分）
+                               </td>
+                               <td style="text-align: right;font-weight: bold;color: red;height: 30px;font-size: 12px;padding-right: 25px;">
+                                   <span>较上月</span>
+                                   <span id="part4-bar-ts-mc"></span>
+                                   <span>名（</span>
+                                   <span id="part4-bar-ts-fs"></span>
+                                   <span>分）</span>
+                               </td>
+                            </tr>
+                         </table>
+                     </div>
+                 </div>
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-12" id="part4-bar-col">
+                        <div id="part4-bar"></div>
+                     </div>
+                 </div>
+             </div>
+          </div>
+      </div>
+  </body>
+</html>

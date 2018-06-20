@@ -1,0 +1,152 @@
+package com.bonc.pure.web.action.rpt.ztdb;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+
+public class BdwzxdbScmljscxcbAction extends CwCommon {
+
+	private String monthId;
+	private String kpiId;
+	private String year;
+	private String orgId;
+	private String type;
+
+	public String execute() {
+		init();
+		initCwAreaSelect();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+	
+	public String table() {
+		System.out.println(kpiId);
+		kpiId = kpiId == null || "".equals(kpiId) ? "-1" : kpiId;
+		System.out.println(kpiId);
+		list = daoHelper.queryForList("cw.rpt.ztdb.BdwzxdbScmljscxcbTable", this);
+		if ("-1".equals(kpiId)) {
+			return "table";
+		} else {
+			return "tableDrill";
+		}
+	}
+	
+	public String table2() {
+		kpiId = kpiId == null || "".equals(kpiId) ? "-1" : kpiId;
+		list = daoHelper.queryForList("cw.rpt.ztdb.BdwzxdbScmljscxcbTable2", this);
+		if ("-1".equals(kpiId)) {
+			return "table2";
+		} else {
+			return "tableDrill2";
+		}
+	}
+	
+	public void getLineChart1(){
+		Map map = new HashMap();
+		list = daoHelper.queryForList("cw.common.getYear", this);
+		String thisYear = "";
+		String lastYear = "";
+		if (list.size() > 0) {
+			Map tempMap = (Map) list.get(0);
+			thisYear = (String) tempMap.get("THIS_YEAR");
+			lastYear = (String) tempMap.get("LAST_YEAR");
+		}
+		year = thisYear;
+		List lineList1 = daoHelper.queryForList("cw.rpt.ztdb.BdwzxdbScmljscxcbLine1", this);
+		map.put("lineList1", lineList1);
+		year = lastYear;
+		List lineList2 = daoHelper.queryForList("cw.rpt.ztdb.BdwzxdbScmljscxcbLine1", this);
+		map.put("lineList2", lineList2);
+		returnMapAsJson(map);
+	} 
+	
+	public void getLineChart2(){
+		Map map = new HashMap();
+		list = daoHelper.queryForList("cw.common.getYear", this);
+		String thisYear = "";
+		String lastYear = "";
+		if (list.size() > 0) {
+			Map tempMap = (Map) list.get(0);
+			thisYear = (String) tempMap.get("THIS_YEAR");
+			lastYear = (String) tempMap.get("LAST_YEAR");
+		}
+		year = thisYear;
+		List lineList1 = daoHelper.queryForList("cw.rpt.ztdb.BdwzxdbScmljscxcbLine2", this);
+		map.put("lineList1", lineList1);
+		year = lastYear;
+		List lineList2 = daoHelper.queryForList("cw.rpt.ztdb.BdwzxdbScmljscxcbLine2", this);
+		map.put("lineList2", lineList2);
+		returnMapAsJson(map);
+	} 
+	
+	public String queryDrillTableByOrg() {
+		list = daoHelper.queryForList("cw.rpt.ztdb.table_queryDrillTableByOrg_BJ", this);
+		return "tableDrill";
+	}
+	
+	public String queryDrillTableByOrg2() {
+		list = daoHelper.queryForList("cw.rpt.ztdb.table_queryDrillTableByOrg_BJ2", this);
+		return "tableDrill2";
+	}
+	
+	public String getMonthId() {
+		return monthId;
+	}
+
+	public void setMonthId(String monthId) {
+		if (monthId != null) {
+			this.monthId = monthId.replaceAll("-", "");
+		}
+	}
+
+	public String getKpiId() {
+		return kpiId;
+	}
+
+	public void setKpiId(String kpiId) {
+		this.kpiId = kpiId;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public String getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+}

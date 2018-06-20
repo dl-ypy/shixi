@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.rlzyxy">
+	
+	<!-- 周佳韬 -->
+	
+	<!--劳动生产率表格1  -->
+	<select id="queryTable1" resultClass="java.util.HashMap" >
+		SELECT A.AREA_DESC,T.MONTH_ID,A.AREA_NO,
+           	   round(T.KPI_01*100,2) KPI_01,
+           	   T.KPI_02,T.KPI_03,T.KPI_04
+    	FROM 
+           (SELECT * 
+           FROM HN_DMCODE.DMCODE_AREA_CW_VIEW)A,
+           (SELECT * 
+           FROM CW_DM.CW_RPT_RLW_1_1 T
+           WHERE MONTH_ID = #monthId#)T
+    	WHERE 
+    	A.AREA_NO=T.ORG_ID
+	</select>
+	
+	<!-- 得到某个省份的line的折线图 -->
+	<select id="queryLine1" resultClass="java.util.HashMap" >
+		select A.MONTH_ID,
+			   round(B.KPI_03*100,2) KPI_03
+		from HN_DMCODE.CODE_MONTH A,
+             (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID,KPI_03
+              FROM CW_DM.CW_RPT_RLW_1_1 T
+              WHERE MONTH_ID LIKE '$year$%'
+              AND ORG_ID = #areaNo# )B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)   
+		ORDER BY A.MONTH_ID
+	</select>
+	
+	<!-- title1的遍历 -->	
+	<select id="queryTitle1" resultClass="java.util.HashMap" >
+		SELECT KPI_02,
+	 	round(T.KPI_01*100,2) KPI_01,
+        round(T.KPI_03*100,2) KPI_03
+        FROM CW_DM.CW_RPT_RLW_1_1 T
+        WHERE 
+        ORG_ID='root'
+        AND  MONTH_ID = #monthId#
+	</select>
+	
+	
+	
+	<!--劳动生产率表格2  -->
+	<select id="queryTable2" resultClass="java.util.HashMap" >
+	    SELECT A.AREA_DESC,T.MONTH_ID,A.AREA_NO,
+           round(T.KPI_01*100,2) KPI_01,
+           round(T.KPI_02*100,2) KPI_02,
+           T.KPI_03,T.KPI_04
+    	FROM 
+           (SELECT * 
+           FROM HN_DMCODE.DMCODE_AREA_CW_VIEW)A,
+           (SELECT * 
+           FROM CW_DM.CW_RPT_RLW_1_2 T
+           WHERE MONTH_ID = #monthId#)T
+    	WHERE 
+    	A.AREA_NO=T.ORG_ID
+	</select>
+	
+	<!-- 得到某个省份的line的折线图 -->
+	<select id="queryLine2" resultClass="java.util.HashMap" >
+		select A.MONTH_ID,
+			   round(B.KPI_03*100,2) KPI_03
+		from HN_DMCODE.CODE_MONTH A,
+             (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID,KPI_03
+              FROM CW_DM.CW_RPT_RLW_1_2 T
+              WHERE MONTH_ID LIKE '$year$%'
+              AND ORG_ID = #areaNo# )B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)   
+		ORDER BY A.MONTH_ID
+	</select>
+	
+	<!-- title2的遍历 -->	
+	<select id="queryTitle2" resultClass="java.util.HashMap" >
+	 	SELECT KPI_02,
+	 	round(T.KPI_01*100,2) KPI_01,
+        round(T.KPI_03*100,2) KPI_03
+        FROM CW_DM.CW_RPT_RLW_1_2 T
+        WHERE 
+        ORG_ID='root'
+        AND  MONTH_ID = #monthId#
+	</select>
+	
+	<!-- 杨佩钰 -->
+	<select id="querySynergismTable" resultClass="java.util.HashMap" >
+		SELECT A.AREA_DESC,T.MONTH_ID,A.AREA_NO,
+           	   T.KPI_01,T.KPI_02,T.KPI_03,T.KPI_04
+    	FROM 
+           (SELECT * 
+           FROM HN_DMCODE.DMCODE_AREA_CW_VIEW)A,
+           (SELECT * 
+           FROM CW_DM.CW_RPT_RLW_1_3 T
+           WHERE MONTH_ID = #monthId#)T
+    	WHERE 
+    	A.AREA_NO=T.ORG_ID
+		
+	</select>	
+	<select id="querySynergismBar" resultClass="java.util.HashMap" >
+		SELECT A.AREA_DESC,T.MONTH_ID,
+           	   T.KPI_01,T.KPI_02
+    	FROM 
+           (SELECT * 
+           FROM HN_DMCODE.DMCODE_AREA_CW_VIEW)A,
+           (SELECT * 
+           FROM CW_DM.CW_RPT_RLW_1_3 T
+           WHERE MONTH_ID = #monthId#)T
+    	WHERE 
+    	A.AREA_NO=T.ORG_ID
+		
+	</select>	
+	<select id="querySynergismLine" resultClass="java.util.HashMap" >
+		SELECT A.MONTH_ID, TO_CHAR(B.KPI_03,'9999999990.99') AS KPI_03
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_01, 0) KPI_03
+		          FROM CW_DM.CW_RPT_RLW_1_3 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.ORG_ID = #areaNo#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+		
+	</select>	
+	<select id="querySynergismTitle" resultClass="java.util.HashMap" >
+		SELECT KPI_01,
+        round(T.KPI_03*100,2) KPI_03
+        FROM CW_DM.CW_RPT_RLW_1_3 T
+        WHERE 
+        ORG_ID='root'
+        AND  MONTH_ID = #monthId#
+	</select>	
+</sqlMap>

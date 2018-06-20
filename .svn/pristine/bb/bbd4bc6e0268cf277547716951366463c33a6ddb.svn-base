@@ -1,0 +1,128 @@
+package com.bonc.pure.web.action.rpt.xjlts.xjlOverview;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+import com.bonc.pure.web.util.CollectionEdit;
+
+public class OverviewAction extends CwCommon {
+	private String monthId;
+	private String areaNo;
+	private String kpiCode;
+	private int year;
+	private List list1;
+	public String execute() {
+		init();
+		initCwAreaSelect();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+	/**
+	 * 获取现金收入比的表格
+	 * @return
+	 */
+	public String queryCashTable(){
+	  list = daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCashIncome", this);
+		return "cashtable";
+	}
+	/**
+	 * 获取现金收入比的折线图
+	 * @return
+	 */
+	public void queryCashChart(){
+		Map map=new HashMap();
+		int thisyear = Integer.parseInt(monthId.substring(0, 4));
+		int lastyear = thisyear-1;
+		year = thisyear;
+		list =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCashChart", this);
+		map.put("thisyear", list);
+		year = lastyear;
+		List list1 =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCashChart", this);
+		map.put("lastyear", list1);
+		returnMapAsJson(map);
+	}
+	/**
+	 * 获取营业资本变动的表格和预警
+	 * @return
+	 */
+	public String queryServiceTable(){
+		list=daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryService", this);
+		list1=daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryWarning", this);
+		return "service";
+	}
+	/**
+	 * 获取现金收款情况的表格
+	 * @return
+	 */
+	public String queryCashCollection(){
+		list=daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.querycashCollect", this);
+		return "cashCollection";
+	}
+	public void getPie(){
+		list=daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryPie", this);
+		returnListAsJson(list);
+		 
+	}
+	/**
+	 * 获取现金收款情况的折线图
+	 * @return
+	 */
+	public void queryCollectChart(){
+		Map map=new HashMap();
+		int thisyear = Integer.parseInt(monthId.substring(0, 4));
+		int lastyear = thisyear-1;
+		year = thisyear;
+		list =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCollectChart", this);
+		map.put("thisyear", list);
+		year = lastyear;
+		List list1 =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCollectChart", this);
+		map.put("lastyear", list1);
+		returnMapAsJson(map);
+	}
+	public String getMonthId() {
+		return monthId;
+	}
+	public void setMonthId(String monthId) {
+		if (monthId != null) {
+			this.monthId = monthId.replaceAll("-", "");
+		}
+	}
+	public String getAreaNo() {
+		return areaNo;
+	}
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+	public String getKpiCode() {
+		return kpiCode;
+	}
+	public void setKpiCode(String kpiCode) {
+		this.kpiCode = kpiCode;
+	}
+	public int getYear() {
+		return year;
+	}
+	public void setYear(int year) {
+		this.year = year;
+	}
+	public List getList1() {
+		return list1;
+	}
+	public void setList1(List list1) {
+		this.list1 = list1;
+	}
+	
+}

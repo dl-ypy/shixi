@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-jsptaglibrary_2_1.xsd"
+	xmlns= "http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+	version= "2.1">
+	<description>hq tags </description>
+	<display-name>hq tags</display-name>
+	<tlib-version>1.0</tlib-version>
+	<short-name>hq</short-name>
+	<uri>/hq-tags</uri>
+	<tag>
+		<name>kpitree</name>
+	   	<tag-class>com.bonc.pure.web.action.custom.tag.KpiTreeTag</tag-class>
+	   	<body-content>empty</body-content>
+	   	<description><![CDATA[指标树]]></description>
+	   
+	   	<attribute>
+	      <name>data</name>
+	   	  <required>true</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[数据,一般为Map]]></description>
+	   	</attribute>
+	   	<attribute>
+	      <name>step</name>
+	   	  <required>false</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[缩进步长]]></description>
+	   	</attribute>
+	   	<attribute>
+	      <name>normal</name>
+	   	  <required>false</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[true:父结点都有+-表示,false:只有特殊标识的父结点才有]]></description>
+	   	</attribute>
+	   	<attribute>
+	      <name>onclick</name>
+	   	  <required>false</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[超链接单击事件]]></description>
+	   	</attribute>
+	   	<attribute>
+	      <name>ondblclick</name>
+	   	  <required>false</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[超链接双击事件]]></description>
+	   	</attribute>
+	   	<attribute>
+	      <name>params</name>
+	   	  <required>false</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[超链接上的params属性值]]></description>
+	   	</attribute>
+	   	<attribute>
+	      <name>aClass</name>
+	   	  <required>false</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[超链接样式]]></description>
+	   	</attribute>
+	   	<attribute>
+	      <name>nodeClass</name>
+	   	  <required>false</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[结点+-号样式]]></description>
+	   	</attribute>
+	   	<attribute>
+	      <name>title</name>
+	   	  <required>false</required>
+	   	  <rtexprvalue>true</rtexprvalue>
+	   	  <description><![CDATA[超链接title]]></description>
+	   	</attribute>
+	</tag>
+	<tag-file>
+		<name>day</name>
+		<path>/WEB-INF/tags/hq/day.tag</path>
+	</tag-file>
+	<tag-file>
+		<name>month</name>
+		<path>/WEB-INF/tags/hq/month.tag</path>
+	</tag-file>
+	<tag-file>
+		<name>region</name>   
+		<path>/WEB-INF/tags/hq/region.tag</path>
+	</tag-file>
+	<tag-file>
+		<name>prov</name>
+		<path>/WEB-INF/tags/hq/prov.tag</path>
+	</tag-file>  
+	<tag-file>
+		<name>condForm</name>
+		<path>/WEB-INF/tags/hq/condForm.tag</path>
+	</tag-file>
+	<tag-file>
+		<name>tableDeck</name>
+		<path>/WEB-INF/tags/hq/tableDeck.tag</path>
+	</tag-file>
+	<tag-file>
+		<name>date</name>
+		<path>/WEB-INF/tags/hq/date.tag</path>
+	</tag-file>	
+	
+	<tag-file>
+		<description>数据查询</description>
+		<name>query</name>
+		<path>/WEB-INF/tags/hq/query.tag</path>
+	</tag-file>  
+ 	<tag-file>
+		<description>SQL</description>
+		<name>sql</name>
+		<path>/WEB-INF/tags/hq/sql.tag</path>
+	</tag-file>
+ 	<tag-file>
+ 		<description>数字格式化</description>
+ 		<name>numberFmt</name>
+ 		<path>/WEB-INF/tags/hq/numberFmt.tag</path>
+ 	</tag-file>
+ 
+	<function>
+		<description>默认值</description>
+		<name>def</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Object def(java.lang.Object)</function-signature>
+		<example>${hq:def( 2)}</example>
+	</function>
+	
+	
+	
+	<function>
+		<description>格式化时间</description>
+		<name>fmtDate</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String fmtDate(java.lang.Object)</function-signature>
+		<example> ${hq:fmtDate( 23456)}</example>
+	</function>
+	<function>
+		<description>格式化数字</description>
+		<name>fmtNumber</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String fmtNumber(java.lang.Object)</function-signature>
+		<example> ${hq:fmtNumber( 23456)}</example>
+	</function>
+	<function>
+		<description>格式化数字（除以一定比率）</description>
+		<name>fmtNumber2</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String fmtNumber2(java.lang.Object,int)</function-signature>
+		<example> ${hq:fmtNumber2( 23456,1000)}</example>
+	</function>
+	<function>
+		<description>格式化比率</description>
+		<name>fmtRate</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String fmtRate(java.lang.Object)</function-signature>
+		<example> ${hq:fmtRate( 23.456)}</example>
+	</function>
+		
+	<function>
+		<description>加法(addition)</description>
+		<name>add2</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double add(java.lang.Object
+			,java.lang.Object )</function-signature>
+		<example>${hq:add2(3, 2)}</example>
+	</function>
+	
+	<function>
+		<description>加法(addition)</description>
+		<name>add3</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double add(java.lang.Object
+			,java.lang.Object ,java.lang.Object )</function-signature>
+		<example>${hq:add3(3, 2,1)}</example>
+	</function>
+	
+	<function>
+		<description>加法(addition)</description>
+		<name>add4</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double add(java.lang.Object
+			,java.lang.Object ,java.lang.Object,java.lang.Object )</function-signature>
+		<example>${hq:add4(3, 2,4,5)}</example>
+	</function>
+	
+	<function>
+		<description>加法(addition)</description>
+		<name>addition</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double addition(java.lang.Object[])</function-signature>
+		<example>${hq:addition(3, 2,4,5)}</example>
+	</function>	
+	
+	
+	<function>
+		<description>减法(subtraction)</description>
+		<name>sub2</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double sub(java.lang.Object
+			,java.lang.Object )</function-signature>
+		<example>${hq:sub2(3, 2)}</example>
+	</function>	
+	<function>
+		<description>减法(subtraction)</description>
+		<name>sub3</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double sub(java.lang.Object
+			,java.lang.Object ,java.lang.Object )</function-signature>
+		<example>${hq:sub3(3, 2,1)}</example>
+	</function>	
+	<function>
+		<description>减法(subtraction)</description>
+		<name>sub4</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double sub(java.lang.Object
+			,java.lang.Object ,java.lang.Object,java.lang.Object )</function-signature>
+		<example>${hq:sub4(3, 2,4,5)}</example>
+	</function>	
+	<function>
+		<description>减法(subtraction)</description>
+		<name>subtraction</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double subtraction(java.lang.Object[])</function-signature>
+		<example>${hq:subtraction(3,2,4,5,6)}</example>
+	</function>
+	
+	<function>
+		<description>除法(division)</description>
+		<name>division</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double division(java.lang.Object
+			,java.lang.Object )</function-signature>
+		<example>${hq:division(3, 2)}</example>
+	</function>
+
+	<function>
+		<description>增长率(growthRate)</description>
+		<name>growthRate</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double growthRate(java.lang.Object
+			,java.lang.Object )</function-signature>
+		<example>${hq:growthRate(3, 2)}</example>
+	</function>
+	<function>
+		<description>增长率变化(growthRateChange)</description>
+		<name>growthRateChange</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double growthRateChange(java.lang.Object,java.lang.Object,java.lang.Object  )</function-signature>
+		<example>${hq:growthRateChange(3, 2,1)}</example>
+	</function>
+
+	<function>
+		<description>复合增长率（Compound Annual Growth Rate，简称CAGR）</description>
+		<name>caGrowthRate</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.Double caGrowthRate(java.lang.Object
+			,java.lang.Object , int )</function-signature>
+		<example>${hq:caGrowthRate(3, 2,3)}</example>
+	</function>
+
+
+
+	<function>
+		<description>除法,格式化为数字</description>
+		<name>cf</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String cf(java.lang.Object,java.lang.Object)</function-signature>
+		<example>${hq:cf(3, 2)}</example>
+	</function>
+
+	<function>
+		<description>除法,格式化为比率</description>
+		<name>bl</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String bl(java.lang.Object,java.lang.Object)</function-signature>
+		<example>${hq:bl(3, 2)}</example>
+	</function>
+	
+	
+	<function>
+		<description>增长率</description>
+		<name>zzl</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String zzl(java.lang.Object ,	java.lang.Object)</function-signature>
+		<example>${hq:zzl(3, 2)}</example>
+	</function>
+	
+
+	<function>
+		<description>增长率变化</description>
+		<name>zzlbh</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String zzlbh(java.lang.Object ,
+			java.lang.Object,java.lang.Object)</function-signature>
+		<example>${hq:zzlbh(3, 2,1)}</example>
+	</function>
+	
+
+	<function>
+		<description>复合增长率（Compound Annual Growth Rate，简称CAGR）</description>
+		<name>fhzzl</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String fhzzl(java.lang.Object
+			,java.lang.Object , int )</function-signature>
+		<example>${hq:fhzzl(3, 2,3)}</example>
+	</function>
+	
+	<function>
+		<description>格式化数字为pp格式</description>
+		<name>fmtPP</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String fmtPP(java.lang.Object)</function-signature>
+		<example> ${hq:fmtPP(0.0032)}</example>
+	</function>
+	
+	<function>
+		<description>比率变化</description>
+		<name>blbh</name>
+		<function-class>com.bonc.pure.web.action.custom.tag.Functions</function-class>
+		<function-signature>java.lang.String blbh(java.lang.Object ,java.lang.Object,java.lang.Object ,java.lang.Object)</function-signature>
+		<example>${hq:blbh(1, 2,3,4)}</example>
+	</function>
+	
+</taglib> 

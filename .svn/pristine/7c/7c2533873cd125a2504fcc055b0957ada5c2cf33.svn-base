@@ -1,0 +1,30 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="b" uri="/bonc-tags" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%String contextPath = request.getContextPath();%>
+<div style="width:100%;">
+<table class="grid" style="width:99%;" >
+	<thead>
+		<tr>
+			<th align="center" nowrap="nowrap">指标</th>
+			<th align="center" nowrap="nowrap">本月</th>
+			<th align="center" nowrap="nowrap">上月</th>
+			<th align="center" nowrap="nowrap">环比</th>
+			<th align="center" nowrap="nowrap">本年累计</th>
+			<th align="center" nowrap="nowrap">同比</th>
+		</tr>
+	</thead>
+    <tbody>
+	    <s:iterator value="list" var="data">
+			<tr onMouseOut="this.bgColor=''" onMouseOver="this.bgColor='#DFEfFf'">
+				<td nowrap="nowrap" onclick="getChart(this, '${KPI_ID}','${KPI_NAME}','${RST1}','${RST2}')" width="7%" align="left"><a href="###"><s:property value="KPI_NAME"/></a></td>
+				<td align="right" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_01,'###,###,##0.00')}" /></td>
+				<td align="right" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_02,'###,###,##0.00')}" /></td>
+				<td align="right" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_03,'###,###,##0.00%')}" /></td>
+				<td align="right" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_04,'###,###,##0.00')}" /></td>
+			    <td align="right" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_05,'###,###,##0.00%')}" /></td>
+			</tr>
+		</s:iterator>
+	</tbody>
+   </table>
+</div>

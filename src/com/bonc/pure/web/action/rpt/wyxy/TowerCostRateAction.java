@@ -1,0 +1,101 @@
+package com.bonc.pure.web.action.rpt.wyxy;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+
+public class TowerCostRateAction extends CwCommon {
+
+	private String monthId;
+	private String areaNo;
+	
+	public String execute() {
+		init();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+	
+	/**
+	 * 获取铁塔成本占移动收入比表格数据
+	 * @return
+	 */
+	public String getTowerCostRateTable() {
+		list = daoHelper.queryForList("cw.rpt.wyxy.TowerCostRateTable", this);
+		return "table";
+	}
+	
+	/**
+	 * 获取铁塔成本占移动收入比柱状图数据
+	 * @return
+	 */
+	public void getTowerCostRateBarChart() {
+		Map map = new HashMap();
+		List barList = daoHelper.queryForList("cw.rpt.wyxy.TowerCostRateBarChart1", this);
+		map.put("barList", barList);
+		returnMapAsJson(map);
+	}
+	/**
+	 * 获取铁塔成本占移动收入比首行显示
+	 * @return
+	 */
+	public void getTowerCostRateFirstLine() {
+		Map map = new HashMap();
+		List firstLineList = daoHelper.queryForList("cw.rpt.wyxy.getTowerCostRateFirstLine", this);
+		map.put("firstLineList", firstLineList);
+		returnMapAsJson(map);
+	}
+	/**
+	 * 获取铁塔成本占移动收入比尾行显示
+	 * @return
+	 */
+	public void getTowerCostRateLastLine() {
+		Map map = new HashMap();
+		List lastLineList = daoHelper.queryForList("cw.rpt.wyxy.getTowerCostRateLastLine", this);
+		map.put("lastLineList", lastLineList);
+		returnMapAsJson(map);
+	}
+	
+	/**
+	 * 获取铁塔成本占移动收入比前三后三
+	 * @return
+	 */
+	public void getTowerCostRateRanking() {
+		Map map = new HashMap();
+		List rankingList = daoHelper.queryForList("cw.rpt.wyxy.getTowerCostRateRanking", this);
+		map.put("rankingList", rankingList);
+		returnMapAsJson(map);
+	}
+	
+	public String getMonthId() {
+		return monthId;
+	}
+
+	public void setMonthId(String monthId) {
+		if(monthId != null){
+			monthId = monthId.replaceAll("-", "");
+		}
+		this.monthId = monthId;
+	}
+
+	public String getAreaNo() {
+		return areaNo;
+	}
+
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+	
+}

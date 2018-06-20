@@ -1,0 +1,30 @@
+@relationHeight:400px;
+.bordered {
+  border: solid 1px #b0b0b0;
+}
+.rounded{
+	padding:2px 5px;
+	
+}
+
+.relationPanel{
+	.bordered;
+	.rounded;
+	height:@relationHeight;
+	overflow-y: scroll;
+	& > .row{
+	    .rounded;
+		margin-bottom:3px;
+        margin-left:3px;
+        margin-right:3px;
+	}
+	
+}
+
+.relationRight{
+ & > div{
+ 	 .bordered;
+	.rounded;
+	height:@relationHeight;
+ }
+}

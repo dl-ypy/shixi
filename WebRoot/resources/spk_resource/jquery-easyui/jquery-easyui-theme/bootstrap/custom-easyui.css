@@ -1,0 +1,18 @@
+.datagrid-row-collapse {
+  background: url('images/menu_arrows.png') no-repeat -0px center;
+}
+.datagrid-row-expand {
+  background: url('images/menu_arrows.png') no-repeat -32px center;
+}
+.menu-active {
+  background-color: #D75E15;
+  border-color: #D75E15;
+  color: #fff;
+}
+.datagrid-cell-c1-Action img,.datagrid-cell-c1-action img{padding-left:10px;position:relative;}
+.datagrid-cell-c1-Action img:first-child,.datagrid-cell-c1-action img:first-child{padding-left:0px;}
+.datagrid-cell-c1-Action img:first-child[class*='position2'],.datagrid-cell-c1-action img:first-child[class*='position2']{padding-left:0px;}
+/* .datagrid-cell-c1-Action img:first-child[class*='position2']+img,.datagrid-cell-c1-action img:first-child[class*='position2']+img{padding-left:10px;} */
+.datagrid-cell-c1-Action img:first-child[class*='position3'],.datagrid-cell-c1-action img:first-child[class*='position3']{padding-left:26px;}
+.datagrid-cell-c1-Action img:first-child[class*='position4'],.datagrid-cell-c1-action img:first-child[class*='position4']{padding-left:52px;}
+.datagrid-cell-c1-Action img:first-child[class*='position5'],.datagrid-cell-c1-action img:first-child[class*='position5']{padding-left:78px;}

@@ -1,0 +1,152 @@
+body {
+  margin:0px;
+  background-image:url(../img/000.png);
+  touch-action:none;
+  position:static;
+  left:auto;
+  width:1198px;
+  margin-left:0;
+  margin-right:0;
+  text-align:left;
+}
+#base {
+  position:absolute;
+  z-index:0;
+}
+.div-uname{
+	margin-left:150px;
+	margin-top:80px;
+}
+.div-password{
+	margin-left:150px;
+	margin-top:80px;
+}
+.uname-img{
+	margin-left:-100px;
+	margin-top:0px;
+}
+.password-img{
+	margin-left:-100px;
+	margin-top:-90px;
+}
+.form-control.uname{
+	width:340px;
+	position:absolute;
+	margin-left:-30px;
+	margin-top:-40px;
+}
+.form-control.pword.m-b{
+	width:340px;
+	position:absolute;
+	margin-left:-30px;
+	margin-top:-70px;
+}
+#btn-login{
+	width:340px;
+	position:absolute;
+	margin-left:120px;
+	margin-top:0px;
+}
+#u2 {
+  position:absolute;
+  left:720px;
+  top:207px;
+  width:570px;
+  height:344px;
+}
+#u2_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:571px;
+  height:345px;
+}
+#u25 {
+  position:absolute;
+  left:351px;
+  top:207px;
+  width:340px;
+  height:344px;
+}
+#u25_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:341px;
+  height:345px;
+}
+#u5 {
+  position:absolute;
+  left:49px;
+  top:50px;
+  width:240px;
+  height:240px;
+}
+#u5_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:241px;
+  height:241px;
+}
+#u7 {
+  position:absolute;
+  left:49px;
+  top:50px;
+  width:240px;
+  height:239px;
+  -webkit-transform:rotate(45deg);
+  -moz-transform:rotate(45deg);
+  -ms-transform:rotate(45deg);
+  transform:rotate(45deg);
+}
+#u7_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:241px;
+  height:240px;
+}
+#u9 {
+  position:absolute;
+  left:84px;
+  top:76px;
+  width:180px;
+  height:180px;
+}
+#u9_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:180px;
+  height:180px;
+}
+#u23 {
+  position:absolute;
+  left:351px;
+  top:111px;
+  width:163px;
+  height:68px;
+}
+#u23_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:163px;
+  height:68px;
+}
+
+#u39 {
+  position:absolute;
+  left:520px;
+  top:135px;
+  width:248px;
+  height:56px;
+}
+#u39_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:248px;
+  height:56px;
+}

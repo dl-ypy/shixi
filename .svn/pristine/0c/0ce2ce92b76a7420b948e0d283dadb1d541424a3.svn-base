@@ -1,0 +1,86 @@
+package com.bonc.pure.web.action.rpt.xjlts.yyqkfx;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+
+public class ArrearOverdueAction extends CwCommon{
+
+	private String monthId;
+	private String areaNo;
+
+	public String execute() {
+		init();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+
+	
+	public String table() {
+		
+		System.out.println(monthId);
+		list = daoHelper.queryForList("cw.rpt.xjlts.yyqkfx.getTableInfo", this);
+		return "table";
+	}
+
+	public String mapTable() {
+		list = daoHelper.queryForList("cw.rpt.xjlts.yyqkfx.getMapTable", this);
+		return "maptable";
+	}
+
+	public String getMap() {
+		return "map";
+	}
+	
+	public void getMapData() {
+		Map map = new HashMap();
+		list = daoHelper.queryForList("cw.rpt.xjlts.yyqkfx.getTableInfo", this);
+		map.put("mapList", list);
+		returnMapAsJson(map);
+	}
+	
+
+	public void getTitle() {
+	
+		Map map = new HashMap();
+	    list = daoHelper.queryForList("cw.rpt.xjlts.yyqkfx.getTitleInfo", this);
+	    map.put("list", list);
+	    returnMapAsJson(map);
+		
+	}
+
+
+	
+	public String getMonthId() {
+		return monthId;
+	}
+
+	public void setMonthId(String monthId) {
+		if (monthId != null) {
+			this.monthId = monthId.replaceAll("-", "");
+		}
+	}
+
+	public String getAreaNo() {
+		return areaNo;
+	}
+
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+    
+	
+	
+}

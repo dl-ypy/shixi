@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.common">
+
+   	<select id="queryNodeInfo" resultClass="java.util.HashMap" remapResults="true">
+     select * from hn_dmcode.DIM_NODE_ID_N_STATIC_V t where node_id='$nodeId$' 
+    </select>
+
+	<select id="areaList" resultClass="java.util.HashMap">
+	SELECT T.AREA_NO, T.AREA_DESC
+	  FROM HN_DMCODE.DMCODE_AREA_CW_VIEW T
+	 WHERE T.SELECT_SHOW = '1'
+	   <isNotEqual property="orgLevel" compareValue="1">
+		   AND T.ORG_LEVEL = #orgLevel#
+	   </isNotEqual>
+	 ORDER BY T.SELECT_ORD
+	</select>
+
+	<select id="provincesList" resultClass="java.util.HashMap">
+	SELECT T.ORG_ID, T.ORG_NAME
+	  FROM HN_DMCODE.DMCODE_PRO_CW_VIEW T
+	 ORDER BY T.SELECT_ORD
+	</select>
+	
+	<select id="provincesItemList" resultClass="java.util.HashMap">
+	SELECT T.ORG_ID, T.ORG_NAME
+	  FROM HN_DMCODE.DMCODE_PRO_CW_VIEW T
+	 WHERE T.ORG_ID != 'ALL_N'
+	 ORDER BY T.SELECT_ORD
+	</select>
+
+	<select id="getConstNameValue" resultClass="java.util.HashMap">
+		select const_value as "constValue" from sys_const_table
+		where const_name=#constName# and const_type=#constType#
+	</select>
+
+	<select id="getConstMonthValue" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select max_month as "constValue" from sys_month_info_table where module_id='$value$' and rownum=1
+	</select>
+
+	<select id="getYear" resultClass="java.util.HashMap">
+	SELECT SUBSTR('$monthId$', 0, 4) THIS_YEAR,
+	       TO_CHAR(ADD_MONTHS(TO_DATE('$monthId$', 'yyyymm'), -12), 'yyyy') LAST_YEAR
+	  FROM DUAL
+	</select>
+
+	<select id="selectSql" resultClass="java.util.HashMap"  remapResults="true">
+	$value$
+	</select>
+
+</sqlMap>

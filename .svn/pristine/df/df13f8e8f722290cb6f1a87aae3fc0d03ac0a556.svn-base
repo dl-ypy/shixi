@@ -1,0 +1,400 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="b" uri="/bonc-tags" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="p" uri="/pure-tags"%>
+
+<%
+response.setHeader("Pragma","No-cache"); 
+response.setHeader("Cache-Control","no-cache");
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+String contextPath = request.getContextPath();
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>人力网提质增效完成情况</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	
+	<link rel="stylesheet" type="text/css" href="../../resources/css/bootstrap/3.3.6/bootstrap.min.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="../../resources/frame/jedate-6.0.2/skin/jedate.css">
+	<link href="<s:url value="/struts/pure/css/grey.css?ver=1.5.1-SNAPSHOT"/>" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="../../resources/js/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../resources/js/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../resources/frame/jedate-6.0.2/jquery.jedate.min.js"></script>
+    <script type="text/javascript" src="../../resources/frame/echarts-3.8.4/echarts.min.js"></script>
+    <script type="text/javascript" src="../../resources/frame/echarts-3.8.4/map/henan.js"></script>
+<style type="text/css">
+    html,body{
+       width: 100%;
+       text-align: center;
+    }
+</style>
+<script type="text/javascript">
+
+	var monthId;
+	var areaNo;
+
+	
+    jQuery(document).ready(function(){
+    	areaNo = jQuery("#areaNo").val();
+    	monthId = jQuery("#monthId").val();
+    	jQuery("#monthId").jeDate({
+       	   format:"YYYY-MM"
+        });
+        query();
+    });
+
+	function query(){
+		querytitle();
+		querytable();
+		getBarChart();
+	}
+
+    /* 获取题目的信息 */
+	function querytitle(){
+		var monthId = jQuery('#monthId').val();
+		jQuery.ajax({
+	 		url: '<%=contextPath%>/rpt/rlzyxy/Synergism!queryTitle.action',
+	 	    type: "POST",
+	 	    data: {
+	 			"monthId": monthId
+	 		},
+	 		dataType: "json",
+	 		cache:false,
+	 		success:function(data){
+	 			 var monthId1 = jQuery('#monthId').val();
+		    	 var mon = monthId1.substr(4);
+		    	 if(mon!=01){
+		    		 mon ="01"+mon;
+		    	 }else{
+		    		 mon="01";
+		    	 }
+		    	 document.getElementById("partdiv").innerHTML = mon;
+		    	 if(data.list.length>0){
+	 			    var title = data.list[0];
+	 			    document.getElementById("part1").innerHTML = title.KPI_01;
+	 			    document.getElementById("part2").innerHTML = title.KPI_03;
+		    	 }else{
+		    		document.getElementById("part1").innerHTML = "--";
+		    		document.getElementById("part2").innerHTML = "--";
+				      
+		    	 }
+	 		}
+	 	});
+		
+	}
+
+    /*  获取表格数据*/
+    function querytable(){
+    	monthId = jQuery("#monthId").val();
+    	jQuery.ajax({
+    		url: '<%=contextPath%>/rpt/rlzyxy/Synergism!queryTable.action',
+    		type:"POST",
+    	    data: {
+    	    	"monthId": monthId
+    		},
+    		cache:false,
+    		success:function(html) {
+    			jQuery("#TableDiv").html(html);
+    			if(jQuery(".part1TableTd")[0] != undefined){
+					jQuery(".part1TableTd")[0].click();
+				}
+    		}
+    	});
+    }
+    
+    /* 柱状图 */
+    function getBarChart(){
+		jQuery.ajax({
+			url: '<%=contextPath%>/rpt/rlzyxy/Synergism!queryBar.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId
+			},
+			dataType: "json",
+			cache:false,
+			success:function(data) {
+				barChart(data,"","barDiv");
+			}
+		});
+	}
+    
+    function barChart(data, chartName, chartDivId) {
+		var barList = data.barList;
+		var bar1Data = [];
+		var bar2Data = [];
+		var xData = [];
+		for (var i = 0; i < barList.length; i++) {
+			bar1Data.push(barList[i].KPI_01);
+			bar2Data.push(barList[i].KPI_02);
+			xData.push(barList[i].AREA_DESC);
+		}
+		jQuery("#" + chartDivId).empty();
+		jQuery("#" + chartDivId).removeAttr("_echarts_instance_");
+
+	    // 基于准备好的dom，初始化echarts实例
+	    var lineChart = echarts.init(document.getElementById(chartDivId));
+	    lineChart.showLoading({text: '正在努力加载中...'});
+	    // 指定图表的配置项和数据
+		var option = {
+			 	title: {
+			        left: 'center',
+			        text: chartName,
+			    },
+			    grid: {
+			        left: '0%',
+			        right: '4%',
+			        top: '15%',
+			        bottom: '15%',
+			        containLabel: true
+			    },
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            type: 'cross',
+			            crossStyle: {
+			                color: '#999'
+			            }
+			        }
+			    },
+			    legend: {
+			        data:['人均创利','目标'],
+			        y:'bottom'
+			    },
+			    xAxis: {
+			    	type: 'category',
+			        data: xData,
+			        axisLabel:{
+			        	interval:0
+			        }
+			    },
+			    yAxis: [
+			        {
+			            type: 'value',
+			            name: '人均创利',
+			            axisLabel: {
+			                formatter: '{value}'
+			            }
+			        },
+			        {
+			            type: 'value',
+			            name: '目标',
+			            axisLabel: {
+			                formatter: '{value}'
+			            }
+			        }
+			    ],
+			    series: [
+			        {
+			            name:'人均创利',
+			            type:'bar',
+			            barGap:0,
+			            data:bar1Data,
+			            itemStyle : {  
+							normal : {  
+								lineStyle:{  
+									color:'#3A5FCD'
+								},
+								color:'#3A5FCD'
+							}  
+						}
+			        },
+			        {
+			            name:'目标',
+			            type:'bar',
+			            data:bar2Data,
+			            itemStyle : {  
+							normal : {  
+								lineStyle:{  
+									color:'#EE7600' 
+								},
+								color:'#EE7600'
+							}  
+						},
+						yAxisIndex: 1
+			        }
+			    ]
+			};
+
+	    // 使用刚指定的配置项和数据显示图表。
+		lineChart.setOption(option);
+		lineChart.hideLoading();
+	}
+    
+    /* 折线图 */
+    function getLineChart(areaNo){
+		jQuery.ajax({
+			url: '<%=contextPath%>/rpt/rlzyxy/Synergism!queryLine.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId,
+				"areaNo":areaNo
+			},
+			dataType: "json",
+			cache:false,
+			success:function(data) {
+				lineChart(data,"","lineDiv");
+			}
+		});
+	}
+    
+    function lineChart(data, chartName, chartDivId) {
+		var lineList1 = data.thisYearLine;
+		var lineList2 = data.lastYearLine;
+		var lineData1 = [];
+		var lineData2 = [];
+		for (var i = 0; i < lineList1.length; i++) {
+			lineData1.push((lineList1[i].KPI_03*1).toFixed(0));
+		}
+		for (var i = 0; i < lineList2.length; i++) {
+			lineData2.push((lineList2[i].KPI_03*1).toFixed(0));
+		}
+
+		jQuery("#" + chartDivId).empty();
+		jQuery("#" + chartDivId).removeAttr("_echarts_instance_");
+
+	    // 基于准备好的dom，初始化echarts实例
+	    var lineChart = echarts.init(document.getElementById(chartDivId));
+	    lineChart.showLoading({text: '正在努力加载中...'});
+	    // 指定图表的配置项和数据
+		var option = {
+				title: {
+					show: true,
+				    left: 'center',
+				    text: chartName
+			    },
+			    tooltip: {
+			        trigger: 'axis',
+			        formatter: "{b}月<br />{a0}:{c0}<br />{a1}:{c1}"
+			    },
+			    legend: {
+			        data: ['今年', '去年'],
+			        y:'bottom'
+			    },
+			    grid: {
+			        left: '0%',
+			        right: '4%',
+			        top: '15%',
+			        bottom: '15%',
+			        containLabel: true
+			    },
+			    xAxis: {
+			        type: 'category',
+			        boundaryGap: false,
+					splitLine : {
+						show : false
+					},
+					axisLabel:{
+			        	interval:0
+			        },
+			        data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+			    },
+			    yAxis: {
+			        type: 'value',
+			        name:'人均创利',
+			        axisLabel: {
+		                textStyle: {
+		                    color: '#76787d'
+		                }
+		            }
+			    },
+			    series: [
+			         {
+			        	 name:'去年',
+			        	 type:'line',
+			        	 stack: chartName,
+			        	 itemStyle : {  
+							normal : {  
+								lineStyle:{  
+									color:'#EE7600',
+									width: 2
+								},
+								color:'#EE7600'
+							 }  
+						 },
+			        	 data: lineData2
+			         },
+			         {
+			        	 name:'今年',
+			        	 type:'line',
+			        	 stack: chartName,
+			        	 itemStyle : {  
+							normal : {  
+								lineStyle:{  
+									color:'#3A5FCD',
+									width: 2
+								},
+								color:'#3A5FCD'
+							 }  
+						 },
+			        	 data: lineData1
+			         }
+			    ]
+			};
+
+	    // 使用刚指定的配置项和数据显示图表。
+		lineChart.setOption(option);
+		lineChart.hideLoading();
+	}
+    
+</script>
+  </head>
+  
+  <body>
+  <!-- 第一行的div -->
+    <div class="container" style="width: 98%;margin-top: 5px;height: 0px;">
+        <div class="row" style="height: 0px;">
+		  <div class="col-xs-10 col-sm-10 col-md-10"></div>
+		  <div class="col-xs-2 col-sm-2 col-md-2" > 
+		      <form class="form-inline"  style="margin: 0px;"> 
+		         <div class="form-group">
+		             <label for="monthId">时间</label>
+                     <input type="text" class="form-control workinput" id="monthId" value="${monthId}" style="width: 70px;height: 25px;font-size: 12px;padding: 0px;">
+		         </div>
+		         <button type="button" class="btn btn-info btn-sm" style="width: 60px;height: 25px;line-height: 10px;" onclick="query()">查询</button>
+		      </form>
+		  </div>
+		</div>
+	 </div>
+	 
+	 
+	 <div class="container" style="width: 98%;margin-top: 2%;" id="homeframe-container">
+	 	<!--第一个div单纯的显示表头  -->
+	 	<div class="row" style="height: 30px;margin-top: 10px;">
+			<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+				<table style="border-collapse: collapse;height: 28px;padding: 0px;margin: auto;width: 100%;">
+					<tr>
+					<td style="background-color: #C00000;width: 28px;"></td>
+					<td style="width: 3px;"></td>
+					<td style="background-color: #BFBFBF;text-align: left;padding-left: 10px;font-weight: bold;font-size: 14px;">人力网提质增效完成情况</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<!-- 第二行title -->
+		<hr style="border:none;border-top:2px solid #FF6A6A;"/>
+		<div class="row" style="text-align: left;margin-left:5px;font-weight: bold;font-size: 14px;padding-top:1%;">
+			<span id="partdiv"></span>月，全省百元人工成本创利为 <span id="part1">---</span>万人，目标完成率<span id="part2">---</span>%<br>
+		</div>
+		<hr style="border:none;border-top:1px solid #FF6A6A;"/>
+		
+		<!-- 第三个div显示表格 -->
+		<div class="row" style="margin-top:20px;">
+			<div class="col-xs-5 col-sm-5 col-md-5" id="TableDiv"></div>
+			<div class="col-xs-7 col-sm-7 col-md-7">
+				<div style="text-align: left; font-weight: bold;"><span class="barNameDiv"></span></div>
+				<div id="barDiv" style="height: 300px"></div>
+				<div style="text-align: left; font-weight: bold;"><span class="lineNameDiv"></span></div>
+				<div id="lineDiv" style="height: 250px"></div>
+			</div>
+		</div>
+
+	</div>
+  </body>
+</html>

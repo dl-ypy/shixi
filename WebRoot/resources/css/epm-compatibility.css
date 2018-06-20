@@ -1,0 +1,32 @@
+#epm-frame-header-wrapper .epm-frame-search-box .do-search-btn {
+  background-color:#ffffff;
+   filter:alpha(opacity=25);
+}
+
+#epm-frame-header-wrapper .epm-frame-search-box .dropdown-btn {
+  background-color:#000000;
+   filter:alpha(opacity=20);
+}
+#epm-frame-header-wrapper .epm-frame-search-box input {
+ background-color:#000000;
+   filter:alpha(opacity=20);
+   color:#ffffff;
+}
+
+#epm-frame-header-wrapper .epm-frame-heading:hover {
+   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#9900786D',EndColorStr='#9900786D')"; 
+}
+
+#epm-frame-header-wrapper .epm-frame-account .overview:hover {
+	 -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#9900786D',EndColorStr='#9900786D')";
+	
+}
+#epm-frame-header-wrapper .epm-frame-toolbar > ul > li:hover{
+	 -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#9900786D',EndColorStr='#9900786D')";
+}
+
+#epm-frame-hamburger-btn:hover {
+  background-color: rgba(0, 0, 0);
+  filter:alpha(opacity=20);
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#9900786D',EndColorStr='#9900786D')"; 
+}

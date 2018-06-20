@@ -1,0 +1,166 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="b" uri="/bonc-tags"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%
+	String contextPath = request.getContextPath();
+%>
+
+<script type="text/javascript">
+	var monthId;
+	var areaNo;
+
+	jQuery(document).ready(function() {
+		jQuery("#monthId").jeDate({
+			format : "YYYY-MM"
+		});
+		monthId = $("#monthId").val();
+		areaNo = $("#areaNo").val();
+		query2();
+	});
+
+	function query2(){
+		monthId = $("#monthId").val();
+		areaNo = $("#areaNo").val();
+		queryMap();
+		mapTable('root');
+		
+	}
+	
+	function queryMap(){
+		jQuery.ajax({
+			url: '<%=contextPath%>/rpt/xjlts/yyqkfx/ArrearOverdue!getMapData.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId, 
+				"areaNo": areaNo
+			},
+			dataType: "json",
+			cache:false,
+			success:function(data) {
+				/* jQuery("#mapDiv").html(html); */
+				MapChart(data,'');
+			}
+		});
+	} 
+	
+	function MapChart(data, kpiName) {
+		var mapList = data.mapList;
+
+	/* 	var top3Value = (data.top3Value * 100).toFixed(2);
+		var last3Value = (data.last3Value * 100).toFixed(2);
+ */
+		// alert(top3Value);
+		// alert(last3Value);
+
+		var jsonData = [];
+		for (var i = 0; i < mapList.length; i++) {
+			var subJsonData = {"name": mapList[i].AREA_DESC, "value":mapList[i].KPI_01};
+			jsonData.push(subJsonData);
+		}
+
+		jQuery("#mapDiv").empty();
+		jQuery("#mapDiv").removeAttr("_echarts_instance_");
+
+		var mapChart = echarts.init(document.getElementById('mapDiv'));
+
+		var mapOption = {
+				tooltip : {
+					trigger: 'item'
+				},
+				visualMap: [
+					{
+						show: false,
+						splitNumber: 2,
+
+					/* 	min: parseFloat(last3Value),
+						max: parseFloat(top3Value),
+						minOpen: true,
+						maxOpen: true,
+ */
+						itemWidth: 30,
+						itemHeight: 10,
+						left: 0,
+						bottom: 20,
+						inRange: {
+							color: ['#98E3FD']
+						},
+						textStyle:{
+							fontSize: 10
+						}
+					}
+				],
+				series : [
+					{
+						name: kpiName,
+						type: 'map',
+						map: '河南',
+						roam: false,
+						left: '20%',
+						top:'3%',
+						label: {
+						    normal: {
+								show: true,
+								textStyle: {
+									fontSize: 10
+								}
+							},
+							emphasis: {
+								textStyle: {
+									fontSize: 10
+								}
+							}
+						},
+						itemStyle: {
+							normal: {
+								color: '#B0AFB7'
+							},
+							emphasis: {
+								color: "#1E81E1",
+								areaColor: "#1E81E1"
+							}
+						},
+						data: jsonData
+					}
+				]
+			};
+			mapChart.setOption(mapOption);
+
+			/* 地图点击事件 */
+			mapChart.on('click', function (params) {
+				var areaName = params.name;
+				for (var areaIndex = 0; areaIndex < mapList.length; areaIndex++) {
+					if (areaName == mapList[areaIndex].AREA_DESC) {
+						mapTable(mapList[areaIndex].AREA_NO);
+						break;
+					}
+				}
+			});
+			
+		}
+
+		function mapTable(areaNo) {
+			jQuery.ajax({
+				url: '<%=contextPath%>/rpt/xjlts/yyqkfx/ArrearOverdue!mapTable.action',
+				type:"POST",
+			    data: {
+					"monthId": monthId,
+					"areaNo":areaNo
+				},
+				cache:false,
+				success:function(html) {
+					jQuery("#mapTable").html(html);
+				}
+			});
+		}
+		
+</script>
+	
+	
+<div class="row">
+	<div class="row">
+		<span style="float: left; color: red; margin-left: 30px;" id="kpiname"></span>
+		<div id= "mapDiv" class="col-xs-5 col-sm-5 col-md-5" style="height:300px;"></div>
+		<div id= "mapTable" class="col-xs-5 col-sm-5 col-md-5" style="height:300px;"></div>
+	</div>
+
+</div>

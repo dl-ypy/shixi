@@ -1,0 +1,30 @@
+﻿@charset "utf-8";
+
+/*------------------------------------------------------------------
+ 
+手动编辑 之 关于地图页面 
+
+------------------------------------------------------------------- */
+*{font-family:'microsoft yahei';}
+html, body {height:100%;width:100%; margin:0; padding:0;}
+
+/* 子页面 滚动条 */
+::-webkit-scrollbar{ width:6px; height:6px;}
+::-webkit-scrollbar-track{background:#f3f4f4;}
+::-webkit-scrollbar-thumb{ border-radius:6px; background:#cfcfcf;}
+::-webkit-scrollbar-thumb:hover{background:#666; }
+::-moz-scrollbar{ width:6px; height:6px;}
+::-moz-scrollbar-track{background:#f3f4f4;}
+::-moz-scrollbar-thumb{ border-radius:6px; background:#cfcfcf;}
+::-moz-scrollbar-thumb:hover{background:#666; }
+
+/* 通用按钮手势 */
+.Button{cursor: pointer;}
+
+/* 程序页面 公用部分  */
+.anchorBL{display: none ;}
+.BMap_scaleCtrl{display: block;}
+
+
+
+

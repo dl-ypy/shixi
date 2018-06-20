@@ -1,0 +1,45 @@
+#######################datasource config################################
+#for oracle #D9_PURE
+database.driver=oracle.jdbc.driver.OracleDriver
+database.url=jdbc:oracle:thin:@(DESCRIPTION=(FAILOVER=on)(LOAD_BALANCE=off)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=133.160.37.18)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=133.160.37.25)(PORT=1521)))(CONNECT_DATA=(FAILOVER_MODE=(TYPE=select)(METHOD=preconnect)(RETRIES=12)(DELAY=5))(SERVER=dedicated)(SERVICE_NAME=hndm)))
+database.username=cw_dss
+database.password=cw_dss_1
+#database.password=/=|Bw<BB@A;"y
+
+#for mysql
+#database.driver=com.mysql.jdbc.Driver
+#database.url=jdbc:mysql://192.168.8.88:3306/pure?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8
+#database.username=pure
+#database.password=pure
+
+#for postgresql
+#database.driver=org.postgresql.Driver
+#database.url=jdbc:postgresql://192.168.6.12:5432/pure
+#database.username=pure
+#database.password=pure
+
+#for db2 
+#database.driver=com.ibm.db2.jcc.DB2Driver
+#database.url=jdbc:db2://192.168.6.26:50110/vbaptest:retrieveMessagesFromServerOnGetMessage=true;
+#database.username=vbaptest
+#database.password=vbaptest
+#database.encryptType=0
+
+database.initialPoolSize=3
+database.acquireIncrement=3
+database.minPoolSize=3
+database.maxPoolSize=100
+database.maxIdleTime=120
+database.encryptType=0
+
+#######################hibernate config################################
+#hibernate.dialect=org.hibernate.dialect.HSQLDialect
+#hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+#hibernate.dialect=org.hibernate.dialect.Oracle9iDialect
+#hibernate.dialect=org.hibernate.dialect.DB2Dialect
+hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
+#hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
+#hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect 
+hibernate.show_sql=false
+hibernate.hbm2ddl.auto=update
+hibernate.jdbc.batch_size=20

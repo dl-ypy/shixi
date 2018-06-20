@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.wyxy">
+	<!-- 赵彦发 start part -->
+	<!-- 移动单基站产出 -->
+   	<select id="MobileSingleProduceTable" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+		       T.VALUE_Y, T.VALUE_LY, T.VALUE_ADD_RATE, T.VALUE_ADD_RATE_ORD
+		  FROM CW_DM.CW_RPT_TZMB_JZ_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+		 ORDER BY A.SELECT_ORD
+    </select>
+    <!-- 移动单基站产出柱图 -->
+   	<select id="MobileSingleProduceBarChart1" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, A.AREA_DESC, 
+   			TO_CHAR(T.VALUE_ADD_RATE_PP,'9999999990.99') AS VALUE_ADD_RATE_PP, 
+   			TO_CHAR(T.VALUE_Y_AVG,'9999999990.99') AS VALUE_Y_AVG, 
+   			TO_CHAR(T.VALUE_ADD_RATE,'9999999990.99') AS VALUE_ADD_RATE
+   		FROM CW_DM.CW_RPT_TZMB_JZ_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+   		WHERE T.MONTH_ID = #monthId#
+   			AND T.ORG_ID = A.AREA_NO
+   		ORDER BY T.VALUE_ADD_RATE DESC
+    </select>
+    <!-- 移动单基站产出首行数据 -->
+   	<select id="getMobileSingleProduceFirstLine" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID,
+		       TO_CHAR(T.VALUE_Y,'9999999990.99') AS VALUE_Y,
+		       TO_CHAR(T.VALUE_ADD_RATE*100,'9999999990.99') AS VALUE_ADD_RATE
+		  FROM CW_DM.CW_RPT_TZMB_JZ_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = 'root'
+    </select>
+    <!-- 移动单基站产出尾行数据 -->
+   	<select id="getMobileSingleProduceLastLine" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID,
+   			   T.ORG_NAME,
+   			   TO_CHAR(T.VALUE_ADD_RATE*100,'9999999990.99') AS VALUE_ADD_RATE,
+   			   TO_CHAR(T.VALUE_Y_AVG,'9999999990.99') AS VALUE_Y_AVG,
+		       (T.VALUE_Y - T.VALUE_Y_AVG) AS MEAN_DIFFERENCE
+		  FROM CW_DM.CW_RPT_TZMB_JZ_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = #areaNo#
+    </select>
+    <!-- 移动单基站产出前三后三数据 -->
+   	<select id="getMobileSingleProduceRanking" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, 
+			T.FIRST_THREE,
+			T.LAST_THREE
+   		FROM CW_DM.CW_RPT_TZMB_JZ_2 T
+   		WHERE T.MONTH_ID = #monthId#
+    </select>
+    <!-- 赵彦发 end part -->
+    <!-- ///////////////////////////////分割线//////////////////////////// -->
+    <!-- 杨佩钰start part -->
+     <!-- 杨佩钰 end part -->
+</sqlMap>

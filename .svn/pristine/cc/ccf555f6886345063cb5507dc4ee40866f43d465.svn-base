@@ -1,0 +1,127 @@
+.tool_tollCon {
+	background:	url(../images/icon_tool.png)	0 2px no-repeat;
+	_background:url(../images/icon_tool.png) 0 2px no-repeat;
+	width: 18px;
+	height: 16px;
+}
+.tool_reflash {
+	background:	url(../images/icon_tool.png)	0 2px no-repeat;
+	_background:url(../images/icon_tool.png) 0 2px no-repeat;
+	width: 18px;
+	height: 16px;
+}
+
+.tool_icon_measure {
+	background:
+		url(http://webmap0.map.bdimg.com/newmap/static/common/images/new-icon_4aab9e1.png)
+		no-repeat -80px 2px;
+	_background:
+		url(http://webmap0.map.bdimg.com/newmap/static/common/images/new-icon_4aab9e1.png)
+		no-repeat -80px 2px;
+	width: 18px;
+	height: 16px;
+}
+
+.tool_icon_capwrap {
+	background:
+		url(http://webmap0.map.bdimg.com/newmap/static/common/images/new-icon_4aab9e1.png)
+		no-repeat -96px 2px;
+	_background:
+		url(http://webmap0.map.bdimg.com/newmap/static/common/images/new-icon_4aab9e1.png)
+		no-repeat -96px 2px;
+	width: 18px;
+	height: 16px;
+}
+
+.tool_icon_signwrap {
+	background:
+		url(http://webmap0.map.bdimg.com/newmap/static/common/images/new-icon_4aab9e1.png)
+		no-repeat -114px 2px;
+	_background:
+		url(http://webmap0.map.bdimg.com/newmap/static/common/images/new-icon_4aab9e1.png)
+		no-repeat -114px 2px;
+	width: 18px;
+	height: 16px;
+}
+
+.tool_icon_print {
+	background:
+		url(http://webmap0.map.bdimg.com/newmap/static/common/images/new-icon_4aab9e1.png)
+		no-repeat -148px 2px;
+	_background:
+		url(http://webmap0.map.bdimg.com/newmap/static/common/images/new-icon_4aab9e1.png)
+		no-repeat -148px 2px;
+	width: 18px;
+	height: 16px;
+}
+.tool_icon_check {
+	background:
+		url(../images/checkbox.png)
+		no-repeat 0px 0px;
+	_background:
+		url(../images/checkbox.png)
+		no-repeat 0px 0px;
+	width: 20px;
+	height: 20px;
+}
+.tool_icon_checkcur {
+	background:
+		url(../images/checkbox.png)
+		no-repeat 0px -21px;
+	_background:
+		url(../images/checkbox.png)
+		no-repeat 0px 0px;
+	width: 20px;
+	height: 20px;
+}
+#mkrTMDiv {
+	width: 136px;
+	height: 28px;
+	position: absolute;
+	left: 160px;
+	top: 60px;
+	display: none;
+	z-index: 200;
+	border: solid 1px gray;
+	background: #ffffff;
+}
+
+#TMDivs {
+	width: 280px;
+	height: 160px;
+	border: solid 1px gray;
+	position: absolute;
+	left: 160px;
+	top: 90px;
+	margin: 2px; 0 px;
+	display: none;
+	z-index: 201;
+}
+
+#TMDivs ul {
+	list-style-type: none;
+	padding: 2px 2px;
+	margin: 2px 2px;
+}
+
+#TMDivs ul li a {
+	cursor: pointer;
+	margin: 2px 2px;
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	border: solid 1px #ffffff;
+	text-align: center;
+}
+
+#TMDivs ul li a:hover {
+	background: none;
+	border: solid 1px gray;
+}
+
+#TMDivs ul li img {
+	border: none;
+	background:
+		url('http://api.map.baidu.com/library/MarkerTool/1.2/examples/images/icon.gif');
+}
+

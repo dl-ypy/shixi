@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.kpikh">
+	<!-- lzh -->
+	<select id="KpiKhZbTable" resultClass="java.util.HashMap">
+	SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME, A.HAVE_CHILDREN,
+	       T.KPI_UNIT, T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06
+	  FROM (SELECT *
+	          FROM CW_DM.CW_KPIKH_DB_ALLP T
+	         WHERE T.MONTH_ID = #monthId#
+	           AND T.ORG_ID = #areaNo#) T,
+	       (SELECT A.*
+	          FROM HN_DMCODE.DMCODE_CW_KPI A
+	         WHERE A.MODULE_ID = 'kpi.skh'
+	            AND A.IS_VALID = '1'
+	   		<isEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID IS NULL
+	        </isEqual>
+	   		<isNotEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID = #kpiId#
+	   		</isNotEqual>
+	        ) A
+	 WHERE T.KPI_ID(+) = A.KPI_ID
+	 ORDER BY A.ORD
+	</select>
+	<select id="PmdbTable" resultClass="java.util.HashMap">
+	SELECT A.AREA_NO, A.AREA_DESC,
+	       T.KPI_UNIT, T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06
+	  FROM (SELECT *
+	          FROM CW_DM.CW_KPIKH_DB_ALLP T
+	         WHERE T.MONTH_ID = #monthId#
+	           AND T.KPI_ID = #kpiId#
+	           AND (T.ORG_ID = 'root' OR T.PARENT_ORG_ID = 'root' )) T,
+	       (SELECT A.*
+	          FROM HN_DMCODE.DMCODE_AREA_CW_VIEW A
+	         WHERE A.TABLE_SHOW = '1'
+	        ) A
+	 WHERE T.ORG_ID = A.AREA_NO
+	 ORDER BY A.TABLE_ORD
+	</select>
+	<!-- fcf -->
+	<select id="selectKhzbQSLineChar" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_NAME, T1.MONTH_ID, T1.KPI_ID, TO_CHAR(T1.KPI_01, '9999999990.99') AS KPI_01
+		  FROM CW_DM.CW_KPIKH_DB_ALLP T1,
+		       (SELECT T.KPI_ID, T.KPI_NAME
+		          FROM hn_dmcode.DMCODE_CW_KPI t
+		         WHERE module_id = 'kpi.skh') T2
+		 WHERE T1.KPI_ID = T2.KPI_ID
+		   AND T1.ORG_ID = '$areaNo$'
+		   AND SUBSTR(T1.MONTH_ID, 1, 4) = SUBSTR('$monthId$', 1, 4)
+		   AND T1.KPI_ID = '$kpiId$'
+		 ORDER BY T1.MONTH_ID ASC
+	</select>
+	<select id="selectDBDyList" resultClass="java.util.HashMap">
+	    SELECT *
+		  FROM (SELECT '-1' AREA_NO, '--' AREA_DESC, 0 SELECT_ORD
+		          FROM DUAL
+		        UNION ALL
+		        SELECT T.AREA_NO, T.AREA_DESC, T.SELECT_ORD
+		          FROM HN_DMCODE.DMCODE_AREA_CW_VIEW T
+		         WHERE T.SELECT_SHOW = '1'
+		           AND T.AREA_NO NOT IN ('root', 'HAB', '$areaNo$'))
+		 ORDER BY SELECT_ORD
+	</select>
+	<select id="selectRingChar" resultClass="java.util.HashMap">
+	    SELECT T1.KPI_ID, T1.KPI_01 DEFEN, T1.KPI_03 PAIMING, T2.KPI_01 ADEFEN,T3.AREA_DESC,T4.AREA_DESC A_AREA_DESC
+		  FROM (SELECT T.KPI_ID, ROUND(T.KPI_01, 2) KPI_01, '第' || T.KPI_03 KPI_03,T.ORG_ID
+		          FROM CW_DM.CW_KPIKH_DB_ALLP T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$areaNo$'
+		           AND T.KPI_ID = '$kpiId$') T1,
+		       (SELECT T.KPI_ID, ROUND(T.KPI_01, 2) KPI_01,T.ORG_ID
+		          FROM CW_DM.CW_KPIKH_DB_ALLP T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$aimAreaNo$'
+		           AND T.KPI_ID = '$kpiId$') T2,
+               HN_DMCODE.DMCODE_AREA_CW_VIEW T3,
+               HN_DMCODE.DMCODE_AREA_CW_VIEW T4
+		 WHERE T1.KPI_ID = T2.KPI_ID(+)
+		   AND T1.ORG_ID = T3.AREA_NO(+)
+           AND T2.ORG_ID = T4.AREA_NO(+)
+	</select>
+	<select id="selectKpiZgZdf" resultClass="java.util.HashMap">
+	    SELECT T.KPI_ID, T1.AREA_DESC, ROUND(T.KPI_01, 2) KPI_01, T.KPI_03
+		  FROM CW_DM.CW_KPIKH_DB_ALLP T, 
+		       HN_DMCODE.DMCODE_AREA_CW_VIEW T1
+		 WHERE T.ORG_ID = T1.AREA_NO
+		   AND T.MONTH_ID = '$monthId$'
+		   AND T.KPI_ID IN ('KPI_001', 'KPI_002', 'KPI_025', 'KPI_051')
+		   AND (T.KPI_03 = 1 OR T.KPI_03 = 18)
+		   AND T.PARENT_ORG_ID = 'root'
+	</select>
+	<select id="selectPaiMingKH" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_NAME, T1.KPI_ID, T1.KPI_03
+		  FROM CW_DM.CW_KPIKH_DB_ALLP T1,
+		       (SELECT T.KPI_ID, T.KPI_NAME
+		          FROM hn_dmcode.DMCODE_CW_KPI t
+		         WHERE module_id = 'kpi.skh') T2
+		 WHERE T1.KPI_ID = T2.KPI_ID
+		   AND T1.ORG_ID = '$areaNo$'
+		   AND T1.MONTH_ID = '$monthId$'
+		   AND T1.KPI_03 <![CDATA[>]]> 13   
+	</select>
+	<select id="selectDeFenJD" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_NAME, T1.KPI_ID, T1.KPI_02
+		  FROM CW_DM.CW_KPIKH_DB_ALLP T1,
+		       (SELECT T.KPI_ID, T.KPI_NAME
+		          FROM hn_dmcode.DMCODE_CW_KPI t
+		         WHERE module_id = 'kpi.skh') T2
+		 WHERE T1.KPI_ID = T2.KPI_ID
+		   AND T1.ORG_ID = '$areaNo$'
+		   AND T1.MONTH_ID = '$monthId$'
+		   AND T1.KPI_02 <![CDATA[<]]> 0
+	</select>
+</sqlMap>

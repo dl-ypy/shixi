@@ -1,0 +1,107 @@
+package com.bonc.pure.web.action.rpt.ztdb;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+import com.bonc.pure.web.util.CollectionEdit;
+
+public class ProfitProfessionLineAction extends CwCommon {
+	private String monthId;
+	private String areaNo;
+	private String kpiId;
+	private String parttext;;
+    private String year;
+    private String zsbType;
+	public String execute() {
+		init();
+		initCwAreaSelect();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+
+	// 加载kpi指标table
+	public String getProfitTable() {
+		kpiId = kpiId == null || "".equals(kpiId) ? "-1" : kpiId;
+		list = daoHelper.queryForList("cw.rpt.ztdb.ProfitTable", this);
+		if ("-1".equals(kpiId)) {
+			return "table";
+		} else {
+			return "tableDrill";
+		}
+	}
+   public void getLineBarChart(){
+	   Map map = new HashMap();
+	   String thisyear = monthId.substring(0, 4);
+		String lastyear = String.valueOf(Integer.parseInt(thisyear)-1);
+		year = thisyear+"%";
+		List list2 =  daoHelper.queryForList("cw.rpt.ztdb.queryChart", this);
+		map.put("thisyear", list2);
+		year = lastyear+"%";
+		List list1 =  daoHelper.queryForList("cw.rpt.ztdb.queryChart", this);
+		map.put("lastyear", list1);
+	   returnMapAsJson(map);
+   }
+  
+	public String getMonthId() {
+		return monthId;
+	}
+
+	public void setMonthId(String monthId) {
+		if (monthId != null) {
+			this.monthId = monthId.replaceAll("-", "");
+		}
+	}
+
+	public String getAreaNo() {
+		return areaNo;
+	}
+
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+
+	public String getParttext() {
+		return parttext;
+	}
+
+	public void setParttext(String parttext) {
+		this.parttext = parttext;
+	}
+
+	public String getKpiId() {
+		return kpiId;
+	}
+
+	public void setKpiId(String kpiId) {
+		this.kpiId = kpiId;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public String getZsbType() {
+		return zsbType;
+	}
+
+	public void setZsbType(String zsbType) {
+		this.zsbType = zsbType;
+	}
+}

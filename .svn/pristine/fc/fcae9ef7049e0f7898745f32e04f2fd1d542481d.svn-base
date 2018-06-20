@@ -1,0 +1,132 @@
+package com.bonc.pure.web.action.rpt.xjlts.xjlOverview;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+import com.bonc.pure.web.util.CollectionEdit;
+
+public class xjlOverallAction extends CwCommon{
+	private String monthId;
+	private String areaNo;
+	private String kpiCode;
+	private String partId;
+	private String year;
+	private List list1;
+	private String test;
+	public String execute() {
+		init();
+		initCwAreaSelect();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+	/**
+	 * 获取现金收入比的表格
+	 * @return
+	 */
+	public String queryCashTable(){
+		list1=daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryfreetext", this);
+		Map map = new HashMap();
+		 map.put("list1", list1);
+		test=CollectionEdit.mapToString(map);
+	  list = daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCash", this);
+		return "table";
+	}
+	public String queryrateTable(){
+		list1=daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryfreetext", this);
+		Map map = new HashMap();
+		 map.put("list1", list1);
+		test=CollectionEdit.mapToString(map);
+	    list = daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCash", this);
+		return "ratetable";
+	}
+	/**
+	 * 获取现金收入比的折线图
+	 * @return
+	 */
+	public void getLineChart(){
+		Map map=new HashMap();
+		String thisyear = monthId.substring(0, 4);
+		String lastyear = String.valueOf(Integer.parseInt(thisyear)-1);
+		year = thisyear+"%";
+		list =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.getLineChart", this);
+		map.put("thisyear", list);
+		year = lastyear+"%";
+		List list1 =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.getLineChart", this);
+		map.put("lastyear", list1);
+		returnMapAsJson(map);
+	}
+
+   public void getMap(){
+	   Map map=new HashMap();
+	   list =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.getMap", this);
+	   map.put("mapList", list);
+	   Map top3Map = (Map) list.get(3);
+		map.put("top3Value", top3Map.get("KPI_03"));
+		Map last3Map = (Map) list.get(14);
+		map.put("last3Value", last3Map.get("KPI_03"));
+	   String top3Area = ((Map) list.get(0)).get("ORG_NAME") + "、" + ((Map) list.get(1)).get("ORG_NAME") + "、" + ((Map) list.get(2)).get("ORG_NAME");
+		String last3Area = ((Map) list.get(17)).get("ORG_NAME") + "、" + ((Map) list.get(16)).get("ORG_NAME") + "、" + ((Map) list.get(15)).get("ORG_NAME");
+		map.put("top3Area", top3Area);
+		map.put("last3Area", last3Area);
+	   returnMapAsJson(map);
+   }
+	
+	public String getMonthId() {
+		return monthId;
+	}
+	public void setMonthId(String monthId) {
+		if (monthId != null) {
+			this.monthId = monthId.replaceAll("-", "");
+		}
+	}
+	public String getAreaNo() {
+		return areaNo;
+	}
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+	public String getKpiCode() {
+		return kpiCode;
+	}
+	public void setKpiCode(String kpiCode) {
+		this.kpiCode = kpiCode;
+	}
+	public String getYear() {
+		return year;
+	}
+	public void setYear(String year) {
+		this.year = year;
+	}
+	public List getList1() {
+		return list1;
+	}
+	public void setList1(List list1) {
+		this.list1 = list1;
+	}
+	public String getTest() {
+		return test;
+	}
+	public void setTest(String test) {
+		this.test = test;
+	}
+	
+	public String getPartId() {
+		return partId;
+	}
+	public void setPartId(String partId) {
+		this.partId = partId;
+	}
+}

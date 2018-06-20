@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.ztdb">
+	<!-- 本地网执行对标-网运线成本-->
+	<select id="drillTableByOrg1" resultClass="java.util.HashMap">
+    	SELECT T.LEVEL_NAME KPI_NAME,
+    	       T.BM_LEVEL,
+    	       T.LEVEL_ID,
+    	       T.ORD,
+		       A.HAVE_CHILDREN,
+		       A.KPI_ID,
+		       A.RST1,
+		       T.KPI_01,
+		       T.KPI_02,
+		       T.KPI_03,
+		       T.KPI_04,
+		       T.KPI_05,
+		       T.KPI_06,
+		       T.KPI_07,
+		       T.KPI_08,
+		       T.KPI_09
+		  FROM (SELECT M.*, N.*
+		          FROM (select T.*
+		                  from CW_DM.CW_RPT_ZTDB_DSDB_5_1 T
+		                 WHERE T.MONTH_ID = #monthId#
+		                   AND T.PARENT_ORG_ID = #areaNo#
+		                   AND T.ZSB_TYPE = #zsbType#
+		                   ) M,
+		               (SELECT A.*
+		                  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		                 WHERE A.PARENT_ID = #areaNo#
+		                ) N
+		         WHERE M.ORG_ID(+) = N.LEVEL_ID) T,
+		       (SELECT A.*
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'ztdb.dsdb5.1'
+		           AND A.IS_VALID = '1'
+		           AND A.KPI_ID = #kpiId#
+		        ) A
+		 WHERE T.KPI_ID(+) = A.KPI_ID
+		 ORDER BY T.ORD
+    </select>
+	<select id="drillTableByOrg2" resultClass="java.util.HashMap">
+    	SELECT T.LEVEL_NAME KPI_NAME,
+    	       T.BM_LEVEL,
+    	       T.LEVEL_ID,
+		       A.HAVE_CHILDREN,
+		       T.ORD,
+		       A.KPI_ID,
+		       A.RST1,
+		       T.KPI_10,
+               T.KPI_11,
+               T.KPI_12,
+               T.KPI_13,
+               T.KPI_14,
+               T.KPI_15,
+               T.KPI_16,
+               T.KPI_17
+		  FROM (SELECT M.*, N.*
+		          FROM (select T.*
+		                  from CW_DM.CW_RPT_ZTDB_DSDB_5_1 T
+		                 WHERE T.MONTH_ID = #monthId#
+		                   AND T.PARENT_ORG_ID = #areaNo#
+		                   AND T.ZSB_TYPE = #zsbType#
+		                   ) M,
+		               (SELECT A.*
+		                  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		                 WHERE A.PARENT_ID = #areaNo#
+		                ) N
+		         WHERE M.ORG_ID(+) = N.LEVEL_ID) T,
+		       (SELECT A.*
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'ztdb.dsdb5.1'
+		           AND A.IS_VALID = '1'
+		           AND A.KPI_ID = #kpiId#
+		        ) A
+		 WHERE T.KPI_ID(+) = A.KPI_ID
+		 ORDER BY T.ORD
+    </select>
+	<select id="queryCumulativeTable" resultClass="java.util.HashMap">
+        SELECT A.KPI_ID,
+               NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME,
+               A.HAVE_CHILDREN,
+               A.RST1,
+               T.KPI_01,
+               T.KPI_02,
+               T.KPI_03,
+               T.KPI_04,
+               T.KPI_05,
+               T.KPI_06,
+               T.KPI_07,
+               T.KPI_08,
+               T.KPI_09
+          FROM (SELECT *
+                  FROM CW_DM.CW_RPT_ZTDB_DSDB_5_1 T
+                 WHERE T.MONTH_ID = #monthId#
+                   AND T.ORG_ID = #areaNo#
+                   AND T.ZSB_TYPE = #zsbType#) T,
+               (SELECT A.*
+                  FROM HN_DMCODE.DMCODE_CW_KPI A
+                 WHERE A.MODULE_ID = 'ztdb.dsdb5.1'
+                   AND A.IS_VALID = '1'
+                   <isEqual property = "kpiId" compareValue = "-1">
+                   AND A.PARENT_ID IS NULL
+                   </isEqual>
+                   <isNotEqual property = "kpiId" compareValue = "-1">
+                   AND A.PARENT_ID = #kpiId#
+                   </isNotEqual>
+                   ) A
+         WHERE T.KPI_ID(+) = A.KPI_ID
+           <isNull property="sortCol">
+		   ORDER BY A.ORD
+	       </isNull>
+	       <isNotNull property="sortCol">
+	       ORDER BY $sortCol$ $sortOrder$
+           </isNotNull>
+    </select>
+	<select id="queryAccountTable" resultClass="java.util.HashMap">
+        SELECT A.KPI_ID,
+               NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME,
+               A.HAVE_CHILDREN,
+               A.RST1,
+               T.KPI_10,
+               T.KPI_11,
+               T.KPI_12,
+               T.KPI_13,
+               T.KPI_14,
+               T.KPI_15,
+               T.KPI_16,
+               T.KPI_17
+          FROM (SELECT *
+                  FROM CW_DM.CW_RPT_ZTDB_DSDB_5_1 T
+                 WHERE T.MONTH_ID = #monthId#
+                   AND T.ORG_ID = #areaNo#
+                   AND T.ZSB_TYPE = #zsbType#) T,
+               (SELECT A.*
+                  FROM HN_DMCODE.DMCODE_CW_KPI A
+                 WHERE A.MODULE_ID = 'ztdb.dsdb5.1'
+                   AND A.IS_VALID = '1'
+                   <isEqual property = "kpiId" compareValue = "-1">
+                   AND A.PARENT_ID IS NULL
+                   </isEqual>
+                   <isNotEqual property = "kpiId" compareValue = "-1">
+                   AND A.PARENT_ID = #kpiId#
+                   </isNotEqual>
+                   ) A
+         WHERE T.KPI_ID(+) = A.KPI_ID
+           <isNull property="sortCol">
+		   ORDER BY A.ORD
+	       </isNull>
+	       <isNotNull property="sortCol">
+	       ORDER BY $sortCol$ $sortOrder$
+       	   </isNotNull>
+    </select>
+    <select id="cumulativeChart" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID,TO_CHAR(B.KPI_01, '9999999990') AS KPI_01, B.KPI_08
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_01, T.KPI_08
+		          FROM CW_DM.CW_RPT_ZTDB_DSDB_5_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#
+		           AND T.ZSB_TYPE= #zsbType#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+    <select id="accountChart" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID,TO_CHAR(B.KPI_11, '9999999990') AS KPI_11
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_11
+		          FROM CW_DM.CW_RPT_ZTDB_DSDB_5_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#
+		           AND T.ZSB_TYPE= #zsbType#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+	
+
+	<!-- 预算执行 -->
+	<!-- 北十省执行情况对标 -->
+	<!-- 整体情况 -->
+	<select id="selectZTQK_LRYSWcqk" resultClass="java.util.HashMap">
+	    SELECT ORG_ID,
+		       ROUND(WCL*100,0) WCL,
+		       ROUND(CHART_ZB,0) CHART_ZB,
+		       (CASE
+		         WHEN area_type = 'N' THEN
+		          '北十第'
+		         ELSE
+		          '南二十一第'
+		       END) || AREA_ORD AREA_ORD
+		  FROM (SELECT A.ORG_ID,
+		               KPI_VALUE / KPI_MB WCL,
+		               KPI_VALUE /(KPI_VALUE + KPI_MB)  CHART_ZB,
+		               row_number() OVER(PARTITION BY p.area_type ORDER BY KPI_VALUE / KPI_MB DESC) AREA_ORD,
+		               p.area_type
+		          FROM (SELECT *
+		                  FROM CW_DM.CW_RPT_ZTDB_BSDB_1_1
+		                 WHERE MONTH_ID = '$monthId$'
+		                   and kpi_id = 'KPI_001') A,
+		               (SELECT *
+		                  FROM HN_DM.DM_M_WORK_CW_C_ORG_DIM@hndm
+		                 WHERE AREA_TYPE IN ('N', 'S')) P
+		         WHERE A.Org_Id = P.org_id)
+		 WHERE ORG_ID = '$areaNo$'
+	</select>
+	
+	<select id="selectZTQK_now_LiRun" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_ID, 
+		       T2.KPI_NAME, 
+		       ROUND(T1.KPI_MINUS, 0) KPI_MINUS
+		  FROM (SELECT *
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_1_1
+		         WHERE MONTH_ID = '$monthId$'
+		           AND ORG_ID = '$areaNo$') T1,
+		      （SELECT T.KPI_ID, T.KPI_NAME
+		          FROM HN_DMCODE.DMCODE_CW_KPI T
+		         WHERE MODULE_ID LIKE 'comp.part1.1%'
+		           AND T.KPI_ID IN ('KPI_001', 'KPI_010')
+		         ORDER BY ORD）T2
+		 WHERE T1.KPI_ID(+) = T2.KPI_ID
+	</select>
+	
+	<select id="selectZTQK_now_kpi" resultClass="java.util.HashMap">
+	    SELECT KPI_ID, 
+		       KPI_NAME, 
+		       KPI_MINUS,
+		       LR_RATE,
+               LR_RATE_ORD
+		  FROM (SELECT T2.KPI_ID,
+		               T2.KPI_NAME,
+		               ROUND(T1.KPI_MINUS, 0) KPI_MINUS,
+		               ABS(ROUND(T1.KPI_MINUS, 0)) KPI_MINUS_ABS,
+		               ROUND(T1.LR_RATE*100,2) LR_RATE,
+                       T1.LR_RATE_ORD
+		          FROM (SELECT *
+				          FROM CW_DM.CW_RPT_ZTDB_BSDB_1_1
+				         WHERE MONTH_ID = '$monthId$'
+				           AND ORG_ID = '$areaNo$') T1, 
+		          （SELECT T.KPI_ID, T.KPI_NAME
+		          FROM HN_DMCODE.DMCODE_CW_KPI T
+		         WHERE MODULE_ID LIKE 'comp.part1.1%'
+		           AND T.KPI_ID NOT IN ('KPI_001', 'KPI_010','KPI_011')
+		         ORDER BY ORD）T2
+		         WHERE T1.KPI_ID(+) = T2.KPI_ID)
+		 ORDER BY KPI_MINUS_ABS DESC
+	</select>
+	
+	<select id="selectZTQK_now_kpi_hj" resultClass="java.util.HashMap">
+	    SELECT KPI_ID, 
+		       KPI_NAME, 
+		       KPI_MINUS,
+		       LR_RATE,
+               LR_RATE_ORD
+		  FROM (SELECT T2.KPI_ID,
+		               T2.KPI_NAME,
+		               ROUND(T1.KPI_MINUS, 0) KPI_MINUS,
+		               ABS(ROUND(T1.KPI_MINUS, 0)) KPI_MINUS_ABS,
+		               ROUND(T1.LR_RATE*100,2) LR_RATE,
+                       T1.LR_RATE_ORD
+		          FROM (SELECT *
+				          FROM CW_DM.CW_RPT_ZTDB_BSDB_1_1
+				         WHERE MONTH_ID = '$monthId$'
+				           AND ORG_ID = '$areaNo$') T1, 
+		          （SELECT T.KPI_ID, T.KPI_NAME
+		          FROM HN_DMCODE.DMCODE_CW_KPI T
+		         WHERE MODULE_ID LIKE 'comp.part1.1%'
+		           AND T.KPI_ID = 'KPI_011'
+		         ORDER BY ORD）T2
+		         WHERE T1.KPI_ID(+) = T2.KPI_ID)
+		 ORDER BY KPI_MINUS_ABS DESC
+	</select>
+	
+	<select id="selectZTQK_Last_LiRun" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_ID, 
+		       T2.KPI_NAME, 
+		       ROUND(T1.KPI_MINUS, 0) KPI_MINUS
+		  FROM (SELECT *
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_1_2
+		         WHERE MONTH_ID = '$monthId$'
+		           AND ORG_ID = '$areaNo$') T1,
+		      （SELECT T.KPI_ID, T.KPI_NAME
+		          FROM HN_DMCODE.DMCODE_CW_KPI T
+		         WHERE MODULE_ID LIKE 'comp.part1.2%'
+		           AND T.KPI_ID IN ('KPI_001', 'KPI_010')
+		         ORDER BY ORD）T2
+		 WHERE T1.KPI_ID(+) = T2.KPI_ID
+	</select>
+	
+	<select id="selectZTQK_Last_kpi" resultClass="java.util.HashMap">
+	    SELECT KPI_ID, 
+		       KPI_NAME, 
+		       KPI_MINUS,
+		       LR_RATE,
+               LR_RATE_ORD
+		  FROM (SELECT T2.KPI_ID,
+		               T2.KPI_NAME,
+		               ROUND(T1.KPI_MINUS, 0) KPI_MINUS,
+		               ABS(ROUND(T1.KPI_MINUS, 0)) KPI_MINUS_ABS,
+		               ROUND(T1.LR_RATE*100,2) LR_RATE,
+                       T1.LR_RATE_ORD
+		          FROM (SELECT *
+				          FROM CW_DM.CW_RPT_ZTDB_BSDB_1_2
+				         WHERE MONTH_ID = '$monthId$'
+				           AND ORG_ID = '$areaNo$') T1, 
+		          （SELECT T.KPI_ID, T.KPI_NAME
+		          FROM HN_DMCODE.DMCODE_CW_KPI T
+		         WHERE MODULE_ID LIKE 'comp.part1.2%'
+		           AND T.KPI_ID NOT IN ('KPI_001', 'KPI_010','KPI_011')
+		         ORDER BY ORD）T2
+		         WHERE T1.KPI_ID(+) = T2.KPI_ID)
+		 ORDER BY KPI_MINUS_ABS DESC
+	</select>
+	
+	<select id="selectZTQK_Last_kpi_hj" resultClass="java.util.HashMap">
+	    SELECT KPI_ID, 
+		       KPI_NAME, 
+		       KPI_MINUS,
+		       LR_RATE,
+               LR_RATE_ORD
+		  FROM (SELECT T2.KPI_ID,
+		               T2.KPI_NAME,
+		               ROUND(T1.KPI_MINUS, 0) KPI_MINUS,
+		               ABS(ROUND(T1.KPI_MINUS, 0)) KPI_MINUS_ABS,
+		               ROUND(T1.LR_RATE*100,2) LR_RATE,
+                       T1.LR_RATE_ORD
+		          FROM (SELECT *
+				          FROM CW_DM.CW_RPT_ZTDB_BSDB_1_2
+				         WHERE MONTH_ID = '$monthId$'
+				           AND ORG_ID = '$areaNo$') T1, 
+		          （SELECT T.KPI_ID, T.KPI_NAME
+		          FROM HN_DMCODE.DMCODE_CW_KPI T
+		         WHERE MODULE_ID LIKE 'comp.part1.2%'
+		           AND T.KPI_ID = 'KPI_011'
+		         ORDER BY ORD）T2
+		         WHERE T1.KPI_ID(+) = T2.KPI_ID)
+		 ORDER BY KPI_MINUS_ABS DESC
+	</select>
+	
+	<!-- 收入利润预算完成 -->
+   	<select id="BszxdbSrlrysTable1" resultClass="java.util.HashMap">
+	SELECT T.MONTH_ID, A.ORG_ID, A.ORG_NAME,
+	       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+	       T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12
+	  FROM CW_DM.CW_RPT_ZTDB_BSDB_2_1 T, HN_DMCODE.DMCODE_PRO_CW_VIEW A
+	 WHERE T.MONTH_ID = #monthId#
+	   AND T.ORG_ID = A.ORG_ID
+	 ORDER BY A.ORD
+    </select>
+   	<select id="BszxdbSrlrysLine1" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_01 KPI_01
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, ROUND(T.KPI_01,0) KPI_01
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_2_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #orgId#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+   	<select id="BszxdbSrlrysTable2" resultClass="java.util.HashMap">
+	SELECT T.MONTH_ID, A.ORG_ID, A.ORG_NAME,
+	       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+	       T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12
+	  FROM CW_DM.CW_RPT_ZTDB_BSDB_2_2 T, HN_DMCODE.DMCODE_PRO_CW_VIEW A
+	 WHERE T.MONTH_ID = #monthId#
+	   AND T.ORG_ID = A.ORG_ID
+	 ORDER BY A.ORD
+    </select>
+   	<select id="BszxdbSrlrysLine2" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_01 KPI_01
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, ROUND(T.KPI_01,0) KPI_01
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_2_2 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #orgId#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+   	<select id="BszxdbSrlrysTable3" resultClass="java.util.HashMap">
+	SELECT T.MONTH_ID, A.ORG_ID, A.ORG_NAME,
+	       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+	       T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12
+	  FROM CW_DM.CW_RPT_ZTDB_BSDB_2_3 T, HN_DMCODE.DMCODE_PRO_CW_VIEW A
+	 WHERE T.MONTH_ID = #monthId#
+	   AND T.ORG_ID = A.ORG_ID
+	 ORDER BY A.ORD
+    </select>
+   	<select id="BszxdbSrlrysLine3" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_01 KPI_01
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, ROUND(T.KPI_01,0) KPI_01
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_2_3 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #orgId#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+
+	<!-- 损益完成情况 -->
+	<select id="BszxdbSywcqkTable" resultClass="java.util.HashMap">
+	SELECT A.KPI_ID,T.ORG_ID,'KPI' DOWN, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME, A.HAVE_CHILDREN, A.RST1,
+	       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12, T.KPI_13
+	  FROM (SELECT *
+	          FROM CW_DM.CW_RPT_ZTDB_BSDB_3_1 T
+	         WHERE T.MONTH_ID = #monthId#
+	           AND T.ORG_ID = #orgId#) T,
+	       (SELECT A.*
+	          FROM HN_DMCODE.DMCODE_CW_KPI A
+	         WHERE A.MODULE_ID = 'comp.part2.1'
+	            AND A.IS_VALID = '1'
+	   		<isEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID IS NULL
+	        </isEqual>
+	   		<isNotEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID = #kpiId#
+	   		</isNotEqual>
+	        ) A
+	 WHERE T.KPI_ID(+) = A.KPI_ID
+       <isNull property="sortCol">
+	   ORDER BY A.ORD
+       </isNull>
+       <isNotNull property="sortCol">
+       ORDER BY $sortCol$ $sortOrder$
+       </isNotNull>
+	</select>
+	<select id="BszxdbSywcqkOrgTable" resultClass="java.util.HashMap">
+	SELECT A.ORG_ID,
+       A.ORG_NAME KPI_NAME,
+       T.KPI_ID,
+       B.HAVE_CHILDREN,
+       'ORG' DOWN,
+       T.KPI_01,
+       T.KPI_02,
+       T.KPI_03,
+       T.KPI_04,
+       T.KPI_05,
+       T.KPI_06,
+       T.KPI_07,
+       T.KPI_08,
+       T.KPI_09,
+       T.KPI_10,
+       T.KPI_11,
+       T.KPI_12,
+       T.KPI_13
+  FROM (SELECT *
+          FROM CW_DM.CW_RPT_ZTDB_BSDB_3_1 T
+         WHERE T.MONTH_ID = #monthId#
+           AND KPI_ID = #kpiId#) T,
+            (SELECT A.HAVE_CHILDREN
+          FROM HN_DMCODE.DMCODE_CW_KPI A
+         WHERE A.MODULE_ID = 'comp.part2.1'
+           AND A.IS_VALID = '1'
+           AND KPI_ID = #kpiId#) B,
+       (SELECT T.ORG_ID, T.ORG_NAME
+          FROM HN_DMCODE.DMCODE_PRO_CW_VIEW T
+         WHERE T.ORG_ID != 'ALL_N') A
+  WHERE T.ORG_ID(+) = A.ORG_ID
+ ORDER BY A.ORG_ID
+	</select>
+   	<select id="BszxdbSywcqkLine" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, TO_CHAR(B.KPI_01, '9999999990') AS KPI_01, B.KPI_08
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_01, T.KPI_08
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_3_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #orgId#
+		           AND T.KPI_ID = #kpiId#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+
+	<!-- 市场线成本执行情况 -->
+	<select id="BszxdbScxcbTable" resultClass="java.util.HashMap">
+	SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME, A.HAVE_CHILDREN, A.RST1,
+	       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12, T.KPI_13
+	  FROM (SELECT *
+	          FROM CW_DM.CW_RPT_ZTDB_BSDB_4_1 T
+	         WHERE T.MONTH_ID = #monthId#
+	           AND T.ORG_ID = #orgId#) T,
+	       (SELECT A.*
+	          FROM HN_DMCODE.DMCODE_CW_KPI A
+	         WHERE A.MODULE_ID = 'comp.part3.3'
+	            AND A.IS_VALID = '1'
+	   		<isEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID IS NULL
+	        </isEqual>
+	   		<isNotEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID = #kpiId#
+	   		</isNotEqual>
+	        ) A
+	 WHERE T.KPI_ID(+) = A.KPI_ID
+	 ORDER BY A.ORD
+	</select>
+   	<select id="BszxdbScxcbLine" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_01, B.KPI_08
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, TO_CHAR(T.KPI_01, '9999999990') AS KPI_01,TO_CHAR(T.KPI_08, '9999999990') AS KPI_08
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_4_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #orgId#
+		           AND T.KPI_ID = #kpiId#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+    
+    <select id="table_queryDrillTableByOrg_BS" resultClass="java.util.HashMap" >
+		  SELECT A.ORG_NAME KPI_NAME,'ORG' DOWN,
+		  C.HAVE_CHILDREN,
+		  C.KPI_ID,
+	       B.KPI_01, B.KPI_02, B.KPI_03, B.KPI_04, B.KPI_05, B.KPI_06, B.KPI_07, B.KPI_08, B.KPI_09, B.KPI_10, B.KPI_11, B.KPI_12, B.KPI_13,B.ORG_ID
+		  FROM 
+		  (SELECT *
+          FROM CW_DM.CW_RPT_ZTDB_BSDB_4_1 T
+         WHERE T.MONTH_ID = #monthId#
+           AND KPI_ID = #kpiId#) B,
+            (SELECT A.HAVE_CHILDREN,A.KPI_ID
+          FROM HN_DMCODE.DMCODE_CW_KPI A
+         WHERE A.MODULE_ID = 'comp.part3.3'
+           AND A.IS_VALID = '1'
+           AND KPI_ID = #kpiId#) C,
+       (SELECT T.ORG_ID, T.ORG_NAME
+          FROM HN_DMCODE.DMCODE_PRO_CW_VIEW T
+         WHERE T.ORG_ID != 'ALL_N') A
+		  WHERE B.ORG_ID(+) = A.ORG_ID
+		 ORDER BY A.ORG_ID
+	</select>
+
+	<!-- 网运线成本执行情况 -->
+	<select id="drillTableByOrg" resultClass="java.util.HashMap">
+		SELECT A.ORG_ID,
+		       A.ORG_NAME KPI_NAME,
+		       T.KPI_ID,
+		       B.HAVE_CHILDREN,
+		       'ORG' DOWN,
+		       T.KPI_01,
+		       T.KPI_02,
+		       T.KPI_03,
+		       T.KPI_04,
+		       T.KPI_05,
+		       T.KPI_06,
+		       T.KPI_07,
+		       T.KPI_08,
+		       T.KPI_09,
+		       T.KPI_10,
+		       T.KPI_11,
+		       T.KPI_12,
+		       T.KPI_13
+		  FROM (SELECT *
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_5_1 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND KPI_ID = #kpiId#) T,
+		       (SELECT A.HAVE_CHILDREN
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'comp.part4.4'
+		           AND A.IS_VALID = '1'
+		           AND KPI_ID = #kpiId#) B,
+		       (SELECT T.ORG_ID, T.ORG_NAME
+		          FROM HN_DMCODE.DMCODE_PRO_CW_VIEW T
+		         WHERE T.ORG_ID != 'ALL_N') A
+		 WHERE T.ORG_ID(+) = A.ORG_ID
+		 ORDER BY A.ORG_ID
+	</select>
+	<select id="BszxdbWyxcbTable" resultClass="java.util.HashMap">
+	SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME, A.HAVE_CHILDREN, A.RST1,
+	       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12, T.KPI_13
+	  FROM (SELECT *
+	          FROM CW_DM.CW_RPT_ZTDB_BSDB_5_1 T
+	         WHERE T.MONTH_ID = #monthId#
+	           AND T.ORG_ID = #orgId#) T,
+	       (SELECT A.*
+	          FROM HN_DMCODE.DMCODE_CW_KPI A
+	         WHERE A.MODULE_ID = 'comp.part4.4'
+	            AND A.IS_VALID = '1'
+	   		<isEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID IS NULL
+	        </isEqual>
+	   		<isNotEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID = #kpiId#
+	   		</isNotEqual>
+	        ) A
+	 WHERE T.KPI_ID(+) = A.KPI_ID
+	 ORDER BY A.ORD
+	</select>
+   	<select id="BszxdbWyxcbLine" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID,ROUND(B.KPI_01,0) AS KPI_01, B.KPI_08
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_01, T.KPI_08
+		          FROM CW_DM.CW_RPT_ZTDB_BSDB_5_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #orgId#
+		           AND T.KPI_ID = #kpiId#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+	<!-- 王兰的利润及专业线成本完成情况 -->
+  <select id="ProfitTable" resultClass="java.util.HashMap">
+  SELECT T1.KPI_ID,
+       T1.KPI_NAME,
+       'KPI' DOWN,
+       T1.HAVE_CHILDREN,
+       T.ORG_ID,
+       T.KPI_01,
+       T.KPI_02,
+       T.KPI_03,
+       T.KPI_04,
+       T.KPI_05,
+       T.KPI_06,
+       T.KPI_07,
+       T.KPI_08,
+       T.KPI_09,
+       T.KPI_10,
+       T1.RST1
+  FROM (SELECT *
+          FROM CW_DM.CW_RPT_ZTDB_DSDB_3_1
+         WHERE  MONTH_ID = #monthId#
+           AND  ORG_ID = #areaNo#
+           AND ZSB_TYPE = #zsbType#) T,
+       (SELECT KPI_ID,
+               NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME,
+               HAVE_CHILDREN,ORD,
+               PARENT_ID,RST1
+          FROM HN_DMCODE.DMCODE_CW_KPI
+         WHERE MODULE_ID = 'ztdb.dsdb3.1'
+           AND IS_VALID = '1'
+           <isEqual property="kpiId" compareValue="-1">
+	           AND PARENT_ID IS NULL
+	        </isEqual>
+	   		<isNotEqual property="kpiId" compareValue="-1">
+	           AND PARENT_ID = #kpiId#
+	   		</isNotEqual>
+           
+           ) T1
+ WHERE T.KPI_ID(+) = T1.KPI_ID
+  <isNull property="sortCol">
+	   ORDER BY T1.ORD
+       </isNull>
+       <isNotNull property="sortCol">
+       ORDER BY $sortCol$ $sortOrder$
+       </isNotNull>
+   </select>
+   <select id="getOrgKpiTable" resultClass="java.util.HashMap">
+   SELECT T1.LEVEL_ID ORG_ID,
+       T1.ORG_NAME KPI_NAME,
+       T.KPI_ID,
+       'ORG' DOWN,
+       B.HAVE_CHILDREN,
+       T.KPI_01,
+       T.KPI_02,
+       T.KPI_03,
+       T.KPI_04,
+       T.KPI_05,
+       T.KPI_06,
+       T.KPI_07,
+       T.KPI_08,
+       T.KPI_09,
+       T.KPI_10
+  FROM (SELECT *
+          FROM CW_DM.CW_RPT_ZTDB_DSDB_3_1
+         WHERE MONTH_ID = #monthId#
+           AND PARENT_ORG_ID = #areaNo#
+           AND ZSB_TYPE = #zsbType#
+           AND KPI_ID = #kpiId#) T,
+           (SELECT A.HAVE_CHILDREN
+          FROM HN_DMCODE.DMCODE_CW_KPI A
+         WHERE A.MODULE_ID = 'ztdb.dsdb3.1'
+           AND A.IS_VALID = '1'
+           AND KPI_ID =  #kpiId#) B,
+       (SELECT LEVEL_ID, LEVEL_NAME ORG_NAME
+          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V
+         WHERE PARENT_ID = #areaNo# 
+          AND BM_LEVEL  <![CDATA[ < ]]>3) T1
+ WHERE T.ORG_ID(+) = T1.LEVEL_ID
+ ORDER BY T1.LEVEL_ID
+   
+   </select>
+<select id="queryChart" resultClass="java.util.HashMap">
+SELECT A.MONTH_ID, ROUND(B.KPI_01,0) KPI_01,round(B.KPI_07*100,0) KPI_07
+		FROM HN_DMCODE.CODE_MONTH A,
+		(SELECT
+		SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_01, 0) KPI_01,NVL(T.KPI_07, 0) KPI_07
+		FROM
+		CW_DM.CW_RPT_ZTDB_DSDB_3_1 T
+		WHERE 
+		 T.ORG_ID =
+		#areaNo#
+		AND T.MONTH_ID LIKE #year#
+		AND T.MONTH_ID <![CDATA[ <= ]]>
+		#monthId#
+		AND KPI_ID = #kpiId#
+		AND ZSB_TYPE=#zsbType#) B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)
+    ORDER BY A.ORD
+</select>
+<!-- wl的结束 -->
+	<!-- 本地网执行情况对标 -->
+	<!-- zhaoyf -->
+	<select id="BdwzxdbScmljscxcbTable" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME, A.HAVE_CHILDREN, A.RST1,T.ZSB_TYPE,
+	       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07, T.KPI_08, T.KPI_09,T.ORG_ID
+	  	FROM (SELECT *
+	          FROM CW_DM.CW_RPT_ZTDB_DSDB_4_1 T
+	         WHERE T.MONTH_ID = #monthId#
+	           AND T.ORG_ID = #orgId#
+	           AND T.ZSB_TYPE = #type#) T,
+	       (SELECT A.*
+	          FROM HN_DMCODE.DMCODE_CW_KPI A
+	         WHERE A.MODULE_ID = 'ztdb.dsdb4.1'
+	            AND A.IS_VALID = '1'
+	   		<isEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID IS NULL
+	        </isEqual>
+	   		<isNotEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID = #kpiId#
+	   		</isNotEqual>
+	        ) A
+	 	WHERE T.KPI_ID(+) = A.KPI_ID
+	 	
+	 	<isNull property="sortCol">
+		    ORDER BY A.ORD
+	    </isNull>
+	    <isNotNull property="sortCol">
+	        ORDER BY $sortCol$ $sortOrder$
+       	</isNotNull>
+	</select>
+	
+	<select id="BdwzxdbScmljscxcbTable2" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME, A.HAVE_CHILDREN, A.RST1,T.ZSB_TYPE,
+	       T.KPI_10, T.KPI_11, T.KPI_12, T.KPI_13, T.KPI_14, T.KPI_15, T.KPI_16, T.KPI_17,T.ORG_ID
+	  	FROM (SELECT *
+	          FROM CW_DM.CW_RPT_ZTDB_DSDB_4_1 T
+	         WHERE T.MONTH_ID = #monthId#
+	           AND T.ORG_ID = #orgId#
+	           AND T.ZSB_TYPE = #type#) T,
+	       (SELECT A.*
+	          FROM HN_DMCODE.DMCODE_CW_KPI A
+	         WHERE A.MODULE_ID = 'ztdb.dsdb4.1'
+	            AND A.IS_VALID = '1'
+	   		<isEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID IS NULL
+	        </isEqual>
+	   		<isNotEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID = #kpiId#
+	   		</isNotEqual>
+	        ) A
+	 	WHERE T.KPI_ID(+) = A.KPI_ID
+	 	<isNull property="sortCol">
+		    ORDER BY A.ORD
+	    </isNull>
+	    <isNotNull property="sortCol">
+	        ORDER BY $sortCol$ $sortOrder$
+       	</isNotNull>
+	</select>
+	
+	<select id="BdwzxdbScmljscxcbLine1" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_01, B.KPI_08
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_01, T.KPI_08
+		          FROM CW_DM.CW_RPT_ZTDB_DSDB_4_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #orgId#
+		           AND T.KPI_ID = #kpiId#
+		           AND T.ZSB_TYPE = #type#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+    
+    <select id="BdwzxdbScmljscxcbLine2" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.KPI_11
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.KPI_11
+		          FROM CW_DM.CW_RPT_ZTDB_DSDB_4_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #orgId#
+		           AND T.KPI_ID = #kpiId#
+		           AND T.ZSB_TYPE = #type#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+    
+    <select id="table_queryDrillTableByOrg_BJ" resultClass="java.util.HashMap" >
+		  SELECT A.AREA_DESC KPI_NAME,'ORG' DOWN,
+		  C.HAVE_CHILDREN,
+	       B.ZSB_TYPE,C.KPI_ID,
+	       B.KPI_01, B.KPI_02, B.KPI_03, B.KPI_04, B.KPI_05, B.KPI_06, B.KPI_07, B.KPI_08, B.KPI_09,B.ORG_ID
+		  FROM
+		  (SELECT *
+          FROM CW_DM.CW_RPT_ZTDB_DSDB_4_1 T
+         WHERE T.MONTH_ID = #monthId#
+           AND KPI_ID = #kpiId#
+           AND T.ZSB_TYPE = #type#) B,
+            (SELECT A.HAVE_CHILDREN,A.KPI_ID
+          FROM HN_DMCODE.DMCODE_CW_KPI A
+         WHERE A.MODULE_ID = 'ztdb.dsdb4.1'
+           AND A.IS_VALID = '1'
+           AND KPI_ID = #kpiId#) C,
+       (SELECT T.AREA_NO, T.AREA_DESC
+          FROM HN_DMCODE.DMCODE_AREA_CW_VIEW T
+         WHERE T.AREA_NO != 'root') A
+		  WHERE B.ORG_ID(+) = A.AREA_NO
+		 ORDER BY A.AREA_NO
+	</select>
+	
+	<select id="table_queryDrillTableByOrg_BJ2" resultClass="java.util.HashMap" >
+		  SELECT A.AREA_DESC KPI_NAME,'ORG' DOWN,
+		  C.HAVE_CHILDREN,
+		  B.ZSB_TYPE,C.KPI_ID,
+	       B.ZSB_TYPE,
+	       B.KPI_10, B.KPI_11, B.KPI_12, B.KPI_13, B.KPI_14, B.KPI_15, B.KPI_16, B.KPI_17,B.ORG_ID
+		  FROM 
+			(SELECT *
+          FROM CW_DM.CW_RPT_ZTDB_DSDB_4_1 T
+         WHERE T.MONTH_ID = #monthId#
+           AND KPI_ID = #kpiId#
+           AND T.ZSB_TYPE = #type#) B,
+            (SELECT A.HAVE_CHILDREN,A.KPI_ID
+          FROM HN_DMCODE.DMCODE_CW_KPI A
+         WHERE A.MODULE_ID = 'ztdb.dsdb4.1'
+           AND A.IS_VALID = '1'
+           AND KPI_ID = #kpiId#) C,
+       (SELECT T.AREA_NO, T.AREA_DESC
+          FROM HN_DMCODE.DMCODE_AREA_CW_VIEW T
+         WHERE T.AREA_NO != 'root') A
+		  WHERE B.ORG_ID(+) = A.AREA_NO
+		 ORDER BY A.AREA_NO
+	</select>
+    
+	<!--  周佳韬-->
+	<!-- 收入地市预算完成 -->
+	<select id="BszxdbAreaTable1" resultClass="java.util.HashMap">
+  	  SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+         T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+         T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12
+	  FROM CW_DM.CW_RPT_ZTDB_DSDB_2_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+	  WHERE T.MONTH_ID = #monthId#
+	     AND T.ORG_ID = A.AREA_NO
+	  ORDER BY A.AREA_NO
+	</select>
+	<select id="BszxdbAreaLine1" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID,B.KPI_01
+      FROM HN_DMCODE.CODE_MONTH A,
+           (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, 
+                   ROUND(T.KPI_01,0) KPI_01
+              FROM CW_DM.CW_RPT_ZTDB_DSDB_2_1 T
+             WHERE T.MONTH_ID LIKE '$year$%'
+               AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+               AND T.ORG_ID = #orgId#) B
+     WHERE A.MONTH_ID = B.MONTH_ID(+)
+     ORDER BY A.ORD
+    </select>
+
+	
+	<!-- 不含人工ebitda预算完成 -->
+	<select id="BszxdbAreaTable2" resultClass="java.util.HashMap">
+  	  SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+         T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+         T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12
+	  FROM CW_DM.CW_RPT_ZTDB_DSDB_2_2 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+	  WHERE T.MONTH_ID = #monthId#
+	     AND T.ORG_ID = A.AREA_NO
+	  ORDER BY A.AREA_NO
+	</select>
+	<select id="BszxdbAreaLine2" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID,B.KPI_01
+      FROM HN_DMCODE.CODE_MONTH A,
+           (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, 
+                   ROUND(T.KPI_01,0) KPI_01
+              FROM CW_DM.CW_RPT_ZTDB_DSDB_2_2 T
+             WHERE T.MONTH_ID LIKE '$year$%'
+               AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+               AND T.ORG_ID = #orgId#) B
+     WHERE A.MONTH_ID = B.MONTH_ID(+)
+     ORDER BY A.ORD
+    </select>
+
+	<!-- 不含人工ebitda预算完成 -->
+	<select id="BszxdbAreaTable3" resultClass="java.util.HashMap">
+  	  SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+         T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+         T.KPI_07, T.KPI_08, T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12
+	  FROM CW_DM.CW_RPT_ZTDB_DSDB_2_3 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+	  WHERE T.MONTH_ID = #monthId#
+	     AND T.ORG_ID = A.AREA_NO
+	  ORDER BY A.AREA_NO
+	</select>
+	<select id="BszxdbAreaLine3" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID,B.KPI_01
+      FROM HN_DMCODE.CODE_MONTH A,
+           (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, 
+                   ROUND(T.KPI_01,0) KPI_01
+              FROM CW_DM.CW_RPT_ZTDB_DSDB_2_3 T
+             WHERE T.MONTH_ID LIKE '$year$%'
+               AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+               AND T.ORG_ID = #orgId#) B
+     WHERE A.MONTH_ID = B.MONTH_ID(+)
+     ORDER BY A.ORD
+    </select>
+	
+
+
+</sqlMap>	

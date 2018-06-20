@@ -1,0 +1,14 @@
+.highChannelDiv {
+		    position: absolute;
+			background-color: white;
+			max-height:300px;
+			width:200px;
+			display: none;
+			overflow: ;
+			z-index: 99999;
+			left: 645px;
+			top: 53px;
+			border-width:1pt;
+			border-color:#6699CC;
+			border-style:solid;
+}

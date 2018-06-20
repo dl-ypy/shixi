@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.zhwg">
+	<!-- 李林林 -->
+	
+	<!-- 杨佩钰 -->
+	<!-- 表格 -->
+	<select id="getIncomeAmplitudeDistributionTable" resultClass="java.util.HashMap">
+	</select>
+	<!-- 图表 -->
+	<select id="getIncomeAmplitudeDistributionBar" resultClass="java.util.HashMap">
+	</select>
+	<!-- 首行 -->
+	<select id="getIncomeAmplitudeDistributionFirstLine" resultClass="java.util.HashMap">
+	</select>
+</sqlMap>

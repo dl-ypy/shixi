@@ -1,0 +1,86 @@
+﻿@charset "utf-8";
+
+/*------------------------------------------------------------------
+ 
+大屏栅格化样式 
+
+------------------------------------------------------------------- */
+*{font-family:'microsoft yahei';}
+html, body {height:100%;width:100%; margin:0; padding:0;}
+
+/* 子页面 滚动条 */
+::-webkit-scrollbar{ width:6px; height:6px;}
+::-webkit-scrollbar-track{background:#f3f4f4;}
+::-webkit-scrollbar-thumb{ border-radius:6px; background:#cfcfcf;}
+::-webkit-scrollbar-thumb:hover{background:#666; }
+::-moz-scrollbar{ width:6px; height:6px;}
+::-moz-scrollbar-track{background:#f3f4f4;}
+::-moz-scrollbar-thumb{ border-radius:6px; background:#cfcfcf;}
+::-moz-scrollbar-thumb:hover{background:#666; }
+
+/* 通用按钮手势 */
+.Button{cursor: pointer;}
+
+
+/* 首页面 简易分页  */
+.SimplePagination.right { width:inherit; float:right;}
+.SimplePagination { margin:5px; *width:85px; }
+.SimplePagination a.l-page-button { width: 16px; height: 16px; display:block; float:left; background-image:url('../image/icons/page_icon.png'); }
+.SimplePagination a.r-page-button { width: 16px; height: 16px; display:block; float:right; background-image:url('../image/icons/page_icon.png'); }
+.SimplePagination a.l-page-button { background-position: 16px 0px; }
+.SimplePagination a.r-page-button { background-position: 0px 0px; }
+.SimplePagination a.l-page-button:hover { background-position: 16px 16px; }
+.SimplePagination a.r-page-button:hover { background-position: 0px 16px; }
+.SimplePagination span.page-number { line-height:16px; height:16px; font-size:14px; font-weight:400; margin:0 5px;color:#000; }
+#mapArea label {max-width:200px!important; border:0!important; background:none!important; color:#f60;}
+
+
+/* --------------------------------------------栅格化布局 --------------------------------------------*/
+html {overflow:hidden;}
+body.black_bg { background:#222; color:#fff; margin:0; padding:0; font-family:'Microsoft Yahei'; }
+.over {overflow:hidden;}
+
+/* 基于bootstrop栅格化布局 对高度定制规则 */
+.container-fluid-new {height:100%;}
+.col-row-h33 {height:33.33333333333333%; }
+.col-row-h66 {height:66.66666666666666%; }
+.col-row-h5 {height:5%;}
+.col-row-h10 {height:10%;}
+.col-row-h15 {height:15%;}
+.col-row-h20 {height:20%;}
+.col-row-h30 {height:30%;}
+.col-row-h40 {height:40%; }
+.col-row-h50 {height:50%; }
+.col-row-h60 {height:60%; }
+.col-row-h70 {height:70%;}
+.col-row-h80 {height:80%; }
+.col-row-h90 {height:90%; }
+.col-row-h95 {height:95%;}
+.col-row-h100 {height:100%;}
+.col-row-sm-h50{height:50%;}
+
+/*基于bootstrop栅格化布局 内部容器*/
+.inter-area, .inter-area-bottom {border-bottom:1px solid #000; border-right:1px solid #000; height:100%; position:relative; top:-1px;}
+.inter-area-bottom .inter-area-bottom .inter-area, .inter-area-bottom .inter-area-bottom .inter-area-bottom { border-bottom:1px solid #161616; border-right:1px solid #161616; }
+.inter-area-bottom {border-bottom:0; top:-1px; height:101%;}
+
+/* bootstrop 栅格化布局 原基础更改*/
+.row { margin:0!important;}
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12{padding:0!important;}
+/* 尺寸小于770px 执行的样式脚本*/
+@media (max-width:770px) {
+ 	html {overflow:auto;}
+	.col-xs-6 {width:100%;}
+	.col-row-sm-h50{height:100%;}
+}
+
+
+/***
+	模块化布局A
+**************************/
+
+
+
+
+
+

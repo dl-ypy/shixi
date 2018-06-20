@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.bonc.pure</groupId>
+		<artifactId>bonc-pure-parent</artifactId>
+		<version>1.5.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>bonc-pure-integration-webapp</artifactId>
+	<packaging>war</packaging>
+	<name>pure integration webapp war</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>apache-struts</groupId>
+			<artifactId>struts</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>1.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-chain</groupId>
+			<artifactId>commons-chain</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<!-- ibatis依赖 -->
+		<dependency>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+		</dependency>
+
+		<!-- struts2 coc -->
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-codebehind-plugin</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- 公司jar依赖 -->
+		<dependency>
+			<groupId>com.bonc.pure</groupId>
+			<artifactId>bonc-pure-integration-xframe</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bonc.pure</groupId>
+			<artifactId>bonc-pure-webapp</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>com.bonc.commons</groupId>
+			<artifactId>bonc-commons-webapp</artifactId>
+			<version>${bonc.commons.version}</version>
+			<type>war</type>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>com.bonc.assemblies</groupId>
+						<artifactId>bonc-assemblies</artifactId>
+						<version>${bonc.assemblies.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>package-release</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 运行项目请使用命令 mvn tomcat6:run-war -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat6-maven-plugin</artifactId>
+				<configuration>
+					<warDirectory>${project.build.directory}/${project.artifactId}-${project.version}</warDirectory>
+					<contextReloadable>false</contextReloadable>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,56 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%
+response.setHeader("Pragma","No-cache"); 
+response.setHeader("Cache-Control","no-cache");
+%>
+<%String contextPath = request.getContextPath();%>
+<div style="width:100%; overflow: auto;">
+<table class="grid" style="width:99%;" >
+	<thead>
+		<tr>
+			<th align="center" rowspan="2">单位</th>
+			<!-- <th align="center" rowspan="2">市场线（集客线）</th> -->			
+			<th align="center" colspan="3" >${monthId_1}</th>
+			<th align="center" colspan="3" >${monthId}</th>
+			<th align="center" colspan="4">环比变动</th>
+		</tr>
+		
+		<tr>
+			<th align="center">营业款结算</th>
+			<th align="center">应收账款-代办单位营业款</th>
+			<th align="center">合计</th>
+			
+			<th align="center">营业款结算</th>
+			<th align="center">应收账款-代办单位营业款</th>
+			<th align="center">合计</th>
+			
+			<th align="center">营业款结算</th>
+			<th align="center">应收账款-代办单位营业款</th>
+			<th align="center">本月合计</th>
+			<th align="center">上月合计</th>
+		</tr>
+	</thead>
+	<tbody>
+		<s:iterator value="list" var="data" status="status">
+		    <tr onMouseOut="this.bgColor=''" onMouseOver="this.bgColor='#DFEfFf'">
+				<td nowrap="nowrap" width="7%" align="left"><s:property value="AREA_DESC"/></td>
+			
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_01,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_02,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_03,'###,###,##0.00')}" /></td>
+				
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_04,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_05,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_06,'###,###,##0.00')}" /></td>
+				
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_07,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_08,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_09,'###,###,##0.00')}" /></td>
+			
+			</tr>
+		</s:iterator>
+	</tbody>
+	
+</table>
+</div>

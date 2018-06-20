@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <settings useStatementNamespaces="true"/>
+    <typeHandler javaType="com.bonc.commons.orm.ibatis.support.BlobBytes"
+     callback="com.bonc.commons.orm.ibatis.support.BlobBytesTypeHandler"/>
+    <typeHandler javaType="object"
+     callback="com.bonc.commons.orm.ibatis.support.CustomObjectTypeHandler"/>
+    <!--common包系统常量获取依赖-->
+    <sqlMap resource="com/bonc/commons/sqlmap-common.xml"/>
+    
+   <!--原xfrmae依赖的数据查询，地域信息及地域联动-->
+    <sqlMap resource="config/xframe/domain/sqlmap-dim.xml"/>
+    
+	<!-- 公共管理 -->
+	<sqlMap resource="com/bonc/pure/web/action/sqlmap-cw-common.xml"/>
+	
+	<!-- 首页 -->
+	<sqlMap resource="com/bonc/pure/web/action/ws/home/sqlmap-home.xml"/>
+	<sqlMap resource="com/bonc/pure/web/action/ws/home/children/sqlmap-children.xml"/>
+
+	<!-- KPI考核 -->
+	<sqlMap resource="com/bonc/pure/web/action/rpt/kpikh/sqlmap-kpikh.xml"/>
+
+	<!-- 整体对标 -->
+	<sqlMap resource="com/bonc/pure/web/action/rpt/ztdb/sqlmap-ztdb.xml"/>
+
+	<!-- 市场效益 -->
+	<sqlMap resource="com/bonc/pure/web/action/rpt/scxy/sqlmap-scxy.xml"/>
+	<sqlMap resource="com/bonc/pure/web/action/rpt/scxy/MarketingNet/sqlmap-marketNet.xml"/>
+
+	<!-- 网运效益 -->
+	<sqlMap resource="com/bonc/pure/web/action/rpt/wyxy/sqlmap-wyxy.xml"/>
+
+	<!-- 现金流提升 -->
+	<sqlMap resource="com/bonc/pure/web/action/rpt/xjlts/sqlmap-xjlts.xml"/>
+	<sqlMap resource="com/bonc/pure/web/action/rpt/xjlts/gcjzdzbzx/sqlmap-xjlts-gcjzdzbzx.xml"/>
+    <sqlMap resource="com/bonc/pure/web/action/rpt/xjlts/checkDay/sqlmap-checkDay.xml"/>
+	<sqlMap resource="com/bonc/pure/web/action/rpt/xjlts/salescashinflow/sqlmap-salescashinflow.xml"/>
+	<sqlMap resource="com/bonc/pure/web/action/rpt/xjlts/cashflow/sqlmap-xjlts-cashflow.xml"/>
+	<sqlMap resource="com/bonc/pure/web/action/rpt/xjlts/yyqkfx/sqlmap-yyqkfx.xml"/>
+	<sqlMap resource="com/bonc/pure/web/action/rpt/xjlts/xjlOverview/sqlmap-overView.xml"/>
+	<!-- 综合网格 -->
+	<sqlMap resource="com/bonc/pure/web/action/rpt/rlzyxy/sqlmap-rlzyxy.xml"/>
+	<!-- 人力资源效益 -->
+	<sqlMap resource="com/bonc/pure/web/action/rpt/zhwg/sqlmap-zhwg.xml"/>
+</sqlMapConfig>

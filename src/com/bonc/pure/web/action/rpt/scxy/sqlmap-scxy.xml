@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.scxy">
+	<!-- 移动用户离网率 王兰 -->
+	<select id="queryOutLine" resultClass="java.util.HashMap">
+		select
+		parent_org_id,
+		org_id,
+		org_name,
+		value_ly,
+		value_y,
+		value_add_rate,
+		value_add_rate_ord
+		from CW_DM.CW_RPT_TZMB_LW_1
+		where month_id = #monthId#
+
+	</select>
+	<select id="queryOutTitle" resultClass="java.util.HashMap">
+		SELECT t.month_id,
+		t.first_three,
+		t.last_three,
+		round(t1.value_y*100,2) value_y,
+		round(t1.VALUE_ADD_RATE*100,2) VALUE_ADD_RATE
+		FROM CW_DM.CW_RPT_TZMB_LW_2 T, CW_DM.CW_RPT_TZMB_LW_1 T1
+		where t.month_id = #monthId#
+		and t.month_id = t1.month_id
+		and t1.org_id = 'root'
+
+
+	</select>
+	<select id="queryChart" resultClass="java.util.HashMap">
+		select
+		org_id,
+		org_name,
+		round(value_y*100,2) value_y,
+		round(value_add_rate*100,2) value_add_rate
+		from CW_DM.CW_RPT_TZMB_LW_1
+		where month_id = #monthId#
+		AND PARENT_ORG_ID = 'root'
+	</select>
+	<select id="queryLastInfo" resultClass="java.util.HashMap">
+		select org_name,
+		round(value_add_rate * 100, 2) value_add_rate,
+		round(value_add_rate_pp, 2) value_add_rate_pp
+		from CW_DM.CW_RPT_TZMB_LW_1
+		where month_id = #monthId#
+		and org_id = #areaNo#
+	</select>
+	<!--不含2I2C移动出账收入同比变动 李林林 -->
+	<select id="queryOutTitle1" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		T.FIRST_THREE,
+		T.LAST_THREE,
+		ROUND((T1.VALUE_Y-T1.VALUE_LY)/10000, 2) AVG_VALUE_ADD_RATE,
+		ROUND(T1.VALUE_ADD_RATE * 100, 2) VALUE_ADD_RATE
+		FROM CW_DM.CW_RPT_TZMB_N2C_2 T, CW_DM.CW_RPT_TZMB_N2C_1 T1
+		WHERE T.MONTH_ID = #monthId#
+		AND T.MONTH_ID = T1.MONTH_ID
+		AND T1.ORG_ID = 'root'
+	</select>
+	<select id="queryOutLine1" resultClass="java.util.HashMap">
+		SELECT
+		PARENT_ORG_ID,
+		ORG_ID,
+		ORG_NAME,
+		VALUE_LY,
+		VALUE_Y,
+		VALUE_ADD_RATE,
+		VALUE_ADD_RATE_ORD
+		FROM CW_DM.CW_RPT_TZMB_N2C_1
+		WHERE MONTH_ID = #monthId#
+		ORDER BY VALUE_ADD_RATE_ORD ASC
+	</select>
+	<select id="queryChart1" resultClass="java.util.HashMap">
+		SELECT
+		ORG_ID,
+		ORG_NAME,
+		ROUND((VALUE_Y-VALUE_LY),2) AVG_VALUE_ADD_RATE,
+		ROUND(VALUE_ADD_RATE*100,2) VALUE_ADD_RATE
+		FROM CW_DM.CW_RPT_TZMB_N2C_1 T
+		WHERE MONTH_ID = #monthId#
+		AND PARENT_ORG_ID = 'root'
+	</select>
+	<select id="queryLastInfo1" resultClass="java.util.HashMap">
+		SELECT ORG_NAME,
+		ROUND(VALUE_ADD_RATE * 100, 2) VALUE_ADD_RATE,
+		ROUND(VALUE_ADD_RATE_PP, 2) VALUE_ADD_RATE_PP
+		FROM CW_DM.CW_RPT_TZMB_N2C_1
+		WHERE MONTH_ID = #monthId#
+		AND ORG_ID = #areaNo#
+	</select>
+
+	<!--周佳韬 IDC毛利率及汇款率 -->
+	<select id="GrossrRepayRateTable1" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC,A.AREA_NO,
+		T.KPI_01, T.KPI_02,
+		T.KPI_03, T.KPI_04,
+		T.KPI_05, T.KPI_06,
+		T.KPI_07, T.KPI_08
+		FROM ( SELECT *
+		FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+		(SELECT *
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_8_1 T
+		WHERE
+		MONTH_ID = #monthId#
+		)T
+		WHERE A.AREA_NO=T.ORG_ID
+	</select>
+
+	<select id="GrossrRepayRateLine1" resultClass="java.util.HashMap">
+		select A.MONTH_ID,
+		round(B.KPI_07*100,2) KPI_07
+		from HN_DMCODE.CODE_MONTH A,
+		(SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID,KPI_07
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_8_1 T
+		WHERE MONTH_ID LIKE '$year$%'
+		AND ORG_ID = #orgId# )B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)
+		ORDER BY A.MONTH_ID
+
+	</select>
+
+	<select id="GrossrRepayRateTable2" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC,A.AREA_NO,
+		T.KPI_01, T.KPI_02,
+		T.KPI_03, T.KPI_04,
+		T.KPI_05, T.KPI_06,
+		T.KPI_07, T.KPI_08,
+		T.KPI_09
+		FROM ( SELECT *
+		FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+		(SELECT *
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_8_2 T
+		WHERE
+		MONTH_ID = #monthId#
+		)T
+		WHERE A.AREA_NO=T.ORG_ID
+	</select>
+
+	<select id="GrossrRepayRateLine2" resultClass="java.util.HashMap">
+		select A.MONTH_ID,
+		round(B.KPI_01*100,2) KPI_01
+		from HN_DMCODE.CODE_MONTH A,
+		(SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID,KPI_01
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_8_2 T
+		WHERE MONTH_ID LIKE '$year$%'
+		AND ORG_ID = #orgId# )B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)
+		ORDER BY A.MONTH_ID
+	</select>
+
+	<select id="GrossrRepayRateTitle1" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC
+		FROM
+		CW_DM.CW_RPT_ZTDB_DSDB_8_2 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		WHERE T.ORG_ID = A.AREA_NO
+		AND T.Kpi_09>1000
+		AND T.MONTH_ID = #monthId#
+		AND T.ORG_ID != 'root'
+	</select>
+
+	<select id="GrossrRepayRateTitle2" resultClass="java.util.HashMap">
+		SELECT B.AREA_DESC
+		FROM
+		(SELECT A.AREA_DESC
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_8_2 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		WHERE T.MONTH_ID = #monthId#
+		AND T.ORG_ID != 'root'
+		AND T.ORG_ID = A.AREA_NO
+		ORDER BY T.KPI_01) B
+		WHERE ROWNUM <![CDATA[ < ]]>
+		4
+	</select>
+
+	<!--周佳韬end -->
+
+
+	<!-- ICT毛利率及回款率 杨佩钰 -->
+	<select id="ICTRateTable" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME,
+		A.HAVE_CHILDREN,
+		T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07
+		FROM (SELECT *
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_7_1 T
+		WHERE T.MONTH_ID = #monthId#
+		AND T.ORG_ID = #orgId#) T,
+		(SELECT A.*
+		FROM HN_DMCODE.DMCODE_CW_KPI A
+		WHERE A.MODULE_ID = 'ztdb.dsdb7.1'
+		AND A.IS_VALID = '1'
+		) A
+		WHERE T.KPI_ID(+) = A.KPI_ID
+		ORDER BY A.ORD
+	</select>
+	<select id="ICTRateTable2" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC,A.AREA_NO,T.KPI_01,T.KPI_02,
+		T.KPI_03,T.KPI_04,T.KPI_05,T.KPI_06,T.KPI_07,T.KPI_08,T.KPI_09
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_7_2 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		WHERE T.MONTH_ID = #monthId#
+		AND T.ORG_ID = A.AREA_NO
+	</select>
+	<select id="ICTRateLine1" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, TO_CHAR(B.KPI_05*100,'9999999990.99') AS KPI_05
+		FROM HN_DMCODE.CODE_MONTH A,
+		(SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_05, 0) KPI_05
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_7_1 T
+		WHERE T.MONTH_ID LIKE '$year$%'
+		AND T.ORG_ID = #orgId#) B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)
+		ORDER BY A.ORD
+	</select>
+	<select id="ICTRateLine2" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, TO_CHAR(B.KPI_01*100,'9999999990.99') AS KPI_01
+		FROM HN_DMCODE.CODE_MONTH A,
+		(SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_01, 0) KPI_01
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_7_2 T
+		WHERE T.MONTH_ID LIKE '$year$%'
+		AND T.ORG_ID = #orgId#) B
+		WHERE A.MONTH_ID = B.MONTH_ID(+)
+		ORDER BY A.ORD
+	</select>
+	<select id="ICTRateTitle1" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC
+		FROM
+		CW_DM.CW_RPT_ZTDB_DSDB_7_2 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		WHERE T.ORG_ID = A.AREA_NO
+		AND T.Kpi_09>1000
+		AND T.MONTH_ID = #monthId#
+		AND T.ORG_ID != 'root'
+	</select>
+	<select id="ICTRateTitle2" resultClass="java.util.HashMap">
+		SELECT B.AREA_DESC
+		FROM
+		(SELECT A.AREA_DESC
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_7_2 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		WHERE T.MONTH_ID = #monthId#
+		AND T.ORG_ID != 'root'
+		AND T.ORG_ID = A.AREA_NO
+		ORDER BY T.KPI_01) B
+		WHERE ROWNUM <![CDATA[ < ]]>4
+	</select>
+	<!-- 王兰的市场业务毛利分析 -->
+	<select id="prosstable" resultClass="java.util.HashMap">
+		SELECT T1.KPI_ID,
+		T1.KPI_NAME,
+		NVL(T.KPI_01, 0) KPI_01,
+		NVL(T.KPI_02, 0) KPI_02,
+		NVL(T.KPI_03, 0) KPI_03,
+		NVL(T.KPI_04, 0) KPI_04,
+		NVL(T.KPI_05, 0)
+		KPI_05,
+		NVL(T.KPI_06, 0) KPI_06,
+		NVL(T.KPI_07, 0) KPI_07
+		FROM (SELECT *
+		FROM CW_DM.CW_RPT_ZTDB_DSDB_6_1
+		WHERE ORG_ID = #areaNo#
+		AND MONTH_ID =
+		#monthId#) T,
+		(SELECT KPI_ID, NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME,
+		ORD
+		FROM HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID = 'ztdb.dsdb6.1'
+		AND
+		IS_VALID = '1') T1
+		WHERE T.KPI_ID(+) = T1.KPI_ID
+		ORDER BY T1.ORD
+
+	</select>
+	<select id="prosschart" resultClass="java.util.HashMap">
+		SELECT T1.KPI_ID,
+		T1.KPI_NAME,
+		round(NVL(T.KPI_02, 0)*100,2) KPI_02,
+		round(NVL(T.KPI_04,
+		0)*100,2) KPI_04
+		FROM
+		(SELECT KPI_02, KPI_04, KPI_ID
+		FROM
+		CW_DM.CW_RPT_ZTDB_DSDB_6_1
+		WHERE
+		ORG_ID = #areaNo#
+		AND MONTH_ID =
+		#monthId#) T,
+		(SELECT KPI_ID,
+		NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME, ORD
+		FROM HN_DMCODE.DMCODE_CW_KPI
+		WHERE MODULE_ID = 'ztdb.dsdb6.1'
+		AND
+		IS_VALID = '1'
+		AND KPI_ID NOT IN
+		('KPI_01')) T1
+		WHERE T.KPI_ID(+) =
+		T1.KPI_ID
+		ORDER BY T1.ORD
+	</select>
+	
+		<!-- 表格下钻 -->
+	<select id="getTableDrill" resultClass="java.util.HashMap">
+		SELECT T1.LEVEL_ID ORG_ID,
+		       T1.ORG_NAME KPI_NAME,
+		       T.KPI_ID,
+		       'ORG' DOWM,
+		       B.HAVE_CHILDREN,
+		       T.KPI_01,
+		       T.KPI_02,
+		       T.KPI_03,
+		       T.KPI_04,
+		       T.KPI_05,
+		       T.KPI_06,
+		       T.KPI_07
+		  FROM (SELECT *
+		          FROM CW_DM.CW_RPT_ZTDB_DSDB_6_1
+		         WHERE MONTH_ID = #monthId#
+		           AND PARENT_ORG_ID = #areaNo#
+		           AND KPI_ID = #kpiId#) T,
+		           (SELECT A.HAVE_CHILDREN
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'ztdb.dsdb6.1'
+		           AND A.IS_VALID = '1'
+		           AND KPI_ID =  #kpiId#) B,
+		       (SELECT LEVEL_ID, LEVEL_NAME ORG_NAME,ORD
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V
+		         WHERE PARENT_ID = #areaNo# 
+		          AND BM_LEVEL  <![CDATA[ < ]]>3) T1
+		 WHERE T.ORG_ID(+) = T1.LEVEL_ID
+		 ORDER BY T1.ORD
+	</select>
+	
+	<select id="getICTDrill" resultClass="java.util.HashMap">
+			SELECT T1.LEVEL_ID ORG_ID,
+	           T1.ORG_NAME KPI_NAME,
+	           T.KPI_ID,
+	           'ORG' DOWM,
+	           B.HAVE_CHILDREN,
+	           T.KPI_01,
+	           T.KPI_02,
+	           T.KPI_03,
+	           T.KPI_04,
+	           T.KPI_05,
+	           T.KPI_06,
+	           T.KPI_07
+	      FROM (SELECT *
+	              FROM CW_DM.CW_RPT_ZTDB_DSDB_7_1 T
+	             WHERE MONTH_ID = #monthId#
+	               AND PARENT_ORG_ID = #areaNo#
+	               AND KPI_ID = #kpiId#) T,
+	               (SELECT A.HAVE_CHILDREN
+	              FROM HN_DMCODE.DMCODE_CW_KPI A
+	             WHERE A.MODULE_ID = 'ztdb.dsdb7.1'
+	               AND A.IS_VALID = '1'
+	               AND KPI_ID =  #kpiId#) B,
+	           (SELECT LEVEL_ID, LEVEL_NAME ORG_NAME,ORD
+	              FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V
+	             WHERE PARENT_ID = #areaNo# 
+	              AND BM_LEVEL  <![CDATA[ < ]]>3) T1
+	     WHERE T.ORG_ID(+) = T1.LEVEL_ID
+	     ORDER BY T1.ORD
+	</select>
+	
+	
+	
+</sqlMap>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.scxy.marketNet">
+   <!-- 李林林-->
+   <select id="queryOutTitle1" resultClass="java.util.HashMap" >
+		 SELECT T.MONTH_ID,
+	       T.FIRST_THREE,
+	       T.LAST_THREE,
+	       ROUND(T1.KPI_05*100, 2) KPI_05,
+	       ROUND((T1.KPI_05-T1.KPI_06) * 100, 2) KPI_00
+	  FROM CW_DM.CW_RPT_TZYX_1_2 T, CW_DM.CW_RPT_TZYX_1_1 T1
+	 WHERE T.MONTH_ID = #monthId#
+	   AND T.MONTH_ID = T1.MONTH_ID
+	   AND T1.ORG_ID = 'root'
+	</select>
+	<select id="queryOutLine1" resultClass="java.util.HashMap" >
+				SELECT A.LEVEL_NAME, T.ORG_ID, T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04
+		  FROM CW_DM.CW_RPT_TZYX_1_1 T
+		  LEFT JOIN HN_DMCODE.DIM_NODE_ID_N_STATIC_V A ON T.ORG_ID = A.LEVEL_ID
+		 WHERE T.MONTH_ID = #monthId#
+		 ORDER BY T.ORG_ID
+	</select>
+	<select id="queryChart1" resultClass="java.util.HashMap" >
+			  SELECT A.LEVEL_NAME, T.ORG_ID, T.KPI_01, T.KPI_03
+		  FROM CW_DM.CW_RPT_TZYX_1_1 T
+		  LEFT JOIN HN_DMCODE.DIM_NODE_ID_N_STATIC_V A ON T.ORG_ID = A.LEVEL_ID
+		 WHERE T.MONTH_ID =  #monthId#
+		 ORDER BY T.ORG_ID
+	</select>
+	<select id="queryLastInfo1" resultClass="java.util.HashMap" >
+				  SELECT A.LEVEL_NAME,
+		       T.ORG_ID,
+		       ROUND(T.KPI_02 * 100, 2) KPI_02,
+		       ROUND((T.KPI_02 - T.KPI_06) * 100, 2) KPI
+		  FROM CW_DM.CW_RPT_TZYX_1_1 T
+		  LEFT JOIN HN_DMCODE.DIM_NODE_ID_N_STATIC_V A ON T.ORG_ID = A.LEVEL_ID
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #orgId#
+	</select>
+   
+   
+   
+   <!-- 杨佩钰 -->
+   <!-- 获取市场毛利率预算表格数据 -->
+   <select id="getMarketRateBudgetTable" resultClass="java.util.HashMap" >
+   		SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+           T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04
+        FROM CW_DM.CW_RPT_TZYX_2_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		WHERE T.MONTH_ID = #monthId#
+	    AND T.ORG_ID = A.AREA_NO
+		ORDER BY A.SELECT_ORD
+   </select>
+   
+   <!-- 获取市场毛利率预算图表数据 -->
+   <select id="getMarketRateBudgetBarChart" resultClass="java.util.HashMap" >
+   		SELECT T.MONTH_ID, A.AREA_DESC, 
+   			TO_CHAR(T.KPI_01*100,'9999999990.99') AS KPI_01, 
+   			TO_CHAR(T.KPI_02*100,'9999999990.99') AS KPI_02,
+   			TO_CHAR(T.KPI_03*100,'9999999990.99') AS KPI_03
+   		FROM CW_DM.CW_RPT_TZYX_2_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+   		WHERE T.MONTH_ID = #monthId#
+   			AND T.ORG_ID = A.AREA_NO
+   </select>
+   
+   <!-- 获取市场毛利率预算首行数据 -->
+   <select id="getMarketRateBudgetFirstLine" resultClass="java.util.HashMap" >
+   		SELECT T.MONTH_ID,
+		       TO_CHAR(T.KPI_05,'9999999990.99') AS KPI_05,
+		       TO_CHAR(T.KPI_03,'9999999990.99') AS KPI_03
+		 FROM CW_DM.CW_RPT_TZYX_2_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = 'root'
+   </select>
+   
+   <!-- 获取市场毛利率预算尾行数据 -->
+   <select id="getMarketRateBudgetLastLine" resultClass="java.util.HashMap" >
+   		SELECT T.MONTH_ID,
+   			   A.AREA_DESC,
+   			   TO_CHAR(T.KPI_03,'9999999990.99') AS KPI_03,
+   			   TO_CHAR(T.KPI_06,'9999999990.99') AS KPI_06
+		  FROM CW_DM.CW_RPT_TZYX_2_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = A.AREA_NO
+		 AND T.ORG_ID = #areaNo#
+   </select>
+   
+   <!-- 获取市场毛利率预算前三后三数据 -->
+   <select id="getMarketRateBudgetRanking" resultClass="java.util.HashMap" >
+   		SELECT T.MONTH_ID, 
+			T.FIRST_THREE,
+			T.LAST_THREE
+   		FROM CW_DM.CW_RPT_TZYX_2_2 T
+   		WHERE T.MONTH_ID = #monthId#
+   </select>
+   
+   
+   <!-- 周佳韬 -->
+</sqlMap>

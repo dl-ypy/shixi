@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.scxy">
+<!-- 移动用户离网率    王兰 -->
+	<select id="queryOutLine" resultClass="java.util.HashMap" >
+	select 
+       parent_org_id,
+       org_id,
+       org_name,
+       value_ly,
+       value_y,
+       value_add_rate,
+       value_add_rate_ord
+  from CW_DM.CW_RPT_TZMB_LW_1
+  where month_id = #monthId#
+
+	</select>
+	<select id="queryOutTitle" resultClass="java.util.HashMap" >
+	 SELECT t.month_id,
+       t.first_three,
+       t.last_three,
+       round(t1.value_y*100,2) value_y,
+       t1.value_add_rate_pp
+  FROM CW_DM.CW_RPT_TZMB_LW_2 T, CW_DM.CW_RPT_TZMB_LW_1 T1
+ where t.month_id = #monthId#
+   and t.month_id = t1.month_id
+   and t1.org_id = 'root'
+
+
+	</select>
+	<select id="queryChart" resultClass="java.util.HashMap" >
+  select 
+       org_id,
+       org_name,
+       round(value_y*100,2) value_y,
+       round(value_add_rate*100,2) value_add_rate
+  from CW_DM.CW_RPT_TZMB_LW_1
+  where month_id = #monthId#
+
+	</select>
+</sqlMap>

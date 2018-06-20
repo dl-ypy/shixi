@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.zhwg">
+	<select id="queryProfitScheduleDBTable" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		       A.LEVEL_ID,
+		       A.LEVEL_NAME,
+		       T.KPI_01,
+		       T.KPI_02,
+		       T.KPI_03,
+		       T.KPI_04
+		  FROM (SELECT * FROM CW_DM.CW_RPT_ZHWG_2_1 T WHERE T.MONTH_ID = #monthId#) T,
+		       (SELECT *
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		         WHERE A.LEVEL_ID = #areaNo#
+		            OR A.PARENT_ID = #areaNo#
+		         ORDER BY A.PARENT_ID, A.ORD) A
+		 WHERE T.ORG_ID(+) = A.LEVEL_ID
+	</select>
+	<select id="queryProfitScheduleDBChart" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		       A.LEVEL_ID,
+		       A.LEVEL_NAME,
+		       ROUND(T.KPI_01*100,2) KPI_01,
+		       ROUND(T.KPI_02*100,2) KPI_02,
+		       ROUND(T.KPI_03*100,2) KPI_03,
+		       T.KPI_04
+		  FROM (SELECT * FROM CW_DM.CW_RPT_ZHWG_2_1 T WHERE T.MONTH_ID = #monthId#) T,
+		       (SELECT *
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		         WHERE A.LEVEL_ID = 'root'
+		            OR A.PARENT_ID = 'root'
+		         ORDER BY A.PARENT_ID, A.ORD) A
+		 WHERE T.ORG_ID(+) = A.LEVEL_ID
+	</select>
+	<select id="queryProfitScheduleDBTitle" resultClass="java.util.HashMap">
+		SELECT ROUND(T.KPI_01 * 100, 2) KPI_01,
+       ROUND(T.KPI_02 * 100, 2) KPI_02,
+       ROUND((T.KPI_01 - T.KPI_02) * 100, 2) KPI_1_2
+          FROM CW_DM.CW_RPT_ZHWG_2_1 T
+         WHERE T.MONTH_ID = #monthId# AND T.ORG_ID=#areaNo#
+	</select>
+	<select id="queryLaborCostDBTable" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		       A.LEVEL_ID,
+		       A.LEVEL_NAME,
+		       T.KPI_01,
+		       T.KPI_02,
+		       T.KPI_03,
+		       T.KPI_04
+		  FROM (SELECT * FROM CW_DM.CW_RPT_ZHWG_3_1 T WHERE T.MONTH_ID = #monthId#) T,
+		       (SELECT *
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		         WHERE A.LEVEL_ID = #areaNo#
+		            OR A.PARENT_ID = #areaNo#
+		         ORDER BY A.PARENT_ID, A.ORD) A
+		 WHERE T.ORG_ID(+) = A.LEVEL_ID
+	</select>
+	<select id="queryLaborCostDBChart" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		       A.LEVEL_ID,
+		       A.LEVEL_NAME,
+		       ROUND(T.KPI_01*100,2) KPI_01,
+		       ROUND(T.KPI_02*100,2) KPI_02,
+		       ROUND(T.KPI_03*100,2) KPI_03,
+		       T.KPI_04
+		  FROM (SELECT * FROM CW_DM.CW_RPT_ZHWG_3_1 T WHERE T.MONTH_ID = #monthId#) T,
+		       (SELECT *
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		         WHERE A.LEVEL_ID = 'root'
+		            OR A.PARENT_ID = 'root'
+		         ORDER BY A.PARENT_ID, A.ORD) A
+		 WHERE T.ORG_ID(+) = A.LEVEL_ID
+	</select>
+	<select id="queryLaborCostDBTitle" resultClass="java.util.HashMap">
+		SELECT ROUND(T.KPI_01 * 100, 2) KPI_01,
+       ROUND(T.KPI_02 * 100, 2) KPI_02,
+       ROUND((T.KPI_01 - T.KPI_02) * 100, 2) KPI_1_2
+          FROM CW_DM.CW_RPT_ZHWG_3_1 T
+         WHERE T.MONTH_ID = #monthId# AND T.ORG_ID=#areaNo#
+	</select>
+	<!-- 李林林 -->
+	<select id="querytitle" resultClass="java.util.HashMap">
+		SELECT ROUND(T.KPI_01 * 100, 2) KPI_01,
+       ROUND(T.KPI_02 * 100, 2) KPI_02,
+       ROUND((T.KPI_01 - T.KPI_02) * 100, 2) KPI_1_2
+          FROM CW_DM.CW_RPT_ZHWG_1_1 T
+         WHERE T.MONTH_ID = #monthId# AND T.ORG_ID=#areaNo#
+	</select>
+	<select id="queryOutTable" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		       A.LEVEL_ID,
+		       A.LEVEL_NAME,
+		       T.KPI_01,
+		       T.KPI_02,
+		       T.KPI_03,
+		       T.KPI_04
+		  FROM (SELECT * FROM CW_DM.CW_RPT_ZHWG_1_1 T WHERE T.MONTH_ID = #monthId#) T,
+		       (SELECT *
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		         WHERE A.LEVEL_ID = #areaNo#
+		            OR A.PARENT_ID = #areaNo#
+		         ORDER BY A.PARENT_ID, A.ORD) A
+		 WHERE T.ORG_ID(+) = A.LEVEL_ID
+	</select>
+	<select id="queryOutChart" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+		       A.LEVEL_ID,
+		       A.LEVEL_NAME,
+		       ROUND(T.KPI_01*100,2) KPI_01,
+		       ROUND(T.KPI_02*100,2) KPI_02,
+		       ROUND(T.KPI_03*100,2) KPI_03,
+		       T.KPI_04
+		  FROM (SELECT * FROM CW_DM.CW_RPT_ZHWG_1_1 T WHERE T.MONTH_ID = #monthId#) T,
+		       (SELECT *
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		         WHERE A.LEVEL_ID = 'root'
+		            OR A.PARENT_ID = 'root'
+		         ORDER BY A.PARENT_ID, A.ORD) A
+		 WHERE T.ORG_ID(+) = A.LEVEL_ID
+	
+	</select>
+	
+	<!-- 杨佩钰 -->
+	<!-- 表格 -->
+	<select id="getIncomeAmplitudeDistributionTable" resultClass="java.util.HashMap">
+		SELECT T.KPI_01, A.AREA_NO, A.AREA_DESC,
+		       T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07
+		  FROM CW_DM.CW_RPT_ZHWG_4_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+	</select>
+	
+	<!-- 图表 -->
+	<select id="getIncomeAmplitudeDistributionBar" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC,T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06
+		  FROM CW_DM.CW_RPT_ZHWG_4_1 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+         AND T.ORG_ID = A.AREA_NO
+	</select>
+	
+	<!-- 首行 -->
+	<select id="getIncomeAmplitudeDistributionFirstLine" resultClass="java.util.HashMap">
+		SELECT T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07
+		  FROM CW_DM.CW_RPT_ZHWG_4_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = 'root'
+	</select>
+	
+	<!-- 利润表格 -->
+	<select id="getProfitScheduleTable" resultClass="java.util.HashMap">
+		SELECT T.KPI_01, A.AREA_NO, A.AREA_DESC,
+		       T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07
+		  FROM CW_DM.CW_RPT_ZHWG_5_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+	</select>
+	
+	<!-- 利润图表 -->
+	<select id="getProfitScheduleBar" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC,T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06
+		  FROM CW_DM.CW_RPT_ZHWG_5_1 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+         AND T.ORG_ID = A.AREA_NO
+	</select>
+	
+	<!-- 利润首行 -->
+	<select id="getProfitScheduleFirstLine" resultClass="java.util.HashMap">
+		SELECT T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07
+		  FROM CW_DM.CW_RPT_ZHWG_5_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = 'root'
+	</select>
+</sqlMap>

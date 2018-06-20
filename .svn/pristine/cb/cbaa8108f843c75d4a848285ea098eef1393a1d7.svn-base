@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"  
+    xsi:schemaLocation="  
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd  
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd  
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd  
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"  
+    >  
+  
+	<!-- 加密 -->
+	<bean id="encrypt" class="com.bonc.pure.service.impl.EncryptImpl">
+		<property name="encryptType" value="${pure.passwrordEncryptType}" />
+	</bean>
+
+	<!-- 访问日志 -->
+	<bean id="visitLogService" class="com.bonc.pure.service.impl.VisitLogServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+
+	<!-- 登录日志 -->
+	<bean id="logEnterService" class="com.bonc.pure.service.impl.LogEnterServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+
+	<!-- 模块访问排名 -->
+	<bean id="visitModuleOrdService" class="com.bonc.pure.service.impl.VisitModuleOrdServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+	
+	<!-- 模块访问者排名 -->
+	<bean id="moduleVisitorOrdService" class="com.bonc.pure.service.impl.ModuleVisitorOrdServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+
+	<!-- 鉴权 -->
+	<bean id="authentication" class="com.bonc.pure.service.impl.AuthenticationImpl">
+		<property name="logEnterService" ref="logEnterService" />
+		<!-- 是否只允许用户在一个客户端登录，默认为false -->
+		<property name="simpleTerminal" value="${pure.simpleTerminal}" />
+		<!-- 当应用服务器重启后，是否重建session -->
+		<property name="reBuildSession" value="${pure.reBuildSession}" />
+		<!-- 最大不活动时间，单位分钟，本配置需比web.xml中的session超时时间要短，默认为30分钟 -->
+		<property name="maxUnActiveMinutes" value="${pure.maxUnActiveMinutes}" />
+		<!-- 系统自动检测超时用户的时间间隔，默认为3分钟 -->
+		<property name="checkFrequencyMinutes" value="${pure.checkFrequencyMinutes}" />
+		<!-- 退出登录时，是否删除session所有的存储信息 -->
+		<property name="removeAllSession" value="${pure.removeAllSession}" />
+	</bean>
+
+	<!-- 应用系统 -->
+	<bean id="appSystemService" class="com.bonc.pure.service.impl.AppSystemServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="resourcesService" ref="resourcesService" />
+	</bean>
+
+	<!-- 资源类型 -->
+	<bean id="resourcesTypeService" class="com.bonc.pure.service.impl.ResourcesTypeServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="sysMenuId" value="${pure.resourcesType.SysMenu}" />
+		<property name="tabMenuId" value="${pure.resourcesType.TabMenu}" />
+	</bean>
+
+	<!-- 资源 -->
+	<bean id="resourcesService" class="com.bonc.pure.service.impl.ResourcesServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="visitLogService" ref="visitLogService" />
+		<property name="resourcesOptRelService" ref="resourcesOptRelService" />
+		<property name="userPermissionService" ref="userPermissionService" />
+		<property name="rolePermissionService" ref="rolePermissionService" />
+		<property name="operationTypeService" ref="operationTypeService" />
+		<property name="rootId" value="${pure.resources.RootId}" />
+	</bean>
+	
+	<!-- 资源操作类型 -->
+	<bean id="operationTypeService" class="com.bonc.pure.service.impl.OperationTypeServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+	
+	<!-- 资源与操作类型关系 -->
+	<bean id="resourcesOptRelService" class="com.bonc.pure.service.impl.ResourcesOptRelServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+
+	<!-- 用户 -->
+	<bean id="userService" class="com.bonc.pure.service.impl.UserServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="encrypt" ref="encrypt" />
+		<!-- 默认密码不能配置为空无效，默认密码为123456 -->
+		<property name="defaultPassword" value="${pure.defaultPassword}" />
+		<!-- 用户名是否区分大小写 -->
+		<property name="caseSensitive" value="${pure.userName.caseSensitive}" />
+		<!-- 组织机构 -->
+		<property name="orgService" ref="orgService" />
+	</bean>
+
+	<!-- 用户角色 -->
+	<bean id="userRoleService" class="com.bonc.pure.service.impl.UserRoleServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="roleService" ref="roleService" />
+	</bean>
+
+	<!-- 角色授权 -->
+	<bean id="rolePermissionService" class="com.bonc.pure.service.impl.RolePermissionServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+
+	<!-- 角色 -->
+	<bean id="roleService" class="com.bonc.pure.service.impl.RoleServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="rolePermissionService" ref="rolePermissionService" />
+		<property name="userRoleService" ref="userRoleService" />
+		<property name="tenantService" ref="tenantService" />
+	</bean>
+	<!-- 图片上传工具 -->
+	<bean id="uploadFileHelper" class="com.bonc.pure.UploadFileHelper">
+		<property name="uploadFolder">
+			<value>${pure.uploadFolder}</value>
+		</property>
+		<property name="prefix">
+			<value>${pure.url-prefix}</value>
+		</property>
+	</bean>
+	<!-- 用户权限 -->
+	<bean id="userPermissionService" class="com.bonc.pure.service.impl.UserPermissionServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="superAdminUserId" value="${pure.superAdminUserId}" />
+	</bean>
+
+	<!-- 用户扩展属性 -->
+	<bean id="userExtService" class="com.bonc.pure.service.impl.UserExtServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+
+	<!-- 租户 -->
+	<bean id="tenantService" class="com.bonc.pure.service.impl.TenantServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="roleService" ref="roleService" />
+		<property name="userService" ref="userService" />
+		<property name="orgService" ref="orgService" />
+		<property name="userRoleService" ref="userRoleService" />
+		<property name="rolePermissionService" ref="rolePermissionService" />
+		<property name="resourceOptRelService" ref="resourcesOptRelService" />
+		<property name="resourceService" ref="resourcesService" />
+		<property name="tenantAppSystemService" ref="tenantAppSystemService" />
+	</bean>
+
+	<bean id="tenantAppSystemService" class="com.bonc.pure.service.impl.TenantAppSystemServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="resourcesOptRelService" ref="resourcesOptRelService" />
+		<property name="rolePermissionService" ref="rolePermissionService" />
+		<property name="userPermissionService" ref="userPermissionService" />
+	</bean>
+
+	<!-- 用户扩展属性配置 -->
+	<bean id="userExtConfService" class="com.bonc.pure.service.impl.UserExtConfServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="userExtService" ref="userExtService" />
+	</bean>
+
+	<bean id="userExtProvider" class="com.bonc.pure.service.impl.UserExtProviderImpl">
+		<property name="userExtConfService" ref="userExtConfService" />
+	</bean>
+	
+	<!-- 组织机构 -->
+	<bean id="orgService" class="com.bonc.pure.service.impl.OrgServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+		<property name="tenantService" ref="tenantService" />
+	</bean>
+	
+	<!-- 系统公告 -->
+	<bean id="postService" class="com.bonc.pure.service.impl.PostServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+	<!-- portal配置信息 -->
+	<bean id="portalCustomizeService" class="com.bonc.pure.service.impl.PortalCustomizeServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+	<!-- 消息中心配置信息 -->
+	<bean id="messageService" class="com.bonc.pure.service.impl.MessageServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+	
+	<!-- sql查询操作接口 -->
+	<bean id="queryService" class="com.bonc.pure.service.impl.QueryServiceImpl">
+		<property name="hibernateDao" ref="hibernateDao" />
+	</bean>
+	
+	<!-- 自定义门户配置信息 -->
+	<bean id="customPortalService" class="com.bonc.pure.service.impl.CustomPortalServiceImpl">
+		<property name="customPortalBasicDao" ref="hibernateDao" />
+		<property name="resourcesService" ref="resourcesService" />
+	</bean>
+	
+	<!-- 获取资源表中所有资源接口 -->
+	<bean id="urlService" class="com.bonc.pure.service.impl.UrlService">
+		<property name="resourcesService" ref="resourcesService" />
+	</bean>
+	
+	<!-- 系统配置 -->
+	<bean id="systemConfig" class="com.bonc.pure.service.impl.SystemConfig">
+		<property name="theme" value="${pure.theme}" />
+		<property name="title" value="${pure.title}" />
+		<property name="loginLayout" value="${pure.login.layout}" />
+		<property name="captchaType" value="${pure.login.captchaType}" />
+		<property name="frameLayout" value="${pure.frame.layout}" />
+		<property name="fullScreen" value="${pure.frame.fullScreen}" />
+		<property name="menuType" value="${pure.menu.type}" />
+		<property name="displayTreeMenu" value="${pure.menu.displayTreeMenu}" />
+		<property name="menuTotalLevel" value="${pure.menu.totalLevel}" />
+		<property name="maxTab" value="${pure.menu.maxTab}" />
+		<property name="tabOperationMode" value="${pure.menu.tabOperationMode}" />
+		<property name="displayWelcomeMessage" value="${pure.top.displayWelcome}" />
+		<property name="displaySysTime" value="${pure.top.displayTime}" />
+		<property name="displayAnnouncement" value="${pure.top.displayPost}" />
+		<property name="displayUpdatePassword" value="${pure.top.displayUpdatePassword}" />
+		<property name="displayExitSystem" value="${pure.top.displayExit}" />
+		<property name="attacheMaxSize" value="${pure_attache_max_size}" />
+		<property name="msgChatMode" value="${pure_msg_chat_mode}" />
+		<property name="msgIntervalSec" value="${pure_msg_interval_sec}" />
+		<property name="superAdmin" value="${pure.superAdminUserId}" />
+		<property name="orgRootId" value="${pure.orgRootId}" />
+		<property name="roleRootId" value="${pure.role.RootId}" />
+		<property name="displayOnLine" value="${pure.top.displayOnLine}" />
+		<property name="displayPopMsg" value="${pure.top.displayPopMsg}"/>
+		<property name="userExtTreeRootParentId" value="${pure.userExt.tree.rootParentId}"/>
+		<property name="checkPassword" value="${pure.checkPassword}" />
+		<property name="checkLock" value="${pure.login.checkLock}" />
+		<property name="lockTimes" value="${pure.login.lockTimes}" />
+		<property name="lockMinutes" value="${pure.login.lockMinutes}" />
+		<property name="checkPwdValid" value="${pure.login.checkPwdValid}" />
+	</bean>
+</beans>

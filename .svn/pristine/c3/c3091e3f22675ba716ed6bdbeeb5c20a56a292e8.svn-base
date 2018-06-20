@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.zhwg">
+	<!-- 李林林 -->
+	
+	<!-- 杨佩钰 -->
+	<!-- 表格 -->
+	<select id="getIncomeAmplitudeDistributionTable" resultClass="java.util.HashMap">
+		SELECT T.KPI_01, A.AREA_NO, A.AREA_DESC,
+		       T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07
+		  FROM CW_DM.CW_RPT_ZHWG_4_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+	</select>
+	
+	<!-- 图表 -->
+	<select id="getIncomeAmplitudeDistributionBar" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC,T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06
+		  FROM CW_DM.CW_RPT_ZHWG_4_1 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+         AND T.ORG_ID = A.AREA_NO
+	</select>
+	
+	<!-- 首行 -->
+	<select id="getIncomeAmplitudeDistributionFirstLine" resultClass="java.util.HashMap">
+		SELECT T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06, T.KPI_07
+		  FROM CW_DM.CW_RPT_ZHWG_4_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = 'root'
+	</select>
+</sqlMap>

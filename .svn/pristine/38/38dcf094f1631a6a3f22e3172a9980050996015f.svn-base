@@ -1,0 +1,335 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="b" uri="/bonc-tags" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="p" uri="/pure-tags"%>
+
+<%
+response.setHeader("Pragma","No-cache"); 
+response.setHeader("Cache-Control","no-cache");
+String contextPath = request.getContextPath();
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>收入利润预算完成</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<link rel="stylesheet" type="text/css" href="../../resources/css/bootstrap/3.3.6/bootstrap.min.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="../../resources/frame/jedate-6.0.2/skin/jedate.css">
+	<link href="<s:url value="/struts/pure/css/grey.css?ver=1.5.1-SNAPSHOT"/>" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="../../resources/js/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../resources/js/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../resources/frame/jedate-6.0.2/jquery.jedate.min.js"></script>
+    <script type="text/javascript" src="../../resources/frame/echarts-3.8.4/echarts.min.js"></script>
+    <script type="text/javascript" src="../../resources/frame/echarts-3.8.4/map/henan.js"></script>
+
+<style type="text/css">
+    html,body{
+       width: 100%;
+       text-align: center;
+    }
+    div{
+       margin: 0px;
+       padding: 0px;
+    }
+
+</style>
+<script type="text/javascript">
+var monthId;
+
+function table1() {
+	jQuery.ajax({
+		url: '<%=contextPath%>/rpt/ztdb/BszxdbArea!table1.action',
+		type:"POST",
+	    data: {
+			"monthId": monthId
+		},
+		cache:false,
+		success:function(html) {
+			jQuery("#part1TableDiv").html(html);
+			// jQuery(".part1Table")[0].click();
+			jQuery("#part1Tableroot").click();
+		}
+	});
+}
+
+function table1click(orgId, chartName) {
+	jQuery.ajax({
+		url: '<%=contextPath%>/rpt/ztdb/BszxdbArea!chart1.action',
+		type:"POST",
+	    data: {
+			"monthId": monthId,
+			"orgId": orgId
+		},
+		dataType: "json",
+		cache:false,
+		success:function(data) {
+			lineChart(data, chartName, 'part1LineDiv', 'part1LineNameDiv');
+		}
+	});
+}
+
+function table2() {
+	jQuery.ajax({
+		url: '<%=contextPath%>/rpt/ztdb/BszxdbArea!table2.action',
+		type:"POST",
+	    data: {
+			"monthId": monthId
+		},
+		cache:false,
+		success:function(html) {
+			jQuery("#part2TableDiv").html(html);
+			// jQuery(".part2Table")[0].click();
+			jQuery("#part2Tableroot").click();
+		}
+	});
+}
+
+function table2click(orgId, chartName) {
+	jQuery.ajax({
+		url: '<%=contextPath%>/rpt/ztdb/BszxdbArea!chart2.action',
+		type:"POST",
+	    data: {
+			"monthId": monthId,
+			"orgId": orgId
+		},
+		dataType: "json",
+		cache:false,
+		success:function(data) {
+			lineChart(data, chartName, 'part2LineDiv', 'part2LineNameDiv');
+		}
+	});
+}
+
+function table3() {
+	jQuery.ajax({
+		url: '<%=contextPath%>/rpt/ztdb/BszxdbArea!table3.action',
+		type:"POST",
+	    data: {
+			"monthId": monthId
+		},
+		cache:false,
+		success:function(html) {
+			jQuery("#part3TableDiv").html(html);
+			// jQuery(".part3Table")[0].click();
+			jQuery("#part3Tableroot").click();
+		}
+	});
+}
+
+function table3click(orgId, chartName) {
+	jQuery.ajax({
+		url: '<%=contextPath%>/rpt/ztdb/BszxdbArea!chart3.action',
+		type:"POST",
+	    data: {
+			"monthId": monthId,
+			"orgId": orgId
+		},
+		dataType: "json",
+		cache:false,
+		success:function(data) {
+			lineChart(data, chartName, 'part3LineDiv', 'part3LineNameDiv');
+		}
+	});
+}
+
+function lineChart(data, chartName, chartDivId, chartNameDivId) {
+	jQuery("#" + chartNameDivId).html(chartName);
+	var line1List = data.lastYearLine;
+	var line1Data = [];
+	for (var i = 0; i < line1List.length; i++) {
+		line1Data.push(line1List[i].KPI_01);
+	}
+	var line2List = data.thisYearLine;
+	var line2Data = [];
+	for (var i = 0; i < line2List.length; i++) {
+		line2Data.push(line2List[i].KPI_01);
+	}
+
+	jQuery("#" + chartDivId).empty();
+	jQuery("#" + chartDivId).removeAttr("_echarts_instance_");
+
+    // 基于准备好的dom，初始化echarts实例
+    var lineChart = echarts.init(document.getElementById(chartDivId));
+    lineChart.showLoading({text: '正在努力加载中...'});
+    // 指定图表的配置项和数据
+	var lineChartOption = {
+			title: {
+		        show: false
+		    },
+		    tooltip: {
+		        trigger: 'axis',
+		        formatter: "{b}月<br />{a0}:{c0}<br />{a1}:{c1}"
+		    },
+		    legend: {
+		        data: ['今年', '去年']
+		    },
+		    grid: {
+		        left: '0%',
+		        right: '4%',
+		        top: '10%',
+		        bottom: '15%',
+		        containLabel: true
+		    },
+		    xAxis: {
+		        type: 'category',
+		        boundaryGap: false,
+				splitLine : {
+					show : false
+				},
+				axisLabel:{
+		        	interval:0
+		        },
+		        data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+		    },
+		    yAxis: {
+		        type: 'value',
+		        axisLabel: {
+   		            formatter: function(value){
+   		            	var valueTemp = value;
+   		            	if(value >= 10000){
+   		            		valueTemp = value/10000;
+   		            	}else if(value >= 1000){
+   		            		valueTemp = value/1000;
+				        }else if(value <= -1000){
+				        	valueTemp = value/1000;
+				        }else if(value <= -100){
+				        	valueTemp = value/100;
+				        }
+   		            	//return valueTemp;
+   		            	return value;
+   		            },
+	                textStyle: {
+	                    color: '#76787d'
+	                }
+	            }
+		    },
+		    series: [
+		         {
+		        	 name:'去年',
+		        	 type:'line',
+		        	 stack: chartName,
+		        	 lineStyle: {
+			        	 normal: {
+				        	 color: '#DE0000',
+				        	 width: 2
+				         }
+			         },
+		        	 data: line1Data
+		         },
+		         {
+		        	 name:'今年',
+		        	 type:'line',
+		        	 stack: chartName,
+		        	 lineStyle: {
+			        	 normal: {
+				        	 color: '#0075C2',
+				        	 width: 2
+				         }
+			         },
+		        	 data: line2Data
+		         }
+		    ]
+		};
+
+    // 使用刚指定的配置项和数据显示图表。
+	lineChart.setOption(lineChartOption);
+	lineChart.hideLoading();
+}
+
+    jQuery(document).ready(function(){
+    	jQuery("#monthId").jeDate({
+       	   format:"YYYY-MM"
+        });
+    	query();
+    });
+
+    
+    function query() {
+    	monthId = jQuery("#monthId").val();
+    	table1();
+    	table2();
+    	table3();
+    }
+</script>
+  </head>
+  <body>
+     <div class="container" style="width: 98%;margin-top: 5px;height: 0px;">
+        <div class="row" style="height: 0px;">
+		  <div class="col-xs-6 col-sm-6 col-md-6"></div>
+		  <div class="col-xs-6 col-sm-6 col-md-6" > 
+		      <form class="form-inline"  style="margin: 0px;">
+		         <div class="form-group">
+		             <label for="monthId">时间</label>
+                     <input type="text" class="form-control workinput" id="monthId" value="${monthId}" style="width: 70px;height: 25px;font-size: 12px;padding: 0px;">
+		         </div>
+		         <button type="button" class="btn btn-info btn-sm" style="width: 60px;height: 25px;line-height: 10px;" onclick="query()">查询</button>
+		      </form>
+		  </div>
+		</div>
+	 </div>
+	 <div class="container" style="width: 98%;" id="homeframe-container">
+		<div class="row" style="height: 30px;margin-top: 10px;">
+			<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+				<table style="border-collapse: collapse;height: 28px;padding: 0px;margin: auto;width: 100%;">
+					<tr>
+					<td style="background-color: #C00000;width: 28px;"></td>
+					<td style="width: 3px;"></td>
+					<td style="background-color: #BFBFBF;text-align: left;padding-left: 10px;font-weight: bold;font-size: 14px;">主营业务收入预算完成</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-8 col-sm-8 col-md-8" id="part1TableDiv"></div>
+			<div class="col-xs-4 col-sm-4 col-md-4">
+				<div style="text-align: left; font-weight: bold;"><span id="part1LineNameDiv"></span>主营业务收入预算完成</div>
+				<div id="part1LineDiv" style="height: 300px"></div>
+			</div>
+		</div>
+		
+		
+		<div class="row" style="height: 30px;margin-top: 10px;">
+			<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+				<table style="border-collapse: collapse;height: 28px;padding: 0px;margin: auto;width: 100%;">
+					<tr>
+					<td style="background-color: #C00000;width: 28px;"></td>
+					<td style="width: 3px;"></td>
+					<td style="background-color: #BFBFBF;text-align: left;padding-left: 10px;font-weight: bold;font-size: 14px;">不含人工EBITDA预算完成</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-8 col-sm-8 col-md-8" id="part2TableDiv"></div>
+			<div class="col-xs-4 col-sm-4 col-md-4">
+				<div style="text-align: left; font-weight: bold;"><span id="part2LineNameDiv"></span>不含人工EBITDA预算完成</div>
+				<div id="part2LineDiv" style="height: 300px"></div>
+			</div>
+		</div>
+		
+		
+		<div class="row" style="height: 30px;margin-top: 10px;">
+			<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+				<table style="border-collapse: collapse;height: 28px;padding: 0px;margin: auto;width: 100%;">
+					<tr>
+					<td style="background-color: #C00000;width: 28px;"></td>
+					<td style="width: 3px;"></td>
+					<td style="background-color: #BFBFBF;text-align: left;padding-left: 10px;font-weight: bold;font-size: 14px;">利润预算完成</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-8 col-sm-8 col-md-8" id="part3TableDiv"></div>
+			<div class="col-xs-4 col-sm-4 col-md-4">
+				<div style="text-align: left; font-weight: bold;"><span id="part3LineNameDiv"></span>利润预算完成</div>
+				<div id="part3LineDiv" style="height: 300px"></div>
+			</div>
+		</div>
+	 </div>
+  </body>
+</html>

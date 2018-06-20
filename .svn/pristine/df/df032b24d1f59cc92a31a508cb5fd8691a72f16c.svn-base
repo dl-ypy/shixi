@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.xjlts.gcjzdzbzx">
+    <!-- 省公司 -->	
+   	<select id="pcTable" resultClass="java.util.HashMap">
+   		SELECT T.ZYX_ID, T.ZYX_DESC, T.BM_ID, 
+   		       T.BM_DESC, T.ZX_ID, T.ZX_DESC,T.KPI_ID, 
+   		       T.KPI_DESC, T.KPI_01, T.KPI_02, T.KPI_03
+	  FROM CW_DM.CW_RPT_XJL_ZDZB_1_1 T
+	 WHERE T.MONTH_ID = #monthId#
+	 ORDER BY T.SHOW_ORD
+    </select>
+    <!-- 市公司 -->
+    <select id="ccTable" resultClass="java.util.HashMap">
+   		SELECT T.ZYX_ID, T.ZYX_DESC, T.BM_ID,T.BM_DESC, T.KPI_01,
+   		       T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06,
+   		       T.KPI_07, T.KPI_08, T.KPI_09
+	  FROM CW_DM.CW_RPT_XJL_ZDZB_2_1 T
+	 WHERE T.MONTH_ID = #monthId# 
+	       AND T.ORG_ID = #areaNo#
+	 ORDER BY T.SHOW_ORD
+    </select>
+</sqlMap>

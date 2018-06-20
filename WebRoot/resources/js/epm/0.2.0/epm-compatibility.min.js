@@ -1,0 +1,3 @@
+/*! epm-compatibility v0.2.0 ~ 2016-01-28 | EPM Frame (c) BONC R&D Center | http://www.bonc.com.cn */
+!function(a){a(function(){"placeholder"in document.createElement("input")||a("input[placeholder],textarea[placeholder]").each(function(){var b=a(this),c=b.attr("placeholder");""===b.val()&&b.val(c).addClass("placeholder"),b.focus(function(){b.val()===c&&b.val("").removeClass("placeholder")}).blur(function(){""===b.val()&&b.val(c).addClass("placeholder")}).closest("form").submit(function(){b.val()===c&&b.val("")})})})}(jQuery),"function"!=typeof String.prototype.trim&&(String.prototype.trim=function(){return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,"")});
+//# sourceMappingURL=epm-compatibility.min.js.map

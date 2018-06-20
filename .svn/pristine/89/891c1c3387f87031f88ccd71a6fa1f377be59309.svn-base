@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+	    <mapping resource="com/bonc/pure/domain/AddressBook.hbm.xml" />
+		<!-- 消息通知 -->
+	    <mapping resource="com/bonc/pure/domain/Message.hbm.xml" />
+	    
+		<mapping resource="com/bonc/pure/domain/User.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/UserExtConf.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/UserExt.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/LogEnter.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/VisitLog.hbm.xml" />
+		<!-- 
+		<mapping resource="com/bonc/pure/domain/VisitModuleOrd.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/ModuleVisitorOrd.hbm.xml" />
+		 -->
+		<mapping resource="com/bonc/pure/domain/AppSystem.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/Resources.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/ResourcesType.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/Role.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/UserRole.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/RolePermission.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/UserPermission.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/PortalCustomize.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/PostMarked.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/Org.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/OperationType.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/ResourcesOptRel.hbm.xml" />
+		<!-- 系统公告 -->
+		<mapping resource="com/bonc/pure/domain/Post.hbm.xml" />
+		<!-- 公告角色 -->
+		<mapping resource="com/bonc/pure/domain/PostRole.hbm.xml" />
+		
+		<!--论坛 -->
+		<mapping resource="com/bonc/forum/domain/ForumBoard.hbm.xml" />
+		<mapping resource="com/bonc/forum/domain/ForumArticle.hbm.xml" />
+		<mapping resource="com/bonc/forum/domain/MainArticle.hbm.xml" />
+		<!--论坛 -->
+		
+		<!-- sql查询配置 -->
+		<mapping resource="com/bonc/pure/query/Query.hbm.xml" />
+		
+		<!-- 自定义门户配置 -->
+		<mapping resource="com/bonc/pure/domain/CustomPortalBasic.hbm.xml" />
+		<mapping resource="com/bonc/pure/domain/CustomPortalComponent.hbm.xml" />
+		<!-- 租户配置 -->
+		<mapping resource="com/bonc/pure/domain/Tenant.hbm.xml" />
+     	<mapping resource="com/bonc/pure/domain/TenantAppSystem.hbm.xml" />
+
+	</session-factory>
+</hibernate-configuration>
+
+

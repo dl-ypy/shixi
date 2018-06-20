@@ -1,0 +1,146 @@
+.body-container {
+  top:14px;
+  bottom:12px;
+  left:10px;
+  right:10px;
+}
+
+.tree-container {
+  position: absolute;
+  top:2px;
+  bottom:2px;
+  left:5px;
+  width:480px;
+  padding:8px 0;
+  z-index:1009;
+  background-color:#FCFCFC;
+  box-shadow:0 2px 5px rgba(0,0,0,0.26);
+  border-radius: 5px;
+  overflow: auto;
+}
+
+.tree-container.has-toolbar {
+  padding:48px 0 0 0;
+}
+
+.tree-container.has-toolbar > .tree-toolbar {
+  position:absolute;
+  top:0;
+  width:100%;
+  height:46px;
+  background-color:#009688;
+  box-shadow:0 2px 5px rgba(0,0,0,0.26);
+  z-index:1;
+}
+
+.tree-container.has-toolbar > .tree-toolbar > * {
+  margin:8px;
+  float:left;
+}
+
+.tree-container.has-toolbar > .tree-toolbar > .title {
+  margin-left:16px;
+  line-height:32px;
+  color:#FFF;
+  text-shadow:none;
+}
+
+.tree-container.has-toolbar > .tree-toolbar > .icon {
+  margin:16px;
+  float:right;
+}
+
+.tree-container.has-toolbar > .tree-toolbar select {
+  width:410px;
+  height:32px;
+  margin-left:5px;
+  font-size:16px;
+  color:#FFF;
+  background-color:#009688;
+  border:none;
+}
+
+.tree-container.has-toolbar > .tree-box {
+  width:100%;
+  height:100%;
+  overflow: auto;
+}
+
+.tree-container.has-toolbar > .tree-box::-webkit-scrollbar {
+  width: 7px;
+  height: 8px;
+}
+.tree-container.has-toolbar > .tree-box::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgba(0,0,0,0.08);
+  -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.1);
+}
+
+.black-cover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color:rgba(0,0,0,0.5);
+  opacity:0;
+  z-index:-1;
+}
+
+.page-container {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 480px;
+	right: 0;
+	overflow: auto;
+}
+
+.page-container .main-content {
+  position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+  padding: 0 0 0 20px;
+}
+
+#jstree-marker, .jstree-contextmenu {
+  z-index:1009;
+}
+
+.bonc-tree-icon {
+  background-image:url(32px_1.png) !important;
+}
+
+.bonc-tree-icon.root {
+  background-position:-197px -73px !important;
+}
+
+.bonc-tree-icon.default {
+  background-position:-196px -73px !important;
+}
+
+.bonc-tree-icon.leaf {
+  background-position:-197px -73px !important;
+}
+
+.icon {
+  height:18px;
+  width:18px;
+}
+.icon.visibility {
+  background-image:url(ic_visibility_white_18dp.png);
+}
+.icon.visibility.off {
+  background-image:url(ic_visibility_off_white_18dp.png);
+}
+.outer-div {
+  position:relative;
+  height:248px;
+}
+.wrap-btn {
+  position:absolute;
+  right:0;
+  bottom:0;
+}

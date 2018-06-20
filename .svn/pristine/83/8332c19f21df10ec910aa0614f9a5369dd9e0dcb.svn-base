@@ -1,0 +1,73 @@
+package com.bonc.pure.web.action.demo;
+
+import java.util.List;
+
+import com.bonc.base.dao.DaoHelper;
+import com.bonc.commons.orm.PagiParam;
+import com.bonc.pure.web.action.CwCommon;
+
+public class TableAction extends CwCommon {
+
+	private DaoHelper daoHelper;
+	private List list;
+	private PagiParam pagiParam = new PagiParam();
+	private String levelId;
+
+	public String execute() {
+		return "success";
+	}
+
+	public String queryTable() {
+		list = daoHelper.queryForList("cw.demo.table_queryTable", null);
+		return "table";
+	}
+
+	public String queryPagiTable() {
+		// 默认每页20条，可以在pagiParam定义时直接设置，也可以通过setPageSize设置
+		pagiParam.setPageSize(5);
+		list = daoHelper.queryForPagiList("cw.demo.table_queryPagiTable", this);
+		return "pagiTable";
+	}
+
+	public String queryDrillTable() {
+		list = daoHelper.queryForList("cw.demo.table_queryDrillTable", this);
+		if (levelId == null) {
+			return "drillTable";
+		} else {
+			return "drillTableDrill";
+		}
+	}
+
+	public DaoHelper getDaoHelper() {
+		return daoHelper;
+	}
+
+	public void setDaoHelper(DaoHelper daoHelper) {
+		this.daoHelper = daoHelper;
+	}
+
+	public List getList() {
+		return list;
+	}
+
+	public void setList(List list) {
+		this.list = list;
+	}
+
+	public PagiParam getPagiParam() {
+		return pagiParam;
+	}
+
+	public void setPagiParam(PagiParam pagiParam) {
+		this.pagiParam = pagiParam;
+	}
+
+	public String getLevelId() {
+		return levelId;
+	}
+
+	public void setLevelId(String levelId) {
+		this.levelId = levelId;
+	}
+
+}

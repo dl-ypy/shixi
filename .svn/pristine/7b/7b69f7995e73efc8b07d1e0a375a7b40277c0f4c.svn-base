@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.kpikh.bsdb">
+	<!-- zhaoyf -->
+	<!-- 查询对标地域列表 -->
+	<select id="selectDBDyList" resultClass="java.util.HashMap">
+		 SELECT *
+		 FROM (SELECT '-1' ORG_ID, '--' ORG_NAME, 0 SELECT_ORD
+		          FROM DUAL
+		 UNION ALL
+		 SELECT T.ORG_ID, T.ORG_NAME, T.SELECT_ORD
+		 FROM HN_DMCODE.DMCODE_PRO_CW_VIEW T 
+		 WHERE T.ORG_ID NOT IN ('ALL_N','$orgId$'))
+		 ORDER BY SELECT_ORD
+	</select>
+	
+	<!-- 查询总分仪表盘的数据 -->
+	<select id="selectZfRingChar" resultClass="java.util.HashMap">
+	    SELECT T1.KPI_1_001 DEFEN, T1.KPI_1_002 PAIMING, T2.KPI_1_001 ADEFEN,T3.ORG_NAME,T4.ORG_NAME A_ORG_NAME
+		  FROM (SELECT ROUND(T.KPI_1_001, 2) KPI_1_001, '第' || T.KPI_1_002 KPI_1_002,T.ORG_ID,T.MONTH_ID
+		          FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$orgId$') T1,
+		       (SELECT ROUND(T.KPI_1_001, 2) KPI_1_001,T.ORG_ID,T.MONTH_ID
+		          FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$aimOrgId$') T2,
+               HN_DMCODE.DMCODE_PRO_CW_VIEW T3,
+               HN_DMCODE.DMCODE_PRO_CW_VIEW T4
+		 WHERE T1.MONTH_ID = T2.MONTH_ID(+)
+		   AND T1.ORG_ID = T3.ORG_ID(+)
+           AND T2.ORG_ID = T4.ORG_ID(+)
+	</select>
+	<!-- 查询收入规模类仪表盘的数据 -->
+	<select id="selectSrgmRingChar" resultClass="java.util.HashMap">
+	    SELECT T1.KPI_2_001 DEFEN, T1.KPI_2_002 PAIMING, T2.KPI_2_001 ADEFEN,T3.ORG_NAME,T4.ORG_NAME A_ORG_NAME
+		  FROM (SELECT ROUND(T.KPI_2_001, 2) KPI_2_001, '第' || T.KPI_2_002 KPI_2_002,T.ORG_ID,T.MONTH_ID
+		          FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$orgId$') T1,
+		       (SELECT ROUND(T.KPI_2_001, 2) KPI_2_001,T.ORG_ID,T.MONTH_ID
+		          FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$aimOrgId$') T2,
+               HN_DMCODE.DMCODE_PRO_CW_VIEW T3,
+               HN_DMCODE.DMCODE_PRO_CW_VIEW T4
+		 WHERE T1.MONTH_ID = T2.MONTH_ID(+)
+		   AND T1.ORG_ID = T3.ORG_ID(+)
+           AND T2.ORG_ID = T4.ORG_ID(+)
+	</select>
+	<!-- 查询效益价值类仪表盘的数据 -->
+	<select id="selectXyjzRingChar" resultClass="java.util.HashMap">
+	    SELECT T1.KPI_3_001 DEFEN, T1.KPI_3_002 PAIMING, T2.KPI_3_001 ADEFEN,T3.ORG_NAME,T4.ORG_NAME A_ORG_NAME
+		  FROM (SELECT ROUND(T.KPI_3_001, 2) KPI_3_001, '第' || T.KPI_3_002 KPI_3_002,T.ORG_ID,T.MONTH_ID
+		          FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$orgId$') T1,
+		       (SELECT ROUND(T.KPI_3_001, 2) KPI_3_001,T.ORG_ID,T.MONTH_ID
+		          FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$aimOrgId$') T2,
+               HN_DMCODE.DMCODE_PRO_CW_VIEW T3,
+               HN_DMCODE.DMCODE_PRO_CW_VIEW T4
+		 WHERE T1.MONTH_ID = T2.MONTH_ID(+)
+		   AND T1.ORG_ID = T3.ORG_ID(+)
+           AND T2.ORG_ID = T4.ORG_ID(+)
+	</select>
+	<!-- 查询年度重点类仪表盘的数据 -->
+	<select id="selectNdzdRingChar" resultClass="java.util.HashMap">
+	    SELECT T1.KPI_4_001 DEFEN, T1.KPI_4_002 PAIMING, T2.KPI_4_001 ADEFEN,T3.ORG_NAME,T4.ORG_NAME A_ORG_NAME
+		  FROM (SELECT ROUND(T.KPI_4_001, 2) KPI_4_001, '第' || T.KPI_4_002 KPI_4_002,T.ORG_ID,T.MONTH_ID
+		          FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$orgId$') T1,
+		       (SELECT ROUND(T.KPI_4_001, 2) KPI_4_001,T.ORG_ID,T.MONTH_ID
+		          FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+		         WHERE T.MONTH_ID = '$monthId$'
+		           AND T.ORG_ID = '$aimOrgId$') T2,
+               HN_DMCODE.DMCODE_PRO_CW_VIEW T3,
+               HN_DMCODE.DMCODE_PRO_CW_VIEW T4
+		 WHERE T1.MONTH_ID = T2.MONTH_ID(+)
+		   AND T1.ORG_ID = T3.ORG_ID(+)
+           AND T2.ORG_ID = T4.ORG_ID(+)
+	</select>
+	<!-- 查询总分最高最低分 -->
+	<select id="selectZfZgZdf" resultClass="java.util.HashMap">
+	   SELECT TO_CHAR(T1.KPI_1_001,'9999999990.99') AS MAX_KPI_1, 
+	   		  T3.ORG_NAME AS MAX_KAP_1_NAME, 
+	   		  TO_CHAR(T2.KPI_1_001,'9999999990.99') AS MIN_KPI_1, 
+	   		  T4.ORG_NAME AS MIN_KPI_1_NAME
+	     FROM
+	     (SELECT T.KPI_1_001, T.MONTH_ID, T.ORG_ID
+	     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+	     WHERE 
+	     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+	     AND T.MONTH_ID='$monthId$'
+	     AND T.KPI_1_002 = '1') T1,
+	     (SELECT T.KPI_1_001, T.MONTH_ID, T.ORG_ID
+	     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+	     WHERE 
+	     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+	     AND T.MONTH_ID='$monthId$'
+	     AND T.KPI_1_002 = '10') T2,
+	     HN_DMCODE.DMCODE_PRO_CW_VIEW T3,
+	     HN_DMCODE.DMCODE_PRO_CW_VIEW T4
+	     WHERE T1.MONTH_ID = T2.MONTH_ID(+)
+	     AND T1.ORG_ID = T3.ORG_ID(+)
+	     AND T2.ORG_ID = T4.ORG_ID(+)
+	</select>
+	
+	<!-- 查询收入规模类仪表盘最高最低分 -->
+	<select id="selectSrgmZgZdf" resultClass="java.util.HashMap">
+	   SELECT TO_CHAR(T1.KPI_2_001,'9999999990.99') AS MAX_KPI_2, 
+	   		  T3.ORG_NAME AS MAX_KAP_2_NAME, 
+	   		  TO_CHAR(T2.KPI_2_001,'9999999990.99') AS MIN_KPI_2, 
+	   		  T4.ORG_NAME AS MIN_KPI_2_NAME
+	     FROM
+	     (SELECT T.KPI_2_001, T.MONTH_ID, T.ORG_ID
+	     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+	     WHERE 
+	     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+	     AND T.MONTH_ID='$monthId$'
+	     AND T.KPI_2_002 = '1') T1,
+	     (SELECT T.KPI_2_001, T.MONTH_ID, T.ORG_ID
+	     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+	     WHERE 
+	     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+	     AND T.MONTH_ID='$monthId$'
+	     AND T.KPI_2_002 = '10') T2,
+	     HN_DMCODE.DMCODE_PRO_CW_VIEW T3,
+	     HN_DMCODE.DMCODE_PRO_CW_VIEW T4
+	     WHERE T1.MONTH_ID = T2.MONTH_ID(+)
+	     AND T1.ORG_ID = T3.ORG_ID(+)
+	     AND T2.ORG_ID = T4.ORG_ID(+)
+	</select>
+	<!-- 查询效益价值类仪表盘最高最低分 -->
+	<select id="selectXyjzZgZdf" resultClass="java.util.HashMap">
+	   SELECT TO_CHAR(T1.KPI_3_001,'9999999990.99') AS MAX_KPI_3, 
+	   		  T3.ORG_NAME AS MAX_KAP_3_NAME, 
+	   		  TO_CHAR(T2.KPI_3_001,'9999999990.99') AS MIN_KPI_3, 
+	   		  T4.ORG_NAME AS MIN_KPI_3_NAME
+	     FROM
+	     (SELECT T.KPI_3_001, T.MONTH_ID, T.ORG_ID
+	     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+	     WHERE 
+	     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+	     AND T.MONTH_ID='$monthId$'
+	     AND T.KPI_3_002 = '1') T1,
+	     (SELECT T.KPI_3_001, T.MONTH_ID, T.ORG_ID
+	     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+	     WHERE 
+	     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+	     AND T.MONTH_ID='$monthId$'
+	     AND T.KPI_3_002 = '10') T2,
+	     HN_DMCODE.DMCODE_PRO_CW_VIEW T3,
+	     HN_DMCODE.DMCODE_PRO_CW_VIEW T4
+	     WHERE T1.MONTH_ID = T2.MONTH_ID(+)
+	     AND T1.ORG_ID = T3.ORG_ID(+)
+	     AND T2.ORG_ID = T4.ORG_ID(+)
+	</select>
+	<!-- 查询年度重点类仪表盘最高最低分 -->
+	<select id="selectNdzdZgZdf" resultClass="java.util.HashMap">
+	   SELECT TO_CHAR(T1.KPI_4_001,'9999999990.99') AS MAX_KPI_4, 
+	   		  T3.ORG_NAME AS MAX_KAP_4_NAME, 
+	   		  TO_CHAR(T2.KPI_4_001,'9999999990.99') AS MIN_KPI_4, 
+	   		  T4.ORG_NAME AS MIN_KPI_4_NAME
+	     FROM
+	     (SELECT T.KPI_4_001, T.MONTH_ID, T.ORG_ID
+	     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+	     WHERE 
+	     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+	     AND T.MONTH_ID='$monthId$'
+	     AND T.KPI_4_002 = '1') T1,
+	     (SELECT T.KPI_4_001, T.MONTH_ID, T.ORG_ID
+	     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+	     WHERE 
+	     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+	     AND T.MONTH_ID='$monthId$'
+	     AND T.KPI_4_002 = '10') T2,
+	     HN_DMCODE.DMCODE_PRO_CW_VIEW T3,
+	     HN_DMCODE.DMCODE_PRO_CW_VIEW T4
+	     WHERE T1.MONTH_ID = T2.MONTH_ID(+)
+	     AND T1.ORG_ID = T3.ORG_ID(+)
+	     AND T2.ORG_ID = T4.ORG_ID(+)
+	</select>
+	
+	<!-- 查询北十对标表格1数据 -->
+	<select id="bsdbTable1" resultClass="java.util.HashMap">
+        (SELECT T.MONTH_ID AS MONTH_ID,
+	    C.ORG_NAME AS ORG_NAME,
+        T.KPI_01 AS KPI_01,
+        T.KPI_02 AS KPI_02,
+        T.KPI_03 AS KPI_03,
+        T.KPI_04 AS KPI_04,
+        T.KPI_05 AS KPI_05,
+        T.KPI_06 AS KPI_06,
+        T.KPI_07 AS KPI_07,
+        T.KPI_08 AS KPI_08,
+        T.KPI_09 AS KPI_09,
+        T.KPI_10 AS KPI_10,
+        T.KPI_11 AS KPI_11,
+        T.KPI_12 AS KPI_12,
+        T.KPI_13 AS KPI_13,
+        T.KPI_14 AS KPI_14,
+        T.KPI_15 AS KPI_15
+       FROM CW_DM.CW_WS_KPI_WHOLE_2 T, HN_DMCODE.DMCODE_PRO_CW_VIEW C
+       WHERE 
+       T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+       AND T.MONTH_ID='$monthId$'
+       AND T.ORG_ID = C.ORG_ID
+       AND (T.ORG_ID = '$orgId$' OR T.ORG_ID = '$aimOrgId$')) 
+    ORDER BY KPI_01 DESC
+	</select>
+	<!-- 查询北十对标表格1数据 -->
+	<select id="bsdbTable1_1" resultClass="java.util.HashMap">
+       (SELECT NULL AS MONTH_ID,
+			  '较'||T2.ORG_NAME||'得分' AS ORG_NAME,
+		        (T1.KPI_01 - T2.KPI_01) AS KPI_01,
+		        (T1.KPI_02 - T2.KPI_02) AS KPI_02,
+		        (T1.KPI_03 - T2.KPI_03) AS KPI_03,
+		        (T1.KPI_04 - T2.KPI_04) AS KPI_04,
+		        (T1.KPI_05 - T2.KPI_05) AS KPI_05,
+		        (T1.KPI_06 - T2.KPI_06) AS KPI_06,
+		        (T1.KPI_07 - T2.KPI_07) AS KPI_07,
+		        (T1.KPI_08 - T2.KPI_08) AS KPI_08,
+		        (T1.KPI_09 - T2.KPI_09) AS KPI_09,
+		        (T1.KPI_10 - T2.KPI_10) AS KPI_10,
+		        (T1.KPI_11 - T2.KPI_11) AS KPI_11,
+		        (T1.KPI_12 - T2.KPI_12) AS KPI_12,
+		        (T1.KPI_13 - T2.KPI_13) AS KPI_13,
+		        (T1.KPI_14 - T2.KPI_14) AS KPI_14,
+		        (T1.KPI_15 - T2.KPI_15) AS KPI_15
+       FROM (SELECT * FROM CW_DM.CW_WS_KPI_WHOLE_2 T WHERE T.ORG_ID = '$orgId$' AND T.MONTH_ID='$monthId$') T1,
+            (SELECT * FROM CW_DM.CW_WS_KPI_WHOLE_2 T,HN_DMCODE.DMCODE_PRO_CW_VIEW C WHERE T.ORG_ID = '$aimOrgId$' AND T.ORG_ID = C.ORG_ID AND T.MONTH_ID='$monthId$') T2)
+       UNION ALL 
+        (SELECT NULL AS MONTH_ID,
+			  '最高分' AS ORG_NAME,
+        MAX(T.KPI_01) AS KPI_01,
+        MAX(T.KPI_02) AS KPI_02,
+        MAX(T.KPI_03) AS KPI_03,
+        MAX(T.KPI_04) AS KPI_04,
+        MAX(T.KPI_05) AS KPI_05,
+        MAX(T.KPI_06) AS KPI_06,
+        MAX(T.KPI_07) AS KPI_07,
+        MAX(T.KPI_08) AS KPI_08,
+        MAX(T.KPI_09) AS KPI_09,
+        MAX(T.KPI_10) AS KPI_10,
+        MAX(T.KPI_11) AS KPI_11,
+        MAX(T.KPI_12) AS KPI_12,
+        MAX(T.KPI_13) AS KPI_13,
+        MAX(T.KPI_14) AS KPI_14,
+        MAX(T.KPI_15) AS KPI_15
+       FROM CW_DM.CW_WS_KPI_WHOLE_2 T
+       WHERE 
+       T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+       AND T.MONTH_ID='$monthId$'
+       GROUP BY T.MONTH_ID)
+        UNION ALL 
+       
+        (SELECT NULL AS MONTH_ID,
+			  '最低分' AS ORG_NAME,
+        MIN(T.KPI_01) AS KPI_01,
+        MIN(T.KPI_02) AS KPI_02,
+        MIN(T.KPI_03) AS KPI_03,
+        MIN(T.KPI_04) AS KPI_04,
+        MIN(T.KPI_05) AS KPI_05,
+        MIN(T.KPI_06) AS KPI_06,
+        MIN(T.KPI_07) AS KPI_07,
+        MIN(T.KPI_08) AS KPI_08,
+        MIN(T.KPI_09) AS KPI_09,
+        MIN(T.KPI_10) AS KPI_10,
+        MIN(T.KPI_11) AS KPI_11,
+        MIN(T.KPI_12) AS KPI_12,
+        MIN(T.KPI_13) AS KPI_13,
+        MIN(T.KPI_14) AS KPI_14,
+        MIN(T.KPI_15) AS KPI_15
+       FROM CW_DM.CW_WS_KPI_WHOLE_2 T
+       WHERE 
+       T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+       AND T.MONTH_ID='$monthId$'
+       GROUP BY T.MONTH_ID)
+       UNION ALL 
+       
+        (SELECT NULL AS MONTH_ID,
+			  '平均分' AS ORG_NAME,
+        AVG(T.KPI_01) AS KPI_01,
+        AVG(T.KPI_02) AS KPI_02,
+        AVG(T.KPI_03) AS KPI_03,
+        AVG(T.KPI_04) AS KPI_04,
+        AVG(T.KPI_05) AS KPI_05,
+        AVG(T.KPI_06) AS KPI_06,
+        AVG(T.KPI_07) AS KPI_07,
+        AVG(T.KPI_08) AS KPI_08,
+        AVG(T.KPI_09) AS KPI_09,
+        AVG(T.KPI_10) AS KPI_10,
+        AVG(T.KPI_11) AS KPI_11,
+        AVG(T.KPI_12) AS KPI_12,
+        AVG(T.KPI_13) AS KPI_13,
+        AVG(T.KPI_14) AS KPI_14,
+        AVG(T.KPI_15) AS KPI_15
+       FROM CW_DM.CW_WS_KPI_WHOLE_2 T
+       WHERE 
+       T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+       AND T.MONTH_ID='$monthId$'
+       GROUP BY T.MONTH_ID)
+	</select>
+	<!-- 查询北十对标表格3数据 -->
+	<select id="bsdbTable3" resultClass="java.util.HashMap">
+		(SELECT T.ORG_ID AS ORG_ID, 
+       C.ORG_NAME AS ORG_NAME,
+       TO_CHAR(T.KPI_1_001,'9999999990.99') AS KPI_1_001, 
+       T.KPI_1_002 AS KPI_1_002,
+       TO_CHAR(T.KPI_2_001,'9999999990.99') AS KPI_2_001,
+       T.KPI_2_002 AS KPI_2_002,
+       TO_CHAR(T.KPI_3_001,'9999999990.99') AS KPI_3_001,
+       T.KPI_3_002 AS KPI_3_002,
+       TO_CHAR(T.KPI_4_001,'9999999990.99') AS KPI_4_001,
+       T.KPI_4_002 AS KPI_4_002,
+       TO_CHAR(T.KPI_5_001,'9999999990.99') AS KPI_5_001,
+       T.KPI_5_002 AS KPI_5_002 
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T, HN_DMCODE.DMCODE_PRO_CW_VIEW C
+     WHERE 
+     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+     AND T.MONTH_ID='$monthId$'
+     AND T.ORG_ID = C.ORG_ID)
+     UNION ALL
+ (SELECT '' AS ORG_ID,
+        '平均得分' AS ORG_NAME,
+        TO_CHAR(AVG(T.KPI_1_001),'9999999990.99') AS KPI_1_001,
+        NULL AS KPI_1_002,
+        TO_CHAR(AVG(T.KPI_2_001),'9999999990.99') AS KPI_2_001,
+        NULL AS KPI_2_002,
+        TO_CHAR(AVG(T.KPI_3_001),'9999999990.99') AS KPI_3_001,
+        NULL AS KPI_3_002,
+        TO_CHAR(AVG(T.KPI_4_001),'9999999990.99') AS KPI_4_001,
+        NULL AS KPI_4_002,
+        TO_CHAR(AVG(T.KPI_5_001),'9999999990.99') AS KPI_5_001,
+        NULL AS KPI_5_002      
+    FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+    WHERE 
+    T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID)
+    UNION ALL
+    (SELECT '' AS ORG_ID,
+        '最高分' AS ORG_NAME,
+        TO_CHAR(MAX(T.KPI_1_001),'9999999990.99') AS KPI_1_001,
+        NULL AS KPI_1_002,
+        TO_CHAR(MAX(T.KPI_2_001),'9999999990.99') AS KPI_2_001,
+        NULL AS KPI_2_002,
+        TO_CHAR(MAX(T.KPI_3_001),'9999999990.99') AS KPI_3_001,
+        NULL AS KPI_3_002,
+        TO_CHAR(MAX(T.KPI_4_001),'9999999990.99') AS KPI_4_001,
+        NULL AS KPI_4_002,
+        TO_CHAR(MAX(T.KPI_5_001),'9999999990.99') AS KPI_5_001,
+        NULL AS KPI_5_002      
+    FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+    WHERE 
+    T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID)
+    UNION ALL
+    (SELECT '' AS ORG_ID,
+        '最低分' AS ORG_NAME,
+        TO_CHAR(MIN(T.KPI_1_001),'9999999990.99') AS KPI_1_001,
+        NULL AS KPI_1_002,
+        TO_CHAR(MIN(T.KPI_2_001),'9999999990.99') AS KPI_2_001,
+        NULL AS KPI_2_002,
+        TO_CHAR(MIN(T.KPI_3_001),'9999999990.99') AS KPI_3_001,
+        NULL AS KPI_3_002,
+        TO_CHAR(MIN(T.KPI_4_001),'9999999990.99') AS KPI_4_001,
+        NULL AS KPI_4_002,
+        TO_CHAR(MIN(T.KPI_5_001),'9999999990.99') AS KPI_5_001,
+        NULL AS KPI_5_002      
+    FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+    WHERE 
+    T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID)
+	</select>
+	
+	<!-- 查询北十对标表格3对标总分数据 -->
+	<select id="bsdbTable3dbZf" resultClass="java.util.HashMap">
+		SELECT T.ORG_ID AS ORG_ID, 
+       C.ORG_NAME AS ORG_NAME,
+       T.KPI_1_001 AS KPI_001,
+       T.KPI_1_002 AS KPI_002,
+       T.KPI_1_003 AS KPI_003,
+       T.KPI_1_004 AS KPI_004,
+       T.KPI_1_005 AS KPI_005,
+       T.KPI_1_006 AS KPI_006,
+       T.KPI_1_007 AS KPI_007,
+       T.KPI_1_008 AS KPI_008,
+       T.KPI_1_009 AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T, HN_DMCODE.DMCODE_PRO_CW_VIEW C
+     WHERE 
+     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+     AND T.MONTH_ID='$monthId$'
+     AND T.ORG_ID = C.ORG_ID 
+ 	UNION ALL
+   	SELECT '' AS ORG_ID, 
+       '平均分' AS ORG_NAME,
+       AVG(T.KPI_1_001) AS KPI_001,
+       NULL AS KPI_002,
+       NULL AS KPI_003,
+       AVG(T.KPI_1_004) AS KPI_004,
+       NULL AS KPI_005,
+       NULL AS KPI_006,
+       AVG(T.KPI_1_007) AS KPI_007,
+       NULL AS KPI_008,
+       NULL AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+     WHERE T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID  
+    UNION ALL
+     SELECT '' AS ORG_ID, 
+       '我省得分较北十省最高得分差距' AS ORG_NAME,
+       (SELECT KPI_1_001 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$') - MAX(T.KPI_1_001) AS KPI_001,
+       NULL AS KPI_002,
+       NULL AS KPI_003,
+       (SELECT KPI_1_004 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$') - MAX(T.KPI_1_004) AS KPI_004,
+       NULL AS KPI_005,
+       NULL AS KPI_006,
+       (SELECT KPI_1_007 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$')- MAX(T.KPI_1_007) AS KPI_007,
+       NULL AS KPI_008,
+       NULL AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+     WHERE T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID  
+	</select>
+	
+	<!-- 查询北十对标表格3对标收入规模数据 -->
+	<select id="bsdbTable3dbSrgm" resultClass="java.util.HashMap">
+		SELECT T.ORG_ID AS ORG_ID, 
+       C.ORG_NAME AS ORG_NAME,
+       T.KPI_2_001 AS KPI_001,
+       T.KPI_2_002 AS KPI_002,
+       T.KPI_2_003 AS KPI_003,
+       T.KPI_2_004 AS KPI_004,
+       T.KPI_2_005 AS KPI_005,
+       T.KPI_2_006 AS KPI_006,
+       T.KPI_2_007 AS KPI_007,
+       T.KPI_2_008 AS KPI_008,
+       T.KPI_2_009 AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T, HN_DMCODE.DMCODE_PRO_CW_VIEW C
+     WHERE 
+     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+     AND T.MONTH_ID='$monthId$'
+     AND T.ORG_ID = C.ORG_ID 
+ 	UNION ALL
+   	SELECT '' AS ORG_ID, 
+       '平均分' AS ORG_NAME,
+       AVG(T.KPI_2_001) AS KPI_001,
+       NULL AS KPI_002,
+       NULL AS KPI_003,
+       AVG(T.KPI_2_004) AS KPI_004,
+       NULL AS KPI_005,
+       NULL AS KPI_006,
+       AVG(T.KPI_2_007) AS KPI_007,
+       NULL AS KPI_008,
+       NULL AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+     WHERE T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID  
+    UNION ALL
+     SELECT '' AS ORG_ID, 
+       '我省得分较北十省最高得分差距' AS ORG_NAME,
+       (SELECT KPI_2_001 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$') - MAX(T.KPI_2_001) AS KPI_001,
+       NULL AS KPI_002,
+       NULL AS KPI_003,
+       (SELECT KPI_2_004 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$') - MAX(T.KPI_2_004) AS KPI_004,
+       NULL AS KPI_005,
+       NULL AS KPI_006,
+       (SELECT KPI_2_007 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$')- MAX(T.KPI_2_007) AS KPI_007,
+       NULL AS KPI_008,
+       NULL AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+     WHERE T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID  
+	</select>
+	
+	<!-- 查询北十对标表格3对标效益价值数据 -->
+	<select id="bsdbTable3dbXyjz" resultClass="java.util.HashMap">
+		SELECT T.ORG_ID AS ORG_ID, 
+       C.ORG_NAME AS ORG_NAME,
+       T.KPI_3_001 AS KPI_001,
+       T.KPI_3_002 AS KPI_002,
+       T.KPI_3_003 AS KPI_003,
+       T.KPI_3_004 AS KPI_004,
+       T.KPI_3_005 AS KPI_005,
+       T.KPI_3_006 AS KPI_006,
+       T.KPI_3_007 AS KPI_007,
+       T.KPI_3_008 AS KPI_008,
+       T.KPI_3_009 AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T, HN_DMCODE.DMCODE_PRO_CW_VIEW C
+     WHERE 
+     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+     AND T.MONTH_ID='$monthId$'
+     AND T.ORG_ID = C.ORG_ID 
+ 	UNION ALL
+   	SELECT '' AS ORG_ID, 
+       '平均分' AS ORG_NAME,
+       AVG(T.KPI_3_001) AS KPI_001,
+       NULL AS KPI_002,
+       NULL AS KPI_003,
+       AVG(T.KPI_3_004) AS KPI_004,
+       NULL AS KPI_005,
+       NULL AS KPI_006,
+       AVG(T.KPI_3_007) AS KPI_007,
+       NULL AS KPI_008,
+       NULL AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+     WHERE T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID  
+    UNION ALL
+     SELECT '' AS ORG_ID, 
+       '我省得分较北十省最高得分差距' AS ORG_NAME,
+       (SELECT KPI_3_001 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$') - MAX(T.KPI_3_001) AS KPI_001,
+       NULL AS KPI_002,
+       NULL AS KPI_003,
+       (SELECT KPI_3_004 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$') - MAX(T.KPI_3_004) AS KPI_004,
+       NULL AS KPI_005,
+       NULL AS KPI_006,
+       (SELECT KPI_3_007 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$')- MAX(T.KPI_3_007) AS KPI_007,
+       NULL AS KPI_008,
+       NULL AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+     WHERE T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID  
+	</select>
+	
+	<!-- 查询北十对标表格3对标年度重点数据 -->
+	<select id="bsdbTable3dbNdzd" resultClass="java.util.HashMap">
+		SELECT T.ORG_ID AS ORG_ID, 
+       C.ORG_NAME AS ORG_NAME,
+       T.KPI_4_001 AS KPI_001,
+       T.KPI_4_002 AS KPI_002,
+       T.KPI_4_003 AS KPI_003,
+       T.KPI_4_004 AS KPI_004,
+       T.KPI_4_005 AS KPI_005,
+       T.KPI_4_006 AS KPI_006,
+       T.KPI_4_007 AS KPI_007,
+       T.KPI_4_008 AS KPI_008,
+       T.KPI_4_009 AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T, HN_DMCODE.DMCODE_PRO_CW_VIEW C
+     WHERE 
+     T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+     AND T.MONTH_ID='$monthId$'
+     AND T.ORG_ID = C.ORG_ID 
+ 	UNION ALL
+   	SELECT '' AS ORG_ID, 
+       '平均分' AS ORG_NAME,
+       AVG(T.KPI_4_001) AS KPI_001,
+       NULL AS KPI_002,
+       NULL AS KPI_003,
+       AVG(T.KPI_4_004) AS KPI_004,
+       NULL AS KPI_005,
+       NULL AS KPI_006,
+       AVG(T.KPI_4_007) AS KPI_007,
+       NULL AS KPI_008,
+       NULL AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+     WHERE T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID  
+    UNION ALL
+     SELECT '' AS ORG_ID, 
+       '我省得分较北十省最高得分差距' AS ORG_NAME,
+       (SELECT KPI_4_001 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$') - MAX(T.KPI_4_001) AS KPI_001,
+       NULL AS KPI_002,
+       NULL AS KPI_003,
+       (SELECT KPI_4_004 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$') - MAX(T.KPI_4_004) AS KPI_004,
+       NULL AS KPI_005,
+       NULL AS KPI_006,
+       (SELECT KPI_4_007 FROM CW_DM.CW_WS_KPI_WHOLE_1  WHERE ORG_ID='$orgId$' AND MONTH_ID='$monthId$')- MAX(T.KPI_4_007) AS KPI_007,
+       NULL AS KPI_008,
+       NULL AS KPI_009
+     FROM CW_DM.CW_WS_KPI_WHOLE_1 T
+     WHERE T.ORG_ID IN (SELECT A.ORG_ID FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A)
+    AND T.MONTH_ID = '$monthId$'
+    GROUP BY T.MONTH_ID  
+	</select>
+	<!-- 查询考核指标 -->
+	<select id="bsKhZbTable" resultClass="java.util.HashMap">
+		SELECT C.KPI_ID, NVL(C.KPI_NAME_SHOW, C.KPI_NAME) AS KPI_NAME, C.HAVE_CHILDREN,
+         T.KPI_03, T.KPI_09, T.KPI_06, T.KPI_08 FROM 
+		   CW_DM.CW_WS_KPI_WHOLE T,
+		   (SELECT A.*
+				    FROM HN_DMCODE.DMCODE_CW_KPI A
+				   WHERE A.MODULE_ID = 'kpi.part.whole'
+				   AND A.IS_VALID = '1') C
+		   WHERE C.KPI_ID = T.KPI_ID
+		   AND T.ORG_ID = '$orgId$'
+		   AND T.MONTH_ID = #monthId#
+	 </select>
+	 <!-- 查询排名指标 -->
+	 <select id="PmdbTable" resultClass="java.util.HashMap">
+		SELECT A.ORG_ID, A.ORG_NAME,
+	       T.KPI_03, T.KPI_09, T.KPI_06, T.KPI_08
+		FROM CW_DM.CW_WS_KPI_WHOLE T,
+		       (SELECT A.ORG_ID, A.ORG_NAME 
+		       		FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A 
+		       		WHERE A.ORG_ID NOT IN ('ALL_N')
+		        ) A
+		WHERE T.ORG_ID = A.ORG_ID
+			AND T.MONTH_ID = #monthId#
+		    AND T.KPI_ID = #kpiId#
+		ORDER BY T.KPI_06
+	</select>
+	 <!-- 查询指定指标月份趋势图数据 -->
+	 <select id="bsdbLine1" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID,
+			T.KPI_ID,
+			NVL(C.KPI_NAME_SHOW, C.KPI_NAME) AS KPI_NAME,
+	       	TO_CHAR(T.KPI_03,'9999999990.99') AS KPI_03
+		FROM CW_DM.CW_WS_KPI_WHOLE T,
+		       (SELECT A.*
+				    FROM HN_DMCODE.DMCODE_CW_KPI A
+				   WHERE A.MODULE_ID = 'kpi.part.whole'
+				   AND A.IS_VALID = '1') C,
+				(SELECT A.ORG_ID, A.ORG_NAME 
+		       		FROM HN_DMCODE.DMCODE_PRO_CW_VIEW A 
+		       		WHERE A.ORG_ID NOT IN ('ALL_N')
+		        ) B
+		WHERE T.KPI_ID = C.KPI_ID
+		    AND T.KPI_ID = #kpiId#
+		    AND T.ORG_ID = '$orgId$'
+		    AND T.ORG_ID = B.ORG_ID
+		ORDER BY T.MONTH_ID
+	</select>
+	
+	<!-- 获取预警排名靠后信息 -->
+	<select id="selectPaiMingKH" resultClass="java.util.HashMap"> 
+         SELECT S.* FROM   
+		(  
+		SELECT T1.*, ROWNUM RN   
+		FROM 
+		
+		  (SELECT C.KPI_NAME, T.KPI_ID,T.KPI_03
+		    FROM CW_DM.CW_WS_KPI_WHOLE T,
+		           (SELECT A.*
+		            FROM HN_DMCODE.DMCODE_CW_KPI A
+		           WHERE A.MODULE_ID = 'kpi.part.whole'
+		           AND A.IS_VALID = '1'
+		           AND A.KPI_ID NOT IN ( 'KPI_019','KPI_006','KPI_001')) C
+		    WHERE T.KPI_ID = C.KPI_ID
+		        AND T.MONTH_ID = '$monthId$'
+		        AND T.ORG_ID = '$orgId$'
+		    ORDER BY T.KPI_03)T1
+		    )S  
+		WHERE RN BETWEEN 1 AND 3
+		ORDER BY S.RN DESC
+	</select>
+	<!-- 得分较上月降低的指标 -->
+	<select id="selectDeFenJD" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_NAME, T1.KPI_ID, T1.KPI_09
+		  FROM CW_DM.CW_WS_KPI_WHOLE T1,
+		       (SELECT A.*
+	            FROM HN_DMCODE.DMCODE_CW_KPI A
+	           	WHERE A.MODULE_ID = 'kpi.part.whole'
+	           	AND A.IS_VALID = '1'
+	           	AND A.KPI_ID NOT IN ( 'KPI_019','KPI_006','KPI_001')) T2
+		 WHERE T1.KPI_ID = T2.KPI_ID
+		   AND T1.ORG_ID = '$orgId$'
+		   AND T1.MONTH_ID = '$monthId$'
+		   AND T1.KPI_09 <![CDATA[<]]> 0
+	</select>
+</sqlMap>

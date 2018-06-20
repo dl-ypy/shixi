@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.wyxy">
+	<!-- 赵彦发 start part -->
+	<!-- 移动单基站产出 -->
+   	<select id="MobileSingleProduceTable" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+		       T.VALUE_Y, T.VALUE_LY, T.VALUE_ADD_RATE, T.VALUE_ADD_RATE_ORD
+		  FROM CW_DM.CW_RPT_TZMB_JZ_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+		 ORDER BY A.SELECT_ORD
+    </select>
+    <!-- 移动单基站产出柱图 -->
+   	<select id="MobileSingleProduceBarChart1" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, A.AREA_DESC, 
+   			TO_CHAR(T.VALUE_Y,'9999999990.99') AS VALUE_Y, 
+   			TO_CHAR(T.VALUE_Y_AVG,'9999999990.99') AS VALUE_Y_AVG, 
+   			TO_CHAR(T.VALUE_ADD_RATE*100,'9999999990.99') AS VALUE_ADD_RATE
+   		FROM CW_DM.CW_RPT_TZMB_JZ_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+   		WHERE T.MONTH_ID = #monthId#
+   			AND T.ORG_ID = A.AREA_NO
+   			AND T.PARENT_ORG_ID = 'root'
+   		ORDER BY T.VALUE_ADD_RATE DESC
+    </select>
+    <!-- 移动单基站产出首行数据 -->
+   	<select id="getMobileSingleProduceFirstLine" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID,
+		       TO_CHAR(T.VALUE_Y,'9999999990.99') AS VALUE_Y,
+		       TO_CHAR(T.VALUE_ADD_RATE*100,'9999999990.99') AS VALUE_ADD_RATE
+		  FROM CW_DM.CW_RPT_TZMB_JZ_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = 'root'
+    </select>
+    <!-- 移动单基站产出尾行数据 -->
+   	<select id="getMobileSingleProduceLastLine" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID,
+   			   T.ORG_NAME,
+   			   TO_CHAR(T.VALUE_ADD_RATE*100,'9999999990.99') AS VALUE_ADD_RATE,
+   			   TO_CHAR(T.AVG_VALUE_ADD_RATE,'9999999990.99') AS AVG_VALUE_ADD_RATE,
+		       TO_CHAR(T.VALUE_ADD_RATE_PP,'9999999990.99') AS VALUE_ADD_RATE_PP
+		  FROM CW_DM.CW_RPT_TZMB_JZ_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = #areaNo#
+    </select>
+    <!-- 移动单基站产出前三后三数据 -->
+   	<select id="getMobileSingleProduceRanking" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, 
+			T.FIRST_THREE,
+			T.LAST_THREE
+   		FROM CW_DM.CW_RPT_TZMB_JZ_2 T
+   		WHERE T.MONTH_ID = #monthId#
+    </select>
+    <!-- 赵彦发 end part -->
+    <!-- ///////////////////////////////分割线//////////////////////////// -->
+    <!-- 杨佩钰start part -->
+    <!-- 铁塔成本占移动收入比表格数据 -->
+    <select id="TowerCostRateTable" resultClass="java.util.HashMap">
+    	SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+		       T.VALUE_Y, T.VALUE_LY, T.VALUE_ADD_RATE, T.VALUE_ADD_RATE_ORD
+		  FROM CW_DM.CW_RPT_TZMB_TT_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+		 ORDER BY A.SELECT_ORD
+    </select>
+    <!-- 铁塔成本占移动收入比柱图 -->
+   	<select id="TowerCostRateBarChart1" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, A.AREA_DESC, 
+   			TO_CHAR(T.VALUE_Y*100,'9999999990.99') AS VALUE_Y, 
+   			TO_CHAR(T.VALUE_Y_AVG*100,'9999999990.99') AS VALUE_Y_AVG, 
+   			TO_CHAR(T.VALUE_ADD_RATE*100,'9999999990.99') AS VALUE_ADD_RATE
+   		FROM CW_DM.CW_RPT_TZMB_TT_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+   		WHERE T.MONTH_ID = #monthId#
+   			AND T.ORG_ID = A.AREA_NO
+   			AND T.PARENT_ORG_ID = 'root'
+   		ORDER BY T.VALUE_ADD_RATE DESC
+    </select>
+    <!-- 铁塔成本占移动收入比首行数据 -->
+   	<select id="getTowerCostRateFirstLine" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID,
+		       TO_CHAR(T.VALUE_Y_AVG*100,'9999999990.99') AS VALUE_Y,
+		       TO_CHAR(T.VALUE_ADD_RATE,'9999999990.99') AS VALUE_ADD_RATE
+		  FROM CW_DM.CW_RPT_TZMB_TT_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = 'root'
+    </select>
+    <!-- 铁塔成本占移动收入比尾行数据 -->
+   	<select id="getTowerCostRateLastLine" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID,
+   			   T.ORG_NAME,
+   			   TO_CHAR(T.VALUE_ADD_RATE*100,'9999999990.99') AS VALUE_ADD_RATE,
+   			   TO_CHAR(T.VALUE_ADD_RATE_PP,'9999999990.99') AS VALUE_ADD_RATE_PP
+		  FROM CW_DM.CW_RPT_TZMB_TT_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = #areaNo#
+    </select>
+    <!-- 铁塔成本占移动收入比前三后三数据 -->
+   	<select id="getTowerCostRateRanking" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, 
+			T.FIRST_THREE,
+			T.LAST_THREE
+   		FROM CW_DM.CW_RPT_TZMB_TT_2 T
+   		WHERE T.MONTH_ID = #monthId#
+    </select>
+    
+    <!-- 单宽带端口年化产出同比变动表格数据 -->
+    <select id="SingleBroadbandPortTable" resultClass="java.util.HashMap">
+    	SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+           T.KPI_01,T.KPI_02,T.KPI_03,T.KPI_04
+      FROM CW_DM.CW_RPT_TZKD_1_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+		 ORDER BY A.SELECT_ORD
+    </select>
+    <!-- 单宽带端口年化产出同比变动柱图 -->
+   	<select id="SingleBroadbandPortBarChart1" resultClass="java.util.HashMap">
+   		 SELECT T.MONTH_ID, A.AREA_DESC, 
+   		 TO_CHAR(T.KPI_02,'9999999990.99') KPI_02,
+   		 TO_CHAR(T.KPI_03,'9999999990.99') KPI_03
+   		FROM CW_DM.CW_RPT_TZKD_1_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+   		WHERE T.MONTH_ID = #monthId#
+   			AND T.ORG_ID = A.AREA_NO
+    </select>
+    <!-- 单宽带端口年化产出同比变动首行数据 -->
+   	<select id="getSingleBroadbandPortFirstLine" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID,
+		       TO_CHAR(T.KPI_02,'9999999990') AS KPI_02,
+		       TO_CHAR(T.KPI_03,'9999999990') AS KPI_03
+		  FROM CW_DM.CW_RPT_TZKD_1_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = 'root'
+    </select>
+    <!-- 单宽带端口年化产出同比变动尾行数据 -->
+   	<select id="getSingleBroadbandPortLastLine" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID,
+   			   A.AREA_DESC,
+   			   TO_CHAR(T.KPI_02,'9999999990.99') AS KPI_02,
+   			   TO_CHAR(T.KPI_03,'9999999990.99') AS KPI_03,
+   			   TO_CHAR(T.KPI_05,'9999999990.99') AS KPI_05
+		  FROM CW_DM.CW_RPT_TZKD_1_1 T,HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		 AND T.ORG_ID = A.AREA_NO
+		 AND T.ORG_ID = #areaNo#
+    </select>
+    <!-- 单宽带端口年化产出同比变动前三后三数据 -->
+   	<select id="getSingleBroadbandPortRanking" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, 
+			T.FIRST_THREE,
+			T.LAST_THREE
+   		FROM CW_DM.CW_RPT_TZKD_1_2 T
+   		WHERE T.MONTH_ID = #monthId#
+    </select>
+     <!-- 杨佩钰 end part -->
+     
+ 
+  <!-- 周佳韬宽带端口start part -->
+
+     <!-- table的数据-->
+     <select id="queryOutLine" resultClass="java.util.HashMap" >
+ 	 	SELECT A.AREA_DESC,A.AREA_NO,
+       			T.KPI_01,T.KPI_02, T.KPI_03,T.KPI_04
+       FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+            (SELECT *
+               FROM CW_DM.CW_RPT_TZKD_2_1 T
+               WHERE MONTH_ID = #monthId#
+             )T
+         WHERE A.AREA_NO=T.ORG_ID
+	</select>
+
+	<!-- 折线图柱状图的数据 -->
+	<select id="queryChart" resultClass="java.util.HashMap" >
+		SELECT A.AREA_DESC,A.AREA_NO,
+          round(T.KPI_02 * 100, 2) KPI_02,
+          round(T.KPI_03 * 100, 2) KPI_03
+         FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+              (SELECT * 
+               FROM CW_DM.CW_RPT_TZKD_2_1 T
+               WHERE MONTH_ID = #monthId#
+              ) T
+         WHERE A.AREA_NO=T.ORG_ID
+		
+	</select>	
+	
+	<!-- title的数据 -->
+	 <select id="queryOutTitle" resultClass="java.util.HashMap" >
+      select t2.month_id,
+              t2.first_three,
+              t2.last_three,
+              round(t1.kpi_02*100,2) kpi_02,
+              round(t1.kpi_03*100,2) kpi_03
+       from CW_DM.CW_RPT_TZKD_2_1 T1,CW_DM.CW_RPT_TZKD_2_2 T2
+       where t1.month_id = #monthId#
+       and t1.month_id = t2.month_id    
+       and t1.org_id = 'root' 
+  </select>
+  
+    <!-- 末行的点击事件 -->
+	<select id="queryLastInfo" resultClass="java.util.HashMap" >
+      SELECT A.AREA_DESC,
+          round(T.KPI_03 * 100, 2) KPI_03,
+          round((T.KPI_02 * 100-T.KPI_05 * 100), 2) KPI_05
+      FROM( SELECT *
+             FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+           (SELECT * 
+             FROM CW_DM.CW_RPT_TZKD_2_1 T
+             WHERE MONTH_ID = #monthId#
+             AND ORG_ID = #areaNo#
+              ) T
+         WHERE A.AREA_NO =T.ORG_ID
+    </select>
+  <!-- 周佳韬 宽带端口endpart -->
+  
+  
+    <!-- 周佳韬 宽带离网start part -->
+
+     <!-- table的数据-->
+     <select id="queryOutLine1" resultClass="java.util.HashMap" >
+ 	 	SELECT A.AREA_DESC,A.AREA_NO,
+       			T.KPI_01,T.KPI_02, T.KPI_03,T.KPI_04
+       FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+            (SELECT * 
+             FROM CW_DM.CW_RPT_TZKD_3_1 T
+             WHERE MONTH_ID = #monthId#
+             )T
+         WHERE A.AREA_NO=T.ORG_ID
+	</select>
+
+	<!-- 折线图柱状图的数据 -->
+	<select id="queryChart1" resultClass="java.util.HashMap" >
+		SELECT A.AREA_DESC,A.AREA_NO,
+          round(T.KPI_02 * 100, 2) KPI_02,
+          round(T.KPI_03 * 100, 2) KPI_03
+         FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+              (SELECT * 
+               FROM CW_DM.CW_RPT_TZKD_3_1 T
+               WHERE MONTH_ID = #monthId#
+              ) T
+         WHERE A.AREA_NO=T.ORG_ID
+		
+	</select>	
+	
+	<!-- title的数据 -->
+	 <select id="queryOutTitle1" resultClass="java.util.HashMap" >
+      select t2.month_id,
+              t2.first_three,
+              t2.last_three,
+              round(t1.kpi_02*100,2) kpi_02,
+              round(t1.kpi_03*100,2) kpi_03
+       from CW_DM.CW_RPT_TZKD_3_1 T1,CW_DM.CW_RPT_TZKD_3_2 T2
+       where t1.month_id = #monthId#
+       and t1.month_id = t2.month_id    
+       and t1.org_id = 'root' 
+  </select>
+  
+    <!-- 末行的点击事件 -->
+	<select id="queryLastInfo1" resultClass="java.util.HashMap" >
+      SELECT A.AREA_DESC,
+          round(T.KPI_03 * 100, 2) KPI_03,
+          round((T.KPI_02 * 100-T.KPI_05 * 100), 2) KPI_05
+      FROM( SELECT *
+             FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+           (SELECT * 
+               FROM CW_DM.CW_RPT_TZKD_3_1 T
+             WHERE MONTH_ID = #monthId#
+             AND ORG_ID = #areaNo#
+              ) T
+         WHERE A.AREA_NO =T.ORG_ID
+    </select>
+  <!-- 周佳韬 宽带离网endpart -->
+  
+  
+  
+</sqlMap>

@@ -1,0 +1,64 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%
+response.setHeader("Pragma","No-cache"); 
+response.setHeader("Cache-Control","no-cache");
+%>
+<%String contextPath = request.getContextPath();%>
+<div style="width:100%; overflow: auto;">
+<table class="grid" style="width:99%;" >
+	<thead>
+		<tr>
+			<th align="center" rowspan="2">单位</th>
+			<th align="center" colspan="3">应缴数</th>
+			<th align="center" colspan="3">实缴数</th>
+			<th align="center" colspan="3">到账数</th>
+			<th align="center" colspan="7">营业欠款</th>
+		</tr>
+		<tr>
+			<th align="center">本月</th>
+			<th align="center">环比</th>
+			<th align="center">同比</th>
+			
+			<th align="center">本月</th>
+			<th align="center">环比</th>
+			<th align="center">同比</th>
+			
+			<th align="center">本月</th>
+			<th align="center">环比</th>
+			<th align="center">同比</th>
+			
+			<th align="center">余额</th>
+			<th align="center">环比</th>
+			<th align="center">同比</th>
+			<th align="center">限额</th>
+			<th align="center">差额</th>
+			<th align="center">占收比</th>
+			<th align="center">排名</th>
+		</tr>
+	</thead>
+	<tbody>
+		<s:iterator value="list" var="data" status="status">
+		    <tr onMouseOut="this.bgColor=''" onMouseOver="this.bgColor='#DFEfFf'">
+				<td align="center" ><s:property escapeHtml="false" value="LEVEL_NAME" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_01,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_02,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_03,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_04,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_05,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_06,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_07,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_08,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_09,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_10,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_11,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_12,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_13,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_14,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_15,'###,###,##0.00')}" /></td>
+				<td align="center" ><s:property escapeHtml="false" value="%{kpiFmt(KPI_16,'###,###,##0')}" /></td>
+			</tr>
+		</s:iterator>
+	</tbody>
+</table>
+</div>

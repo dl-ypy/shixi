@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.xjlts.cashflow">
+	<!-- 赵彦发 -->
+	<!-- 现金收入比完成情况 -->
+   	<select id="CashIncomeRatioTable" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+		       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, 
+		       T.KPI_05, T.KPI_06, T.KPI_07, T.KPI_08, 
+		       T.KPI_09, T.KPI_10, T.KPI_11, T.KPI_12,
+		       T.KPI_13, T.KPI_14, T.KPI_15, T.KPI_16
+		  FROM CW_DM.CW_RPT_XJL_ZTQK_1_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+		 ORDER BY A.SELECT_ORD
+    </select>
+	<!-- 现金收入比完成情况 -->
+   	<select id="CashIncomeRatioLine1" resultClass="java.util.HashMap">
+		 SELECT A.MONTH_ID, TO_CHAR(B.KPI_04,'9999999990.99') AS KPI_04
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_04, 0) KPI_04
+		          FROM CW_DM.CW_RPT_XJL_ZTQK_1_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.ORG_ID = #areaNo#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+	<!-- 自由现金流完成情况 -->
+   	<select id="CashIncomeRatioLine2" resultClass="java.util.HashMap">
+		 SELECT A.MONTH_ID, TO_CHAR(B.KPI_07,'9999999990.99') AS KPI_07
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_07, 0) KPI_07
+		          FROM CW_DM.CW_RPT_XJL_ZTQK_2_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.ORG_ID = #areaNo#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+	<!-- 现金收入比完成情况柱图 -->
+   	<select id="CashIncomeRatioBarChart1" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, A.AREA_DESC, 
+   			TO_CHAR(T.KPI_10,'9999999990.99') AS KPI_10, 
+   			TO_CHAR(T.KPI_11,'9999999990.99') AS KPI_11, 
+   			TO_CHAR(T.KPI_12,'9999999990.99') AS KPI_12
+   		FROM CW_DM.CW_RPT_XJL_ZTQK_1_1 T, 
+   		(SELECT * FROM HN_DMCODE.DMCODE_AREA_CW_VIEW C WHERE C.IS_AREA = '1') A
+   		WHERE T.MONTH_ID = #monthId#
+   			AND T.ORG_ID = A.AREA_NO
+   		ORDER BY T.KPI_12 DESC
+    </select>
+	<!-- 自由现金流完成情况柱图 -->
+   	<select id="CashIncomeRatioBarChart2" resultClass="java.util.HashMap">
+   		SELECT T.MONTH_ID, A.AREA_DESC, 
+   		TO_CHAR(T.KPI_01,'9999999990.99') AS KPI_01, 
+   		TO_CHAR(T.KPI_07,'9999999990.99') AS KPI_07, 
+   		TO_CHAR(T.KPI_08*100,'9999999990.99') AS KPI_08
+   		FROM CW_DM.CW_RPT_XJL_ZTQK_2_1 T,
+   		(SELECT * FROM HN_DMCODE.DMCODE_AREA_CW_VIEW C WHERE C.IS_AREA = '1') A
+   		WHERE T.MONTH_ID = #monthId#
+   			AND T.ORG_ID = A.AREA_NO
+   		ORDER BY KPI_08 DESC
+    </select>
+    <!-- 自由现金流完成情况 -->
+   	<select id="FreeCashFlowTable" resultClass="java.util.HashMap">
+		SELECT T.MONTH_ID, A.AREA_NO, A.AREA_DESC,
+		       T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, 
+		       T.KPI_05, T.KPI_06, T.KPI_07, T.KPI_08, 
+		       T.KPI_09, T.KPI_10
+		  FROM CW_DM.CW_RPT_XJL_ZTQK_2_1 T, HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = A.AREA_NO
+		 ORDER BY A.SELECT_ORD
+    </select>
+</sqlMap>

@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+	<bean class="com.bonc.base.util.SystemProperties">
+		<property name="properties">
+			<map>
+				<!-- 线状趋势图 -->
+				<entry key="chartStyle-line">
+					<value>
+						<![CDATA[
+						<?xml version="1.0" encoding="UTF-8"?>
+						<frameChart is3D="false" font="宋体" foreground="#333333">
+				          <frame xDepth="3" yDepth="1" outline="#CFCFCF" lightColor="#FFFFFF" darkColor="#FFFFFF"
+				               dashSize="0" leftAxisPlacement="Back" gridColor="#F0F0F0" stripColor="#FFFFFF">
+				               <background minColor="#FFFFCC"/>
+				          </frame>
+				          <xAxis scaleMin="0" labelCount="3" isAntialiased="true">
+				               <labelFormat style="Integer" pattern="#"/>
+				               <labelStyle isHideOverlapped="true" orientation="Horizontal" color="#0000FF"/>
+				          </xAxis>
+				          <yAxis isAbsolute="false" scaleMin="0" scaleMax="0" isAntialiased="true">
+				               <labelFormat style="Integer" pattern="#,###"/>
+				               <parseFormat style="Integer" pattern="#,###"/>
+				               <labelStyle color="#0000FF"/>
+				          </yAxis>
+				          <dataLabels isAntialiased="true" font="宋体" foreground="#999999">
+				               <decoration foreColor="#999999"/>
+				          </dataLabels>
+				          <legend showColumnLegend="false">
+						  	   <decoration style="None" />
+						     </legend>
+				          <elements place="Default" shape="Curve" markerSize="1" drawOutline="false" action="void(0)" lineWidth="1">
+				               <series index="0">
+				                    <marker type="Circle"/>
+				                    <paint color="#0000FF"/>
+				               </series>
+				               <series index="1">
+				                    <marker type="Circle"/>
+				                    <paint color="#FF0000"/>
+				               </series>
+				               <series index="2">
+				                    <marker type="Circle"/>
+				                    <paint color="#008000"/>
+				               </series>
+				          </elements>
+				          <table placement="Right"/>
+				          <title valign="Top" halign="Left" spacing="-5" isAntialiased="true" font="宋体"
+				               foreground="#0000A0">
+				               <decoration style="None" foreColor="#FF0000"/>
+				          </title>
+				          <decoration foreColor="#CCCCCC"/>
+				          <popup decoration="None"/>
+				          <paint palette="Transluent" paint="Plain"/>
+				          <insets left="0" top="0" right="0" bottom="0"/>
+						</frameChart>
+						]]>
+					</value>
+				</entry>			
+				<!-- 线图无图例 -->	
+				<entry key="chartStyle-line-nolegend">
+					<value>
+						<![CDATA[
+						<?xml version="1.0" encoding="UTF-8"?>
+						<frameChart is3D="false" font="宋体" foreground="#333333">
+				          <frame xDepth="3" yDepth="1" outline="#CFCFCF" lightColor="#FFFFFF" darkColor="#FFFFFF"
+				               dashSize="0" leftAxisPlacement="Back" gridColor="#F0F0F0" stripColor="#FFFFFF">
+				               <background minColor="#FFFFCC"/>
+				          </frame>
+				          <xAxis scaleMin="0" labelCount="3" isAntialiased="true">
+				               <labelFormat style="Integer" pattern="#"/>
+				               <labelStyle isHideOverlapped="true" orientation="Horizontal" color="#0000FF"/>
+				          </xAxis>
+				          <yAxis isAbsolute="false" scaleMin="0" scaleMax="0" isAntialiased="true">
+				               <labelFormat style="Integer" pattern="#,###"/>
+				               <parseFormat style="Integer" pattern="#,###"/>
+				               <labelStyle color="#0000FF"/>
+				          </yAxis>
+				          <dataLabels isAntialiased="true" font="宋体" foreground="#999999">
+				               <decoration foreColor="#999999"/>
+				          </dataLabels>
+				          <legend isVisible="false">
+						  	   <decoration style="None" />
+						  </legend>
+				          <elements place="Default" shape="Curve" markerSize="1" drawOutline="false" action="" lineWidth="1">
+							 <morph morph="Grow"/>
+				          </elements>
+				          <table placement="Right"/>
+				          <title valign="Top" halign="Left" spacing="-5" isAntialiased="true" font="宋体"
+				               foreground="#0000A0">
+				               <decoration style="None" foreColor="#FF0000"/>
+				          </title>
+				          <decoration foreColor="#CCCCCC"/>
+				          <popup decoration="None"/>
+				          <paint palette="Transluent" paint="Plain"/>
+				          <insets left="0" top="0" right="0" bottom="0"/>
+						</frameChart>
+						]]>
+					</value>
+				</entry>				
+				<!-- 饼图 -->
+				<entry key="chartStyle-pie">
+					<value>
+						<![CDATA[
+						  <?xml version="1.0" encoding="UTF-8"?>
+				          <pieChart depth="Thick" style="Solid" is3D="true" font="宋体-9" foreground="#666666">
+					          <dataLabels style="Default" placement="Inside" extraLines="1" autoControl="true" font="宋体-9">
+					          $(colPercent)
+					          </dataLabels>
+					          <legend spacing="-30" equalCols="false" showColumnLegend="false" placement="Right" 
+					             isAntialiased="true" font="宋体-12" isMultiline="true" foreground="#000000">
+					          <decoration style="None"/>
+					           $(colLabel) $(colPercent)
+					          </legend> 
+					          <elements drawOutline="false" action=""/>     
+					          <paint palette="Fiesta" paint="Plain" isVertical="true" max="40"/>
+					          <insets left="-5" top="7" right="-1" bottom="5"/>
+				           </pieChart>
+						]]>
+					</value>
+				</entry>
+				<!-- 冒泡图 -->
+				<entry key="chart-bubble">
+					<value>
+						<![CDATA[
+							<?xml version="1.0" encoding="UTF-8"?>
+							<frameChart is3D="false" font="宋体-12">
+								<frame xDepth="2" yDepth="0" isVGridVisible="true" />
+								<xAxis type="Category" scaleMin="0" scaleMax="500"
+									isBucketed="false" />
+								<yAxis scaleMin="0" scaleMax="12">
+								<labelStyle orientation="Vertical" />
+								</yAxis>
+								<legend>
+									<decoration style="None" />
+								</legend>
+								<elements shape="Bubble" drawShadow="true" action="{action}">
+								<movie frameCount="60" />
+								<morph morph="Grow" />
+								<series index="0">
+								<morph morph="Blur" />
+								</series>
+									X: $(colLabel)\nY: $(value)\nSize: $(nextValue)
+								</elements>
+								<decoration style="FrameClosed" foreColor="#0080FF" />
+								<paint min="47" max="83" />
+							</frameChart>
+							]]>
+					</value>
+				</entry>
+				<!-- 柱状图 单个s轴 一组数据-->
+				<entry key="chart-colum-s">
+					<value>
+						<![CDATA[
+				            <?xml version="1.0" encoding="UTF-8"?>
+							<frameChart is3D="false" font="宋体-12">
+								<frame xDepth="12" yDepth="11" darkColor="#99CCFF"
+									wallColor="white" gridColor="#CCCCCC">
+								<background imagePlacement="RightBottom" />
+								</frame>
+								<xAxis drawLine="false">
+								<labelStyle isMultilevel="true" isHideOverlapped="true" />
+								</xAxis>
+								
+								<yAxis scaleMin="0">
+									<labelFormat pattern="#,##0.###"/>
+									<parseFormat pattern="#,##0.###"/>
+									<labelStyle isHideOverlapped="true" color="black"/>
+									<titleStyle isVisible="false"/>
+									<groupStyle>
+									      <format pattern="#,##0.###"/>
+									</groupStyle>
+								</yAxis>
+								
+								<legend spacing="-10" allowSpan="true" equalCols="false"
+									isVisible="false" showColumnLegend="false" halign="Right"
+									font="宋体-12" isMultiline="true">
+									<decoration style="None" foreColor="null" />
+								</legend>
+								<elements place="Stacked" drawOutline="false" action="">
+								   <morph morph="Grow" />
+								   <column index="0">
+					                    <paint color="#AA3333"/>
+					               </column>
+					               <column index="1">
+					                    <paint color="#AA3366"/>
+					               </column>
+					               <column index="2">
+					                    <paint color="#AA3399"/>
+					               </column>
+					               <column index="3">
+					                    <paint color="#AA6633"/>
+					               </column>
+					               <column index="4">
+					                    <paint color="#AA6666"/>
+					               </column>
+					               <column index="5">
+					                    <paint color="#AA6699"/>
+					               </column>
+					               <column index="6">
+					                    <paint color="#AA9933"/>
+					               </column>
+					               <column index="7">
+					                    <paint color="#AA9966"/>
+					               </column>
+					               <column index="8">
+					                    <paint color="#AA9999"/>
+					               </column>
+					               <column index="9">
+					                    <paint color="#BB3333"/>
+					               </column>
+					               <column index="10">
+					                    <paint color="#BB3366"/>
+					               </column>
+					               <column index="11">
+					                    <paint color="#BB3399"/>
+					               </column>
+					               <column index="12">
+					                    <paint color="#BB6633"/>
+					               </column>
+					               <column index="13">
+					                    <paint color="#BB6699"/>
+					               </column>
+					               <column index="14">
+					                    <paint color="#BB9933"/>
+					               </column>
+								</elements>
+								<background maxColor="#6699CC" />
+								<popup background="#FFFFE0" foreground="black" />
+								<decoration style="Simple" foreColor="white" backColor="#6699CC" />
+								<paint palette="Pastel" isVertical="true" min="47" max="83" />
+								<insets right="5" />
+							</frameChart>
+						 ]]>
+					</value>
+				</entry>
+				<!-- 柱状图 无图列，多组数据-->
+				<entry key="chart-colum">
+					<value>
+						<![CDATA[
+							<?xml version="1.0" encoding="UTF-8"?>
+								<frameChart is3D="false" font="宋体-12">
+									<frame xDepth="3" yDepth="1" outline="#E7E3D6" lightColor="white" darkColor="white" gridColor="#E7E3D6"
+										wallColor="red" leftAxisPlacement="Back" isVGridVisible="false" showZeroLevel="false"/>
+											          
+										<xAxis labelCount="1" isBucketed="true">
+											<labelFormat pattern="#,##0.###"/>
+											<parseFormat pattern="#,##0.###"/>
+											<labelStyle orientation="Horizontal" color="#DB0907"/>
+											<titleStyle isVisible="false" font="宋体-12-bold"/>
+											<groupStyle evenBackground="#078A04" hAlign="Left" vAlign="Bottom" font="宋体-12" foreground="red"
+												   isMultiline="true"/>
+										</xAxis>
+								
+										<yAxis scaleMin="0">
+											<labelFormat pattern="#,##0.###"/>
+											<parseFormat pattern="#,##0.###"/>
+											<labelStyle isHideOverlapped="true" color="black"/>
+											<titleStyle isVisible="false"/>
+											<groupStyle>
+											      <format pattern="#,##0.###"/>
+											</groupStyle>
+										</yAxis>
+											          
+										<legend allowSpan="true" halign="Right" isMultiline="true">
+					               			<decoration style="None"/>
+					          			</legend>
+											          
+										<elements drawShadow="true" action="">
+										    <morph morph="Grow"/>
+										</elements>
+										          
+										<decoration style="none"/>
+										          
+										<paint palette="Pastel" isVertical="true" min="47" max="83"/>
+										          
+										<insets right="5"/>
+								</frameChart>
+							]]>
+					</value>
+				</entry>
+				
+				<!-- 柱状图 多列合一列-->
+				<entry key="chart-colum-x">
+					<value>
+						<![CDATA[
+							<?xml version="1.0" encoding="UTF-8"?>
+								<frameChart is3D="false" font="宋体-11">
+								          <frame xDepth="12" yDepth="11"/>
+								          <yAxis scaleMin="0">
+								               <labelFormat style="Percent" pattern="#,##0.###"/>
+								               <parseFormat pattern="#,##0.###"/>
+								          </yAxis>
+								          <dataLabels style="Pattern" placement="Inside" font="Arial-11">
+												$(rowPercent) 
+								          </dataLabels>
+								          <legend spacing="-10" allowSpan="true" equalCols="false" showColumnLegend="false" valign="Top"
+								               halign="Right" font="宋体-12" isMultiline="true">
+								               <decoration style="None"/>
+								          </legend>
+								          <elements place="Percent" drawShadow="true">
+								               <morph morph="Grow"/>
+								          </elements>
+								          <paint palette="Pastel" isVertical="true" min="47" max="83"/>
+								          <insets right="5"/>
+								</frameChart>
+							]]>
+					</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

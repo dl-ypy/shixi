@@ -1,0 +1,161 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="b" uri="/bonc-tags" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="p" uri="/pure-tags"%>
+
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>DEMO</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	
+	<link rel="stylesheet" type="text/css" href="../resources/css/bootstrap/3.3.6/bootstrap.min.css" media="screen">
+	<link href="<s:url value="/struts/pure/css/grey.css?ver=1.5.1-SNAPSHOT"/>" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="../resources/js/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../resources/js/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../resources/frame/DrillTable/DrillTable.js"></script>
+<style type="text/css">
+    html,body{
+       width: 100%;
+       text-align: center;
+    }
+</style>
+<script type="text/javascript">
+var projectPath = "<%=basePath%>";
+
+function queryTable(){
+	var url = '<%=basePath%>/demo/Table!queryTable.action';
+	jQuery.ajax({
+ 	       url: url,
+ 	       type: "post",
+ 	       data: {},
+ 	       dataType: "html",
+ 	       success: function(html){
+ 	    	   jQuery("#tableDiv").html(html);
+ 	       }
+	});
+}
+
+function queryPagiTable(){
+	var url = '<%=basePath%>/demo/Table!queryPagiTable.action';
+	jQuery.ajax({
+ 	       url: url,
+ 	       type: "post",
+ 	       data: {},
+ 	       dataType: "html",
+ 	       success: function(html){
+ 	    	  jQuery("#pagiTableDiv").html(html);
+ 	       }
+	});
+}
+
+function queryDrillTable(){
+	var url = '<%=basePath%>/demo/Table!queryDrillTable.action';
+	jQuery.ajax({
+ 	       url: url,
+ 	       type: "post",
+ 	       data: {},
+ 	       dataType: "html",
+ 	       success: function(html){
+ 	    	  jQuery("#drillTableDiv").html(html);
+ 	    	  jQuery(".drillTd")[0].click();
+ 	       }
+	});
+}
+
+// 表格下钻
+function drillTable(obj, levelId){
+	var url= '<%=basePath%>/demo/Table!queryDrillTable.action';
+	var param = "levelId=" + levelId;
+	action({
+		td : obj,
+		url : url,
+		mode : 'drill',
+		parameters : param,
+		onComplete : function(data) {
+		}
+	});
+	plusClick(levelId);
+}
+
+function plusClick(id) {
+	var src = jQuery("#IMG_"+id).attr("src");
+	if(src==undefined){
+		return ;
+	}
+	if(src.indexOf("icon-down.png")==-1){
+		jQuery("#IMG_"+id).attr("src",projectPath+"/resources/frame/DrillTable/icon-down.png");
+	}else{
+		jQuery("#IMG_"+id).attr("src",projectPath+"/resources/frame/DrillTable/icon-right.png");
+	}
+}
+
+jQuery(document).ready(function(){
+	queryTable();
+	queryPagiTable();
+	queryDrillTable()
+});
+
+</script>
+  </head>
+  
+  <body>
+  <div class="row">
+ 	 <div class="col-xs-4 col-sm-4 col-md-4" style="padding: 0px;">
+  	 <div class="container" style="width: 98%;margin-top:10px;" id="homeframe-container">
+	 		<div class="row" style="height: 30px;">
+				<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+					<table style="border-collapse: collapse;height: 28px;padding: 0px;margin: auto;width: 100%;">
+						<tr>
+						<td style="background-color: #C00000;width: 28px;"></td>
+						<td style="width: 3px;"></td>
+						<td style="background-color: #BFBFBF;text-align: left;padding-left: 10px;font-weight: bold;font-size: 14px;">简单表格</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+	   <div  id="tableDiv" class="row"></div>
+	 </div>
+  </div>
+  <div class="col-xs-4 col-sm-4 col-md-4" style="padding: 0px;">
+ 	 <div class="container" style="width: 98%;margin-top:10px;" id="homeframe-container">
+	 		<div class="row" style="height: 30px;">
+				<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+					<table style="border-collapse: collapse;height: 28px;padding: 0px;margin: auto;width: 100%;">
+						<tr>
+						<td style="background-color: #C00000;width: 28px;"></td>
+						<td style="width: 3px;"></td>
+						<td style="background-color: #BFBFBF;text-align: left;padding-left: 10px;font-weight: bold;font-size: 14px;">分页表格</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+	   <div  id="pagiTableDiv" class="row"></div>
+	 </div>
+  </div>
+  <div class="col-xs-4 col-sm-4 col-md-4" style="padding: 0px;">
+	 <div class="container" style="width: 98%;margin-top:10px;" id="homeframe-container">
+	 		<div class="row" style="height: 30px;">
+				<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+					<table style="border-collapse: collapse;height: 28px;padding: 0px;margin: auto;width: 100%;">
+						<tr>
+						<td style="background-color: #C00000;width: 28px;"></td>
+						<td style="width: 3px;"></td>
+						<td style="background-color: #BFBFBF;text-align: left;padding-left: 10px;font-weight: bold;font-size: 14px;">下钻表格</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+	   <div  id="drillTableDiv" class="row"></div>
+	 </div>
+  </div>
+  </div>
+  </body>
+</html>

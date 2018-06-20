@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.demo">
+
+<!-- 表格样例 -->
+	<select id="table_queryTable" resultClass="java.util.HashMap" >
+		SELECT T.LEVEL_ID, T.LEVEL_NAME, T.ORD
+		  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V T
+		 WHERE T.PARENT_ID = 'root'
+		 ORDER BY T.ORD
+	</select>
+	<select id="table_queryPagiTable" resultClass="java.util.HashMap" >
+		SELECT T.LEVEL_ID, T.LEVEL_NAME, T.ORD
+		  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V T
+		 WHERE T.PARENT_ID = 'root'
+		 ORDER BY T.ORD
+	</select>
+	<select id="table_queryDrillTable" resultClass="java.util.HashMap" >
+		SELECT T.LEVEL_ID, T.LEVEL_NAME, T.ORD, DECODE(T.BM_LEVEL, '3', '0', '1') HAVE_CHILDREN
+		  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V T
+		 WHERE ROWNUM <![CDATA[ <= ]]> 10
+		 <isEmpty property="levelId">
+		 AND T.PARENT_ID  IS NULL
+		 </isEmpty>
+		 <isNotEmpty property="levelId">
+         AND T.PARENT_ID = #levelId#
+		 </isNotEmpty>
+		 ORDER BY T.ORD
+	</select>
+
+</sqlMap>

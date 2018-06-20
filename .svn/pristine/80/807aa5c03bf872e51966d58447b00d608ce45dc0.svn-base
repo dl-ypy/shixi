@@ -1,0 +1,53 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="b" uri="/bonc-tags" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%String contextPath = request.getContextPath();%>
+<div style="width:100%;">
+<table class="grid" style="width:99%;" >
+	<thead>
+		<b:gHead target="tableDiv">
+			<tr>
+				<th align="center" nowrap="nowrap" style="border-right: 1px solid #D61821;">项目</th>
+				<th align="center" nowrap="nowrap" style="border-right: 1px solid #D61821;">累计完成</th>
+				<th align="center" nowrap="nowrap"><b:gh col="KPI_11">占收比</b:gh></th>
+				<th align="center" nowrap="nowrap"><b:gh col="KPI_12">排名</b:gh></th>
+				<th align="center" nowrap="nowrap">同比</th>
+				<th align="center" nowrap="nowrap" style="border-right: 1px solid #D61821;"><b:gh col="KPI_14">排名</b:gh></th>
+				<th align="center" nowrap="nowrap">占收比目标</th>
+				<th align="center" nowrap="nowrap">较预算目标差(PP)</th>
+				<th align="center" nowrap="nowrap"><b:gh col="KPI_17">排名</b:gh></th>
+			</tr>
+		</b:gHead>
+	</thead>
+    <tbody>
+	    <s:iterator value="list" var="data">
+			<tr onMouseOut="this.bgColor=''" onMouseOver="this.bgColor='#DFEfFf'"
+				<s:if test="RST1 == 1">
+					style="border-top: 2px solid #FF7F7F;"
+				</s:if>
+			>
+				<s:if test="HAVE_CHILDREN == 1">
+					<td nowrap="nowrap" id='bisAccountKpiTreeRootORG_${KPI_ID}' onclick="queryAccountTableDrill(this, '<s:property value="KPI_ID"/>')"  width="9%" align="left" style="border-right: 1px solid #D61821;">
+						<img id='IMG_${KPI_ID}' src="<%=contextPath%>/resources/frame/DrillTable/icon-right.png" width="17" height="17" border="0"  />&nbsp;
+						<a href='###'  onclick="linkage2('<s:property value="KPI_ID"/>' , '<s:property value="KPI_NAME"/>' )" class="part2Table"><s:property escapeHtml="false" value="KPI_NAME"/></a>
+					</td>
+				</s:if>
+				<s:else>
+					<td nowrap="nowrap" width="9%" align="left" style="border-right: 1px solid #D61821;">
+						<img id='IMG_${KPI_ID}' src="<%=contextPath%>/resources/frame/DrillTable/icon-null.png" width="17" height="17" border="0"  />&nbsp;
+						<a href='###'  onclick="linkage2('<s:property value="KPI_ID"/>' , '<s:property value="KPI_NAME"/>' )" class="part2Table"><s:property escapeHtml="false" value="KPI_NAME"/></a>
+					</td>
+				</s:else>
+				<td align="center" width="7%" style="border-right: 1px solid #D61821;"><s:property escapeHtml="false" value="%{kpiFmt(KPI_10,'###,###,##0.00')}" /></td>
+				<td align="center" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_11,'###,###,##0.00%')}" /></td>
+				<td align="center" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_12,'###,###,##0','-')}" /></td>
+				<td align="center" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_13,'###,###,##0.00%')}" /></td>
+				<td align="center" width="7%" style="border-right: 1px solid #D61821;"><s:property escapeHtml="false" value="%{kpiFmt(KPI_14,'###,###,##0','-')}" /></td>
+				<td align="center" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_15,'###,###,##0.00')}" /></td>
+				<td align="center" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_16,'###,###,##0.00')}" /></td>
+				<td align="center" width="7%"><s:property escapeHtml="false" value="%{kpiFmt(KPI_17,'###,###,##0','-')}" /></td>
+			</tr>
+		</s:iterator>
+	</tbody>
+   </table>
+</div>

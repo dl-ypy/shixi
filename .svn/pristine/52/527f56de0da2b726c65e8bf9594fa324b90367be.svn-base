@@ -1,0 +1,78 @@
+package com.bonc.pure.web.action.rpt.scxy.MarketingNet;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+
+public class SocialChannelRateAction extends CwCommon{
+
+	//月份的id
+	private String monthId;
+	// 区域的id
+	private String areaNo;
+	
+	
+	public String execute() {
+		init();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+	
+	/*
+	 * 遍历表格的数据
+	 */	
+	public String queryTable(){
+		System.out.println("遍历table时的monthId--------"+monthId);
+		list = daoHelper.queryForList("cw.rpt.scxy.marketNet.queryTable", this);
+		
+		System.out.println("table的数据list[]-------"+list);
+		
+		return "table";
+	}
+
+	/**
+	 * 遍历折线图的数据
+	 */
+	public void queryChart(){
+		
+		System.out.println("点击后的折线图areNo----------"+areaNo);
+		Map map = new HashMap();
+		List lineList = daoHelper.queryForList("cw.rpt.scxy.marketNet.queryChart", this);
+		map.put("lineList", lineList);
+		returnMapAsJson(map);	
+		System.out.println("折线图lineList---------"+lineList);
+		
+	}
+	
+	
+	
+	public String getMonthId() {
+		return monthId;
+	}
+
+	public void setMonthId(String monthId) {
+		this.monthId = monthId;
+	}
+
+	public String getAreaNo() {
+		return areaNo;
+	}
+
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+	
+}

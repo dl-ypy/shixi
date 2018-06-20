@@ -1,0 +1,319 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>模块3</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+
+    <style type="text/css">
+      
+       
+    </style>
+    <script type="text/javascript">
+    function part3_InitBarLine(){
+    	var areaNo = jQuery("#areaNo").val();
+    	var monthId = jQuery("#monthId").val();
+    	var parmater = {
+    			"areaNo":areaNo,
+ 				"monthId":monthId
+    	};
+    	var url = '<%=basePath%>/ws/home/children/HomePart3!initBarLine.action';
+    	jQuery.ajax({
+	 	       url: url,
+	 	       type: "post",
+	 	       data: parmater,
+	 	       dataType: "html",
+	 	       success: function(data){
+	 	    		jQuery("#part3-bar-line").height(230);
+	 	    	    jQuery("#part3-bar-line").empty();
+	 	    		jQuery("#part3-bar-line").removeAttr("_echarts_instance_");
+	 	    	    var dataJSON = eval("("+data+")");
+	 	    	    var myChart = echarts.init(document.getElementById("part3-bar-line"));
+	 	    	    option = {
+	 	    	    	tooltip:{
+	 	    			    show:true,
+	 	    			    trigger: 'axis',
+	 	    			    formatter: '{b0}:<br />{a0}:{c0}<br />{a1}:{c1}<br />{a2}:{c2}%'
+	 	    			},
+ 	    			    grid :{
+ 	    			     	left: 50,
+ 	    			     	top :40,
+ 	    			     	right:50,
+ 	    			     	borderWidth: 0
+ 	    			    },
+ 	    			    legend: {
+ 	    			       x : 'center',
+ 	    			       y : 'top',
+ 	    			       textStyle:{
+ 	    			       fontSize:10
+ 	    			       },
+ 	    			       data:['序时预算目标','累计完成','完成比例']
+ 	    			    },
+ 	    			    xAxis: [{
+ 	    			        type : 'category',
+ 	    			        splitLine:{
+ 	    			  　　　  　show:false
+ 	    			  　　  },
+ 	    			  　　    axisLine:{
+ 	    			        	 lineStyle:{
+ 	    			        		     type:'solid',
+ 	    			        		    color:'#CCCCCC'
+ 	    			        	 }
+ 	    			         },
+ 	    			        axisLabel:{
+ 	    			             interval:0,
+ 	    			              // rotate:15,
+ 	    			            textStyle:{
+ 	    			           	      color:'#848684',
+ 	    			               fontSize:10
+ 	    			            },
+ 	    			           formatter:function(params) {
+ 	    	                        var newParamsName = "";
+ 	    	                        var paramsNameNumber = params.length;
+ 	    	                        var provideNumber = 3;  //一行显示几个字
+ 	    	                        var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+ 	    	                        if (paramsNameNumber > provideNumber) {
+ 	    	                            for (var p = 0; p < rowNumber; p++) {
+ 	    	                                var tempStr = "";
+ 	    	                                var start = p * provideNumber;
+ 	    	                                var end = start + provideNumber;
+ 	    	                                if (p == rowNumber - 1) {
+ 	    	                                    tempStr = params.substring(start, paramsNameNumber);
+ 	    	                                } else {
+ 	    	                                    tempStr = params.substring(start, end) + "\n";
+ 	    	                                }
+ 	    	                                newParamsName += tempStr;
+ 	    	                            }
+
+ 	    	                        } else {
+ 	    	                            newParamsName = params;
+ 	    	                        }
+ 	    	                        return newParamsName
+ 	    	                    }
+ 	    			        },
+ 	    			        axisTick: {show: false},
+ 	    			        data: dataJSON["kpiName"]
+ 	    			     }],
+ 	    			     yAxis: [{
+ 	    			            type: 'value',
+ 	    			            axisLine:{
+ 	    			 		    	 lineStyle:{
+ 	    			 		    		     type:'solid',
+ 	    			 		    		    color:'#CCCCCC'
+ 	    			 		    	 }
+ 	    			 		     },
+ 	    			 		     axisLabel:{
+ 	    			        	  formatter: '{value}',
+ 	    			                textStyle:{
+ 	    			               	      color:'#848684',
+ 	    			                   fontSize:10
+ 	    			                },
+ 	    			                formatter:function(value){
+		    	   		            	 var valueTemp = value;
+		    	   		            	 if(value >= 100000000){
+		    	   		            		valueTemp = value/100000000;
+		    	   		            		valueTemp = valueTemp + "亿";
+		    	   		            	 }else if(value >= 10000){
+		    	   		            		valueTemp = value/10000;
+		    	   		            		valueTemp = valueTemp + "万";
+		    	   		            	 }
+		    	   		            	 return valueTemp;
+		    	   		             }
+ 	    			             },
+ 	    			             splitLine:{
+ 	    			　　　　               show:true,
+ 	    			　　　　               lineStyle:{
+ 	    			                  type:'dotted',
+ 	    			                  color:'#B3B3B3'
+ 	    			                }
+ 	    			　　                         }
+ 	    			         },
+ 	    			         {
+ 	    			            type: 'value',
+ 	    			            axisLabel:{
+ 	    			        	  formatter: '{value}%',
+ 	    			                textStyle:{
+ 	    			               	      color:'#848684',
+ 	    			                   fontSize:10
+ 	    			                }
+ 	    			            },
+ 	    			            splitLine:{
+ 	    							show:true,
+ 	    							lineStyle:{
+ 	    								type:'dotted',
+ 	    								color:'#B3B3B3'
+ 	    							}
+ 	    						}
+ 	    			        }],
+ 	    			    series: [{
+ 	    			        name:'序时预算目标',
+ 	    			        type: 'bar',
+ 	    			        itemStyle: {
+ 	    			            normal: {
+ 	    			                color: '#ddd'
+ 	    			            }
+ 	    			        },
+ 	    			        silent: true,
+ 	    			        yAxisIndex: 0,
+ 	    			        barGap: '-100%', // Make series be overlap
+ 	    			        data: dataJSON["barYS"]
+ 	    			    }, 
+ 	    			    {
+ 	    			        name:'累计完成',
+ 	    			        type: 'bar',
+ 	    			        itemStyle: {
+ 	    			            normal: {
+ 	    			                color: '#3FA7DC'
+ 	    			            }
+ 	    			        },
+ 	    			        z: 2,
+ 	    			        yAxisIndex: 0,
+ 	    			        data: dataJSON["barWc"]
+ 	    			    },
+ 	    			    {
+ 	    			        name:'完成比例',
+ 	    			        type:'line',
+ 	    			        yAxisIndex: 1,
+ 	    			        label:{
+	    			            normal:{
+	    			                show:true,
+	    			                formatter:'{c}%'
+	    			            }
+	    			        },
+ 	    			        data:dataJSON["barWcl"]
+ 	    			    }]
+ 	    			};
+	 	    	    myChart.setOption(option); 
+	 	       },
+	 	       error: function(XMLHttpRequest, textStatus, errorThrown){
+	 	           alert("wait a minute......");
+	 	       }
+	 	 });
+    }
+    
+    function part3_ringChar(data,divId){
+    	jQuery("#" + divId).height(230);
+ 	    jQuery("#"+ divId).empty();
+ 		jQuery("#"+ divId).removeAttr("_echarts_instance_");
+		var ringChart = echarts.init(document.getElementById(divId));
+		var arr = data.split(',');
+		//jQuery('#tarValue').html(arr[1]);
+		option = {
+			tooltip : {
+				formatter: "{a} <br/>{b} : {c}%"
+			},
+		    series: [
+		        {
+		            name: '',
+		            type: 'gauge',
+		            radius : 90,
+		            axisLine: {
+		                lineStyle: {
+		                    color: [[arr[0], '#ED7D31'],[1, '#bfbfbf']],
+		                    width: 17
+		                }
+		            },
+		            detail: {
+		                formatter:'{value}%',
+		                offsetCenter: [0, '-10%'],       // x, y，单位px
+		            },
+		            axisTick: {            // 坐标轴小标记
+		                splitNumber: 0,   // 每份split细分多少段
+		                length :44        // 属性length控制线长
+		            },
+		            axisLabel: {           // 坐标轴文本标签，详见axis.axisLabel
+		             
+		                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+		                    color: '#fff',
+		                    fontSize: 12
+		                }
+		            },
+		             pointer : {
+		                length : 0,
+		                width :0,
+		                color : 'auto'
+		            },
+		            title : {
+		                show : true,
+		                offsetCenter: [0, '60%'],       // x, y，单位px
+		                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+		                    color: '#0f0f0f',
+		                    fontSize: 16
+		                }
+		            },
+		            data: [{value: arr[2], name: arr[3]}]
+		        }
+		    ]
+		};
+    	ringChart.setOption(option, true);
+    }
+    
+    function part3_ringChar_sr() {
+    	var areaNo = jQuery("#areaNo").val();
+    	var monthId = jQuery("#monthId").val();
+    	
+		jQuery.ajax({
+			url: '<%=path%>/ws/home/children/HomePart3!initRingSr.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId, 
+				"areaNo": areaNo
+			},
+			cache:false,
+			success:function(data) {
+				part3_ringChar(data,'part3-ybp-sr');
+			}
+		});
+	}
+    
+    function part3_ringChar_lr() {
+    	var areaNo = jQuery("#areaNo").val();
+    	var monthId = jQuery("#monthId").val();
+		jQuery.ajax({
+			url: '<%=path%>/ws/home/children/HomePart3!initRingLr.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId, 
+				"areaNo": areaNo
+			},
+			cache:false,
+			success:function(data) {
+				part3_ringChar(data,'part3-ybp-lr');
+			}
+		});
+	}
+    
+    jQuery(document).ready(function(){
+    	part3_InitBarLine();
+    	part3_ringChar_sr();
+    	part3_ringChar_lr();
+    });
+    </script>
+  </head>
+  
+  <body>
+      <div class="container" style="width: 100%;margin-top: 10px;">
+          <div class="row" style="height: 30px;">
+             <div class="col-xs-3 col-sm-3 col-md-3">
+                 <div style="width: 100%;text-align: left;font-size: 12px;">收入预算完成率</div>
+                 <div id="part3-ybp-sr"></div>
+             </div>
+             <div class="col-xs-3 col-sm-3 col-md-3">
+                 <div style="width: 100%;text-align: left;font-size: 12px;">利润预算完成</div>
+                 <div id="part3-ybp-lr"></div>
+             </div>
+             <div class="col-xs-6 col-sm-6 col-md-6">
+                 <div style="width: 100%;text-align: left;font-size: 12px;">分专业完成</div>
+                 <div id="part3-bar-line" style="text-align: left;"></div>
+             </div>
+          </div>
+      </div>
+  </body>
+</html>

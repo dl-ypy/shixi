@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+	<!-- 如果系统不使用Base包，则可以屏蔽 -->
+	<bean id="ibatisTemplate" class="com.bonc.base.dao.IBatisTemplateImpl"
+		lazy-init="true" scope="prototype">
+		<property name="sqlMapClient" ref="ibatisSqlMapClient" />
+		<property name="dialectFactory" ref="ibatisDialectFactory" />
+	</bean>
+	<!-- daoHelper帮助类 -->
+	<bean id="daoHelper" class="com.bonc.base.dao.DaoHelper">
+		<property name="ibatisTemplate" ref="ibatisTemplate" />
+	</bean>
+	<!-- daoHelper相应的事务处理 -->
+	<tx:advice id="daoHelperTxAdvice" transaction-manager="ibatisTransactionManager">
+		<tx:attributes>
+			<tx:method name="insert*" />
+			<tx:method name="update*" />
+			<tx:method name="delete*" />
+			<tx:method name="execute*" />
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:advisor pointcut="execution(* *..*IBatisTemplate.*(..))"
+			advice-ref="daoHelperTxAdvice" />
+	</aop:config>
+
+</beans>

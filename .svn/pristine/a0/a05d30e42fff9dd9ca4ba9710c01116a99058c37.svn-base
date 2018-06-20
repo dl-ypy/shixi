@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.xjlts.xjlOverview">
+   <select id="queryCashIncome" resultClass="java.util.HashMap">
+  SELECT T.MONTH_ID,
+       T.KPI_ID,
+       T1.KPI_NAME,
+       T1.ORD,
+       T1.RST1,
+       T1.RST2,
+       T.KPI_01,
+       T.KPI_02,
+       T.KPI_03,
+       T.KPI_04,
+       T.KPI_05
+  FROM CW_DM.CW_RPT_XJL_ZL_1_1 T,
+       (SELECT kpi_id, NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME,ORD,RST1,RST2
+          FROM HN_DMCODE.DMCODE_CW_KPI
+         WHERE MODULE_ID = 'xjlts.zl.1.1'
+           AND IS_VALID='1') T1
+ WHERE MONTH_ID = #monthId#
+   AND ORG_ID = #areaNo#
+   AND T.KPI_ID=T1.KPI_ID
+   ORDER BY T1.ORD
+   </select>
+   <select id="queryCashChart" resultClass="java.util.HashMap">
+    SELECT A.MONTH_ID, B.KPI_01
+    FROM HN_DMCODE.CODE_MONTH A,
+       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.KPI_01, 0) KPI_01
+          FROM CW_DM.CW_RPT_XJL_ZL_1_1 T
+         WHERE T.KPI_ID = #kpiCode#
+           AND T.ORG_ID = #areaNo#
+           AND T.MONTH_ID LIKE #year#
+           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#) B
+   WHERE A.MONTH_ID = B.MONTH_ID(+)
+   ORDER BY A.ORD
+   
+   </select>
+   <select id="queryService" resultClass="java.util.HashMap">
+        SELECT T.KPI_ID, T1.KPI_NAME, T1.ORD, T.KPI_01, T.KPI_02, T.KPI_03
+          FROM CW_DM.CW_RPT_XJL_ZL_2_1 T,
+               (SELECT kpi_id, NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME, ORD
+                  FROM HN_DMCODE.DMCODE_CW_KPI
+                 WHERE MODULE_ID = 'xjlts.zl.2.1'
+                   AND IS_VALID = '1') T1
+         WHERE MONTH_ID = #monthId#
+           AND ORG_ID = #areaNo#
+           AND T.KPI_ID = T1.KPI_ID
+         ORDER BY T1.ORD
+   </select>
+   <select id="queryWarning" resultClass="java.util.HashMap">
+   SELECT T1.KPI_ID, T1.KPI_NAME, T1.ORD, T.FIRST_THREE, T.LAST_THREE
+     FROM CW_DM.CW_RPT_XJL_ZL_2_2 T,
+          (SELECT kpi_id, NVL(KPI_NAME_SHOW, KPI_NAME) KPI_NAME, ORD
+             FROM HN_DMCODE.DMCODE_CW_KPI
+            WHERE MODULE_ID = 'xjlts.zl.2.2'
+              AND IS_VALID = '1') T1
+    WHERE MONTH_ID = #monthId#
+      AND ORG_ID = #areaNo# T.KPI_ID(+) = T1.KPI_ID
+    ORDER BY T1.ORD
+   </select>
+</sqlMap>

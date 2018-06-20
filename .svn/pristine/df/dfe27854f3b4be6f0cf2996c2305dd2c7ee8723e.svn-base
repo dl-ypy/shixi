@@ -1,0 +1,110 @@
+####################################
+# config Properties
+####################################
+
+#######################pure安全框架配置 config################################
+#密码加密方式,不填写就是不加密。目前提供MD5，SHA-1两种加密方式
+pure.passwrordEncryptType=
+#是否只允许一个客户端登录
+pure.simpleTerminal=false
+#当服务器重启后是否重建session,当使用单点登陆时，一定要设置为false
+pure.reBuildSession=false
+#退出登录时，是否删除session所有的存储信息
+pure.removeAllSession=true
+#系统自动检测超时用户的时间间隔，默认为3分钟
+pure.checkFrequencyMinutes=3
+#客户端最长不活动时间（分钟），最好修改web.xml的session超时时间大于60分钟
+pure.maxUnActiveMinutes=10
+#是否使用密码校验，校验密码和用户登录名不可相同(默认不启用校验)
+pure.checkPassword=false
+#新建用户初始密码
+pure.defaultPassword=123456
+#角色树的根节点
+pure.role.RootId=root
+#资源树的根节点
+pure.resources.RootId=root
+#资源系统菜单类型
+pure.resourcesType.SysMenu=1
+#资源类型
+pure.resourcesType.TabMenu=2
+#超级用户管理ID(多个管理ID使用,(半角)隔开)
+pure.superAdminUserId=1
+
+#组织机构顶级(根)的id
+pure.orgRootId=root
+#分页页面大小
+pure.gridPageSize=15
+
+#上传附件大小设置,单位M
+pure_attache_max_size=2
+
+#开启消息的聊天模式(否)
+pure_msg_chat_mode=false
+
+#收取消息的时间间隔（毫秒）
+pure_msg_interval_sec=8000
+
+#用户名是否区分大小写 区分 true,不区分 false
+pure.userName.caseSensitive=true
+
+#用户登录是否进行锁定校验
+pure.login.checkLock=false
+#用户锁定是校验的登录次数(启用锁定为true设置次数才生效)
+pure.login.lockTimes=3
+#用户锁定时间设置（单位为分钟）
+pure.login.lockMinutes=3
+
+#是否验证用户有效期
+pure.login.checkPwdValid=false
+
+####################### pure系统设置 ################################
+#系统名称 title
+pure.title=河南联通价值管理系统
+#页面主题 目前提供 红色：red,  蓝色：blue, 灰色 ：grey 
+pure.theme=grey
+
+#登录页面样式，目前提供联通样式pure-login-column、pure-login-row，电信提供 pure-login-column
+pure.login.layout=pure-login-row
+#验证码模式  如果为空则不设置 ，1 随机码，2 手机验证
+pure.login.captchaType=
+
+#页面布局  pure-frame-1024、pure-frame-1280、pure-frame-auto
+pure.frame.layout=pure-frame-auto
+#是否全屏 设置值：true (需要)、false （不需要）
+pure.frame.fullScreen=false
+
+#菜单类型 Bonc.menu.SlideMenu 下拉逐级展开;  Bonc.menu.PopMenu 面板;  Bonc.menu.TreeMenu树形菜单;
+pure.menu.type=Bonc.menu.PopMenu
+#上下嵌套分割模式，菜单树是否支持隐藏功能 设置值：true (需要)、false （不需要）
+pure.menu.displayTreeMenu=true
+#横向菜单总级数
+pure.menu.totalLevel=1
+
+#点击菜单打开选项卡最多个数 数值 0-7个。0个表示不使用选项卡方式打开
+pure.menu.maxTab=20
+#选项卡超出个数操作模式 1 提示，不允许打开新的，2 关闭最先打开的TAB
+pure.menu.tabOperationMode=1
+
+################top区#######################
+#是否显示欢迎语（例：欢迎您：admin） 设置值：true (显示)、false （不显示）
+pure.top.displayWelcome=true
+#是否显示系统时间 设置值：true (显示)、false（不显示）
+pure.top.displayTime=true
+#是否显示系统公告 设置值：true(显示)、false（不显示）
+pure.top.displayPost=true
+#是否显示修改密码 设置值：ture (显示)、false （不显示）
+pure.top.displayUpdatePassword=true
+#是否显示退出系统 设置值：true(显示)、false（不显示）
+pure.top.displayExit=true
+#是否显示在线用户数
+pure.top.displayOnLine=false
+#是否显示右下角提示
+pure.top.displayPopMsg=false
+#图片上传路径
+pure.uploadFolder=upload-images
+pure.url-prefix=upload-images
+
+###########PURE功能设置#################
+#用户扩展属性tree类型中根的parentId
+pure.userExt.tree.rootParentId=-1
+

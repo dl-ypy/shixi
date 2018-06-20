@@ -1,0 +1,84 @@
+package com.bonc.pure.web.action.rpt.xjlts.xjlOverview;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+
+public class OverviewAction extends CwCommon {
+	private String monthId;
+	private String areaNo;
+	private String kpiCode;
+	private int year;
+	public String execute() {
+		init();
+		initCwAreaSelect();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "success";
+	}
+	public String queryCashTable(){
+	  list = daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCashIncome", this);
+		return "cashtable";
+	}
+	public void queryCashChart(){
+		Map map=new HashMap();
+		int thisyear = Integer.parseInt(monthId.substring(0, 4));
+		System.out.println("thisyear"+thisyear);
+		int lastyear = thisyear-1;
+		System.out.println("lastyear"+lastyear);
+		year = thisyear;
+		System.out.println("year"+year);
+		list =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCashChart", this);
+		System.out.println("list"+list);
+		map.put("thisyear", list);
+		year = lastyear;
+		List list1 =  daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryCashChart", this);
+		map.put("lastyear", list1);
+		returnMapAsJson(map);
+	}
+	public String queryServiceTable(){
+		list=daoHelper.queryForList("cw.rpt.xjlts.xjlOverview.queryService", this);
+		return "service";
+	}
+	
+	
+	public String getMonthId() {
+		return monthId;
+	}
+	public void setMonthId(String monthId) {
+		if (monthId != null) {
+			this.monthId = monthId.replaceAll("-", "");
+		}
+	}
+	public String getAreaNo() {
+		return areaNo;
+	}
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+	public String getKpiCode() {
+		return kpiCode;
+	}
+	public void setKpiCode(String kpiCode) {
+		this.kpiCode = kpiCode;
+	}
+	public int getYear() {
+		return year;
+	}
+	public void setYear(int year) {
+		this.year = year;
+	}
+	
+}

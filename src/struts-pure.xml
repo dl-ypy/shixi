@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+
+	<!-- 默认包 -->
+	<package name="pure-default" namespace="/" extends="struts-default">
+		<interceptors>
+			<!-- 对登录用户进行鉴权 -->
+			<interceptor name="authInterceptor" class="com.bonc.pure.interceptor.AuthInterceptor" />
+			
+			<!-- 在用户没有修改过系统分配的密码情况下，强制用户 修改密码 -->
+			<interceptor name="forceModPwdInterceptor" class="com.bonc.pure.interceptor.ForceModPwdInterceptor" />
+			
+			<!-- xframe及struts1框架（老框架）对登录用户进行鉴权适配 -->
+			<interceptor name="authAdapterInterceptor" class="com.bonc.xframe.interceptor.AuthAdapterInterceptor" />
+			
+			<!-- 访问日志拦截器 -->
+			<interceptor name="visitLogInterceptor" class="com.bonc.pure.interceptor.VisitLogInterceptor" />
+
+			<!-- 对登录用户进行鉴权 -->
+			<interceptor-stack name="pure-defaultStack">
+				<interceptor-ref name="authInterceptor" />
+				<!-- 强制修改密码拦截器 -->
+				<interceptor-ref name="forceModPwdInterceptor" />
+				<!-- 如果确定不需要兼容之前的程序框架，可以考虑注销本拦截器 -->
+				<interceptor-ref name="authAdapterInterceptor" />
+				<interceptor-ref name="visitLogInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 默认系统使用的拦截器 -->
+		<default-interceptor-ref name="pure-defaultStack" />
+
+		<global-results>
+			<!-- 登录页面 -->
+			<result name="login-input" type="redirectAction">
+				<param name="actionName">Login</param>
+				<param name="method">input</param>
+				<param name="namespace">/</param>
+			</result>
+			<!-- 登录成功，如需登录后跳转到其他页面，则需修改本配置，如登陆成功后需要全屏显示 -->
+			<!-- <result name="login-success">/WEB-INF/view/pure/Login-redirect.jsp</result> -->
+			<!-- 登陆成功后的跳转地址 -->
+			<result name="login-success" type="redirectAction">
+				<param name="actionName">Frame</param>
+				<param name="namespace">/pure</param>
+			</result>
+			<!-- 
+			<result name="login-success" type="redirectAction">
+				<param name="actionName">BIndex</param>
+				<param name="namespace">/</param>
+			</result>
+			 -->
+			<!-- 用户使用系统默认密码第一次登录时，需要先修改密码 -->
+			<result name="login-first" type="redirectAction">
+				<param name="actionName">FirstModifyPwd</param>
+				<param name="namespace">/pure_extend</param>
+			</result>
+			<!-- 未登录 -->
+			<result name="noLogin">/WEB-INF/view/pure/NoLogin.jsp</result>
+		</global-results>
+
+		<!-- 登录 -->
+		<action name="Login" class="com.bonc.pure.struts2.LoginAction">
+			<result name="input">/WEB-INF/view/pure/Login-input.jsp</result>
+		</action>
+		<!-- bootstrap样式，一级菜单 -->
+		<action name="BIndex" class="com.bonc.pure.struts2.BIndexAction">
+			<result name="success">/WEB-INF/view/pure/BIndex.jsp</result>
+			<result name="mini">/WEB-INF/view/pure/BIndex-mini.jsp</result>
+		</action>
+		<!-- bootstrap样式，二级菜单，也可以不使用一级菜单，直接进入二级菜单 -->
+		<action name="BFrame" class="com.bonc.pure.struts2.BFrameAction">
+			<result name="success">/WEB-INF/view/pure/BFrame.jsp</result>
+		</action>
+		<!-- bootstrap样式，默认页面 -->
+		<action name="BDefault" class="com.bonc.pure.struts2.BDefaultAction">
+			<result name="success">/WEB-INF/view/pure/BDefault.jsp</result>
+		</action>
+		<!-- 退出登录 -->
+		<action name="Logout" class="com.bonc.pure.struts2.LogoutAction" />
+
+		<!-- SelectListTag（HTML联动框）使用 -->
+		<action name="SelectList" class="com.bonc.tags.html.components.SelectListAction" />
+
+		<!-- webChart展示使用 -->
+		<action name="Chart" class="com.bonc.tags.chart.webcharts.ChartAction" />
+	</package>
+	
+	<!-- 框架扩展包 处理不能在/命名空间下配置的action -->
+	<package name="pure-extend" namespace="/pure_extend" extends="pure-default">
+		<!-- 第一次登录修改密码 -->
+		<action name="FirstModifyPwd" class="com.bonc.pure.struts2.ModifyPwdAction">
+			<result name="input">/WEB-INF/view/pure/ModifyPwd-input.jsp</result>
+		</action>
+		<!-- 第一次登录修改密码保存 -->
+		<action name="ModifyPwd" class="com.bonc.pure.struts2.ModifyPwdAction">
+			<result name="success" type="redirectAction">
+				<param name="actionName">Logout</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="input">/WEB-INF/view/pure/ModifyPwd-input.jsp</result>
+		</action>
+	</package>
+	
+	<package name="pure-security" namespace="/pure" extends="pure-default">
+		<action name="*" class="com.bonc.pure.struts2.{1}Action" >
+			<result name="success">/WEB-INF/view/pure/{1}.jsp</result>
+			<result name="create">/WEB-INF/view/pure/{1}-create.jsp</result>
+			<result name="update">/WEB-INF/view/pure/{1}-update.jsp</result>
+			<result name="view">/WEB-INF/view/pure/{1}-view.jsp</result> 
+			<result name="latest">/WEB-INF/view/pure/{1}-latest.jsp</result>
+			<result name="list">/WEB-INF/view/pure/{1}-list.jsp</result>
+			<result name="receive">/WEB-INF/view/pure/{1}-receive.jsp</result>
+			<result name="send">/WEB-INF/view/pure/{1}-send.jsp</result>
+			<result name="write">/WEB-INF/view/pure/{1}-write.jsp</result>
+			<result name="choose">/WEB-INF/view/pure/{1}-choose.jsp</result>
+			<result name="input">/WEB-INF/view/pure/{1}-input.jsp</result>
+		</action>
+	
+	</package>
+	<package name="pure-portlet" namespace="/pure/portlet" extends="pure-default">
+		<action name="Post" class="com.bonc.pure.struts2.PostAction" method="latest">
+			<result name="latest">/WEB-INF/view/pure/portlet/Post.jsp</result>
+		</action>
+	</package>
+	
+	<package name="pure-proxy" namespace="/pure/proxy" extends="pure-default">
+		<action name="*" class="com.bonc.pure.struts2.proxy.{1}Action" >
+			<result name="success">/WEB-INF/view/pure/proxy/{1}.jsp</result>
+		</action>
+	</package>
+	<package name="pure-message" namespace="/pure/message" extends="pure-default">
+	    <action name="*box" class="com.bonc.pure.struts2.MessageAction" method="{1}" >
+			<result name="{1}">/WEB-INF/view/pure/msg/{1}-box.jsp</result>
+			<result name="success">/WEB-INF/view/pure/msg/{1}-box.jsp</result>
+		</action>
+		<action name="message*" class="com.bonc.pure.struts2.MessageAction" method="{1}" >
+			<result name="{1}">/WEB-INF/view/pure/msg/message-{1}.jsp</result>
+		</action>
+		<action name="msgCount" class="com.bonc.pure.struts2.MessageAction" method="msgCount" >
+		</action>
+	</package>
+	
+</struts>

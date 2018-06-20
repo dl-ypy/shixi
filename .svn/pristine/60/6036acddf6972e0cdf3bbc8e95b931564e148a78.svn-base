@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.scxy">
+<!-- 移动用户离网率    王兰 -->
+	<select id="queryOutLine" resultClass="java.util.HashMap" >
+	select 
+       parent_org_id,
+       org_id,
+       org_name,
+       value_ly,
+       value_y,
+       value_add_rate,
+       value_add_rate_ord
+  from CW_DM.CW_RPT_TZMB_LW_1
+  where month_id = #monthId#
+
+	</select>
+	<select id="queryOutTitle" resultClass="java.util.HashMap" >
+	 SELECT t.month_id,
+       t.first_three,
+       t.last_three,
+       round(t1.value_y*100,2) value_y,
+       t1.value_add_rate_pp
+  FROM CW_DM.CW_RPT_TZMB_LW_2 T, CW_DM.CW_RPT_TZMB_LW_1 T1
+ where t.month_id = #monthId#
+   and t.month_id = t1.month_id
+   and t1.org_id = 'root'
+
+
+	</select>
+	<select id="queryChart" resultClass="java.util.HashMap" >
+  select 
+       org_id,
+       org_name,
+       round(value_y*100,2) value_y,
+       round(value_add_rate*100,2) value_add_rate
+  from CW_DM.CW_RPT_TZMB_LW_1
+  where month_id = #monthId#
+
+	</select>
+	<select id="queryLastInfo" resultClass="java.util.HashMap" >
+  select org_name,
+       round(value_add_rate * 100, 2) value_add_rate,
+       round(value_add_rate_pp, 2) value_add_rate_pp
+  from CW_DM.CW_RPT_TZMB_LW_1
+ where month_id = #monthId#
+    and org_id = #areaNo#
+	</select>
+	<!--不含2I2C移动出账收入同比变动  李林林 -->
+	<select id="queryOutTitle1" resultClass="java.util.HashMap" >
+		 SELECT T.MONTH_ID,
+	       T.FIRST_THREE,
+	       T.LAST_THREE,
+	       ROUND(T1.AVG_VALUE_ADD_RATE * 100, 2) AVG_VALUE_ADD_RATE,
+	       ROUND(T1.VALUE_ADD_RATE * 100, 2) VALUE_ADD_RATE
+	  FROM CW_DM.CW_RPT_TZMB_N2C_2 T, CW_DM.CW_RPT_TZMB_N2C_1 T1
+	 WHERE T.MONTH_ID = #monthId#
+	   AND T.MONTH_ID = T1.MONTH_ID
+	   AND T1.ORG_ID = 'root'
+	</select>
+	<select id="queryOutLine1" resultClass="java.util.HashMap" >
+		SELECT 
+	       PARENT_ORG_ID,
+	       ORG_ID,
+	       ORG_NAME,
+	       VALUE_LY,
+	       VALUE_Y,
+	       VALUE_ADD_RATE,
+	       VALUE_ADD_RATE_ORD
+	  FROM CW_DM.CW_RPT_TZMB_N2C_1
+	  WHERE MONTH_ID = #monthId#
+	  ORDER BY VALUE_ADD_RATE_ORD ASC
+	</select>
+	<select id="queryChart1" resultClass="java.util.HashMap" >
+	  SELECT 
+	       ORG_ID,
+	       ORG_NAME,
+	       ROUND(AVG_VALUE_ADD_RATE*100,2) AVG_VALUE_ADD_RATE,
+	       ROUND(VALUE_ADD_RATE*100,2) VALUE_ADD_RATE
+	  FROM CW_DM.CW_RPT_TZMB_N2C_1 T
+	  WHERE MONTH_ID = #monthId#
+	</select>
+	<select id="queryLastInfo1" resultClass="java.util.HashMap" >
+	  SELECT ORG_NAME,
+	       ROUND(VALUE_ADD_RATE * 100, 2) VALUE_ADD_RATE,
+	       ROUND(VALUE_ADD_RATE_PP, 2) VALUE_ADD_RATE_PP
+	  FROM CW_DM.CW_RPT_TZMB_N2C_1
+	 WHERE MONTH_ID = #monthId#
+	    AND ORG_ID = #areaNo#
+	</select>
+</sqlMap>

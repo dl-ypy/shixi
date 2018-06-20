@@ -1,0 +1,209 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+    <div class="container" style="width: 100%;margin-top: 10px;">
+    	<div class="row" style="height: 30px;">
+    		<div class="col-xs-3 col-sm-3 col-md-3" style='height:240px;'>
+    			<div class="col-xs-12 col-sm-12 col-md-12" style='height:30px; text-align:left; font-size:12px;'>
+    			现金收入比(预算目标:<span id='tarValue'></span>)
+    			</div>
+    			<div id='ringCharDiv' class="col-xs-12 col-sm-12 col-md-12" style='height:190px;'>
+    				数据加载中...
+    			</div>
+    		</div>
+    		<div class="col-xs-6 col-sm-6 col-md-6">
+    			<div class="col-xs-12 col-sm-12 col-md-12" style='text-align:left; height:20px;'>自由现金流(目标：同比增长4.4%)</div>
+    			<div id='tableDiv' class="col-xs-12 col-sm-12 col-md-12" style='text-align:left; height:220px;'></div>
+    		</div>
+    		<div id='lineCharDiv' class="col-xs-3 col-sm-3 col-md-3" style='height:240px;'>
+    		
+    		</div>
+    	</div>
+    </div>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		getPart5RingCharData();
+		getPar5RootTableData();
+		getP5LineCharData('KPI_001', '自由现金流');
+	});
+	function getPar5RootTableData() {
+		jQuery.ajax({
+			url: '<%=path%>/ws/home/children/HomePart5!getTableData.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId, 
+				"areaNo": areaNo
+			},
+			cache:false,
+			success:function(data) {
+				jQuery('#tableDiv').html(data);
+			}
+		});
+	}
+	function getP5LineCharData(kpiId, kpiName) {
+		jQuery.ajax({
+			url: '<%=path%>/ws/home/children/HomePart5!getLineCharData.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId, 
+				"areaNo": areaNo,
+				"kpiId"	:kpiId,
+				"kpiName"	:kpiName
+			},
+			cache:false,
+			success:function(data) {
+				drawP5LineChar(data);
+			}
+		});
+	}
+	function drawP5LineChar(data) {
+		var lineChart = echarts.init(document.getElementById('lineCharDiv'));
+		var arr = data.split('_');
+		var leg = arr[1].split(',');
+		var xCol = arr[2].split(',');
+		var yCol1 = arr[3].split(',');
+		var yCol2 = arr[4].split(',');
+		
+		option = {
+		    title : {
+		        text: arr[0] + '(万)',
+		        textStyle: {
+					fontWeight: 'normal',
+					fontSize:12,
+					color: '#666666'
+				},
+				y:'5'
+		    },
+		    color	: ['#FF0000', '#0000FF'],
+		    tooltip : {
+		        trigger: 'axis'
+		    },
+		    legend: {
+		        data:[leg[0], leg[1]],
+		         y:'bottom'
+		    },
+
+    		calculable : true,
+    		grid:{x:30, y:50, x2:10, y2:50, borderWidth:0},
+		    xAxis : [
+		        {
+		            type : 'category',
+		            boundaryGap : false,
+		            data : xCol
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'value',
+		            axisLabel : {
+		                formatter: '{value}'
+		            }
+		        }
+		    ],
+    series : [
+        {
+            name:leg[0],
+            type:'line',
+            data:yCol1,
+            itemStyle:{
+	          	normal:{
+	            	 lineStyle:{
+	                 	width:1,
+	                 	type:'dotted'
+	                 }
+	            }
+            }
+        },
+        {
+            name:leg[1],
+            type:'line',
+            data:yCol2,
+            itemStyle:{
+	          	normal:{
+	            	 lineStyle:{
+	                 	width:1
+	                 	
+	                 }
+	            }
+            }
+        }
+    ]
+};
+                    
+		
+		
+		lineChart.setOption(option, true);
+	}
+	function getPart5RingCharData() {
+		jQuery.ajax({
+			url: '<%=path%>/ws/home/children/HomePart5!getRingCharData.action',
+			type:"POST",
+		    data: {
+				"monthId": monthId, 
+				"areaNo": areaNo
+			},
+			cache:false,
+			success:function(data) {
+				ringChar(data);
+			}
+		});
+	}
+	function ringChar(data){
+		jQuery("#ringCharDiv").empty();
+		jQuery("#ringCharDiv").removeAttr("_echarts_instance_");
+		var ringChart = echarts.init(document.getElementById('ringCharDiv'));
+		var arr = data.split(',');
+		jQuery('#tarValue').html(arr[1]);
+
+		var option = {
+			tooltip : {
+				formatter: "{a} <br/>{b} : {c}%"
+			},
+		    series: [
+		        {
+		            name: '',
+		            type: 'gauge',
+		            radius : 90,
+		            axisLine: {
+		                lineStyle: {
+		                    color: [[arr[0], '#ED7D31'],[1, '#bfbfbf']],
+		                    width: 17
+		                }
+		            },
+		            detail: {
+		                formatter:'{value}%',
+		                offsetCenter: [0, '-10%'],       // x, y，单位px
+		            },
+		            axisTick: {            // 坐标轴小标记
+		                splitNumber: 0,   // 每份split细分多少段
+		                length :44        // 属性length控制线长
+		            },
+		            axisLabel: {           // 坐标轴文本标签，详见axis.axisLabel
+		             
+		                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+		                    color: '#fff',
+		                    fontSize: 12
+		                }
+		            },
+		             pointer : {
+		                length : 0,
+		                width :0,
+		                color : 'auto'
+		            },
+		            title : {
+		                show : true,
+		                offsetCenter: [0, '60%'],       // x, y，单位px
+		                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+		                    color: '#0f0f0f',
+		                    fontSize: 16
+		                }
+		            },
+		            data: [{value: arr[3], name: arr[2]}]
+		        }
+		    ]
+		};
+    	ringChart.setOption(option, true);
+    }
+</script>

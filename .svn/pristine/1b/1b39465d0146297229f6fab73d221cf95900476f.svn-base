@@ -1,0 +1,106 @@
+package com.bonc.pure.web.action.rpt.rlzyxy;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.bonc.pure.web.action.CwCommon;
+
+public class DoPlanRateAction extends CwCommon{
+
+	//月份的id
+	private String monthId;
+	//区域的id
+	private String areaNo;
+
+	public String execute() {
+		init();
+		monthId = param.get("monthId") == null ? "" : param.get("monthId").toString();
+		if (!"".equals(monthId)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat sdfAim = new SimpleDateFormat("yyyy-MM");
+			try {
+				monthId = sdfAim.format(sdf.parse(monthId));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return "success";
+	}
+	
+	/**
+	 * 页面中对于左侧表格的遍历
+	 * @return
+	 */
+	public String queryTable1(){
+		list = daoHelper.queryForList("cw.rpt.rlzyxy.queryTable1", this);
+		return "table1";
+	}
+		
+	/**
+	 * 对于右侧表格的遍历
+	 * @return
+	 */
+	public String queryTable2(){
+		
+		list = daoHelper.queryForList("cw.rpt.rlzyxy.queryTable2", this);
+		return "table2";
+		
+	}
+	
+	/**
+	 * 对于title1的遍历
+	 * @return
+	 */
+	public void queryTitle1(){
+		System.out.println("进入了querytitle1的方法");
+		System.out.println(monthId);
+		
+		Map map = new HashMap();
+		list = daoHelper.queryForList("cw.rpt.rlzyxy.queryTitle1", this);
+		map.put("list", list);
+		
+		System.out.println("title1的list值"+list);
+		returnMapAsJson(map);
+	}
+	
+	/**
+	 * 对于title1的遍历
+	 * @return
+	 */
+	public void queryTitle2(){
+		System.out.println("进入了querytitle2的方法");
+		System.out.println(monthId);
+		Map map = new HashMap();
+		list = daoHelper.queryForList("cw.rpt.rlzyxy.queryTitle2", this);
+		map.put("list", list);
+		System.out.println("title2的list值"+list);
+		returnMapAsJson(map);
+	}
+	
+		
+	
+	
+	public String getMonthId() {
+		return monthId;
+	}
+
+	public void setMonthId(String monthId) {
+		if(monthId != null){
+			monthId = monthId.replaceAll("-", "");
+		}
+		this.monthId = monthId;
+	}
+
+	public String getAreaNo() {
+		return areaNo;
+	}
+
+	public void setAreaNo(String areaNo) {
+		this.areaNo = areaNo;
+	}
+
+}

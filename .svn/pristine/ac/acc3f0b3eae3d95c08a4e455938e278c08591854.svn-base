@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.children">
+
+	<!-- 第一部分 -->
+   	<select id="part1Text" resultClass="java.util.HashMap">
+		SELECT *
+		  FROM CW_DM.CW_WS_HOME_1_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+    </select>
+
+   	<select id="part1Table" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID,
+		       A.KPI_NAME KPI_NAME,
+		       NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME_SHOW,
+		       T.THIS_VALUE,
+		       T.VALUE_HB,
+		       T.VALUE_L,
+		       T.VALUE_L_HB,
+		       T.VALUE_L_ZF,
+		       T.VALUE_L_ORD,
+		       A.RST1, A.RST2, A.RST3, A.RST4, A.RST5
+		  FROM CW_DM.CW_WS_HOME_1_2 T, HN_DMCODE.DMCODE_CW_KPI A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+		   AND T.KPI_ID = A.KPI_ID
+		   AND A.MODULE_ID = 'home.part1.2'
+		 ORDER BY A.ORD
+    </select>
+
+   	<select id="part1Map" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC, A.AREA_NO, NVL(T.VALUE_L_ZF, 0) VALUE_L_ZF
+		  FROM (SELECT T.ORG_ID, T.VALUE_L_ZF
+		          FROM CW_DM.CW_WS_HOME_1_2 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND T.PARENT_ORG_ID = 'root'
+		           AND T.KPI_ID = #kpiId#) T,
+		       HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE A.AREA_NO = T.ORG_ID(+)
+		   AND A.IS_AREA = '1'
+		 ORDER BY NVL(T.VALUE_L_ZF, 0) DESC
+    </select>
+
+   	<select id="part1Line" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.THIS_VALUE THIS_VALUE
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.THIS_VALUE, 0) * A.RST6 THIS_VALUE
+		          FROM CW_DM.CW_WS_HOME_1_2 T, HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#
+		           AND T.KPI_ID = A.KPI_ID
+		           AND A.MODULE_ID = 'home.part1.2') B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+
+	<!-- 第二部分  财务核心指标完成情况 -->
+   	<select id="part2Kpi" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID, A.KPI_NAME, T.THIS_VALUE * A.RST3 THIS_VALUE, T.VALUE_TB, A.RST1, A.RST2
+		  FROM (SELECT T.*
+		          FROM CW_DM.CW_WS_HOME_2_1 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND T.ORG_ID = #areaNo#) T,
+		       (SELECT A.*
+		          FROM HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE A.MODULE_ID = 'home.part2.1') A
+		 WHERE T.KPI_ID(+) = A.KPI_ID
+		 ORDER BY A.ORD
+    </select>
+
+   	<select id="part2Line" resultClass="java.util.HashMap">
+	SELECT A.MONTH_ID, B.THIS_VALUE THIS_VALUE
+	  FROM HN_DMCODE.CODE_MONTH A,
+	       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.THIS_VALUE
+	          FROM CW_DM.CW_WS_HOME_2_1 T
+	         WHERE T.MONTH_ID LIKE '$year$%'
+	           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+	           AND T.ORG_ID = #areaNo#
+	           AND T.KPI_ID = #kpiId#) B
+	 WHERE A.MONTH_ID = B.MONTH_ID(+)
+	 ORDER BY A.ORD
+    </select>
+
+	<!-- 第三部分  预算完成情况 -->
+	<select id="selectPart3RingSr" resultClass="java.util.HashMap">
+	    SELECT ROUND(T.SR_WC/(T.SR_MB*2), 1) WC,
+		       ROUND(T.SR_MB*2, 1) WC_2,
+		       ROUND(T.SR_WCL * 100, 1) WCL,
+		       CASE
+		         WHEN t.org_id = 'root' THEN
+		          '北十第' || T.SR_ORD
+		         ELSE
+		          '全省第' || T.SR_ORD
+		       END NAME
+		  FROM CW_DM.CW_WS_HOME_3_1 T
+		 WHERE T.MONTH_ID = '$monthId$'
+		   AND T.ORG_ID = '$areaNo$'
+	</select>
+	
+	<select id="selectPart3RingLr" resultClass="java.util.HashMap">
+	    SELECT ROUND(T.YS_WC/(T.YS_MB*2), 1) WC,
+		       ROUND(T.YS_MB*2, 1) WC_2,
+		       ROUND(T.YS_WCL * 100, 1) WCL,
+		       CASE
+		         WHEN t.org_id = 'root' THEN
+		          '北十第' || T.YS_ORD
+		         ELSE
+		          '全省第' || T.YS_ORD
+		       END NAME
+		  FROM CW_DM.CW_WS_HOME_3_1 T
+		 WHERE T.MONTH_ID = '$monthId$'
+		   AND T.ORG_ID = '$areaNo$'
+	</select>
+	
+	<select id="selectPart3BarLine" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_ID,
+		       T2.KPI_NAME,
+		       ROUND(T1.YS_VALUE, 1) YS_VALUE,
+		       ROUND(T1.WC_VALUE, 1) WC_VALUE,
+		       ROUND(T1.WCL * 100, 1) WCL
+		  FROM CW_DM.CW_WS_HOME_3_2 T1,
+		       (SELECT T.KPI_ID, T.KPI_NAME, T.ORD
+		          FROM HN_DMCODE.DMCODE_CW_KPI T
+		         WHERE T.MODULE_ID = 'home.part3.2') T2
+		 WHERE T1.KPI_ID = T2.KPI_ID
+		   AND T1.ORG_ID = '$areaNo$'
+		   AND T1.MONTH_ID = '$monthId$'
+		 ORDER BY T2.ORD ASC
+	</select>
+
+	<!-- 第四部分  KPI指标完成情况 -->
+    <select id="selectPart4TableList" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_ID, 
+	           ROUND(T2.KPI_02*T3.C_NUM, 2) KPI_02,
+		       ROUND(T2.KPI_03, 2) KPI_03,
+		       ROUND(T2.KPI_04, 2) KPI_04,
+		       ROUND(T2.KPI_05, 2) KPI_05,
+		       ROUND(T2.KPI_06, 2) KPI_06
+		  FROM (SELECT T.KPI_ID
+		          FROM HN_DMCODE.DMCODE_CW_KPI T
+		         WHERE T.MODULE_ID = 'home.part4.1'
+		         ORDER BY T.ORD) T1,
+		       CW_DM.CW_WS_HOME_4_1 T2,
+		       CW_DM.CW_WS_HOME_4_KPI_RELATION T3
+		 WHERE T1.KPI_ID = T2.KPI_ID(+)
+		   AND T1.KPI_ID = T3.KPI_ID_3(+)
+		   AND T2.MONTH_ID = '$monthId$'
+		   AND T2.ORG_ID = '$areaNo$'
+	</select>
+	
+	<select id="selectPart4BarTitle" resultClass="java.util.HashMap">
+	    SELECT T1.KPI_NAME,
+		       T1.KPI_VALUE_DESC,
+		       T1.KPI_ID,
+		       CASE WHEN (T2.KPI_05 - T2.KPI_05_L) <![CDATA[>=]]> 0 THEN '提升'
+		            ELSE '降低' END AS TS_FS_DES,
+		       CASE WHEN (T2.KPI_05 - T2.KPI_05_L) <![CDATA[>=]]> 0 THEN (T2.KPI_05 - T2.KPI_05_L)
+		            ELSE (T2.KPI_05_L-T2.KPI_05) END AS TS_FS,
+		       CASE WHEN (T2.KPI_06 - T2.KPI_O6_L) <![CDATA[>=]]> 0 THEN '提升'
+		            ELSE '降低' END AS TS_PM_DES,
+		       CASE WHEN (T2.KPI_06 - T2.KPI_O6_L) <![CDATA[>=]]> 0 THEN (T2.KPI_06 - T2.KPI_O6_L)
+		            ELSE (T2.KPI_O6_L - T2.KPI_06) END AS TS_PM      
+		  FROM (SELECT <isEqual property="kpiLevel" compareValue="1">
+		                   T.KPI_ID_1_NAME KPI_NAME,
+		                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_1) KPI_VALUE_DESC,
+		               </isEqual>
+		               <isEqual property="kpiLevel" compareValue="2">
+		                   T.KPI_ID_2_NAME KPI_NAME,
+		                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_2) KPI_VALUE_DESC,
+		               </isEqual>
+		               <isEqual property="kpiLevel" compareValue="3">
+		                   T.KPI_ID_3_NAME KPI_NAME,
+		                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_3) KPI_VALUE_DESC,
+		               </isEqual>
+		               T.KPI_ID_3 KPI_ID
+		          FROM CW_DM.CW_WS_HOME_4_KPI_RELATION T
+		          <isEqual property="kpiLevel" compareValue="1">
+	                 WHERE T.KPI_ID_1 = '$kpiId$'
+	              </isEqual>
+	              <isEqual property="kpiLevel" compareValue="2">
+	                 WHERE T.KPI_ID_2 = '$kpiId$'
+	              </isEqual>
+	              <isEqual property="kpiLevel" compareValue="3">
+	                 WHERE T.KPI_ID_3 = '$kpiId$'
+	              </isEqual>) T1,
+		       (SELECT KPI_ID,
+		               ROUND(SUM(KPI_05), 2) KPI_05,
+		               SUM(KPI_06) KPI_06,
+		               ROUND(SUM(KPI_05_L), 2) KPI_05_L,
+		               SUM(KPI_O6_L) KPI_O6_L
+		          FROM (SELECT T.KPI_ID, KPI_05, T.KPI_06, 0 KPI_05_L, 0 KPI_O6_L
+		                  FROM CW_DM.CW_WS_HOME_4_1 T
+		                 WHERE T.MONTH_ID = '$monthId$'
+		                   AND T.ORG_ID = '$areaNo$'
+		                   AND T.KPI_ID = '$kpiId$'
+		                UNION ALL
+		                SELECT T.KPI_ID,
+		                       0        KPI_05,
+		                       0        KPI_06,
+		                       T.KPI_05 KPI_05_L,
+		                       T.KPI_06 KPI_O6_L
+		                  FROM CW_DM.CW_WS_HOME_4_1 T
+		                 WHERE T.MONTH_ID =
+		                       TO_CHAR(ADD_MONTHS(TO_DATE('$monthId$', 'yyyyMM'), -1),'yyyyMM')
+		                   AND T.ORG_ID = '$areaNo$'
+		                   AND T.KPI_ID = '$kpiId$')
+		         GROUP BY KPI_ID) T2
+		 WHERE T1.KPI_ID = T2.KPI_ID
+	</select>
+	
+	<select id="selectPart4BarTitle_20180102_bak" resultClass="java.util.HashMap">
+	    SELECT <isEqual property="kpiLevel" compareValue="1">
+                   T.KPI_ID_1_NAME KPI_NAME,
+                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_1) KPI_VALUE_DESC,
+               </isEqual>
+               <isEqual property="kpiLevel" compareValue="2">
+                   T.KPI_ID_2_NAME KPI_NAME,
+                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_2) KPI_VALUE_DESC,
+               </isEqual>
+               <isEqual property="kpiLevel" compareValue="3">
+                   T.KPI_ID_3_NAME KPI_NAME,
+                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_3) KPI_VALUE_DESC,
+               </isEqual>
+               T.KPI_ID_3 KPI_ID
+          FROM CW_DM.CW_WS_HOME_4_KPI_RELATION T
+              <isEqual property="kpiLevel" compareValue="1">
+                 WHERE T.KPI_ID_1 = '$kpiId$'
+              </isEqual>
+              <isEqual property="kpiLevel" compareValue="2">
+                 WHERE T.KPI_ID_2 = '$kpiId$'
+              </isEqual>
+              <isEqual property="kpiLevel" compareValue="3">
+                 WHERE T.KPI_ID_3 = '$kpiId$'
+              </isEqual>
+	</select>
+	
+	<select id="selectPart4BarList" resultClass="java.util.HashMap">
+	    SELECT * 
+	    FROM (
+	    SELECT T1.KPI_NAME,
+		       T1.KPI_VALUE_DESC,
+		       T3.AREA_DESC,
+		       T3.SELECT_ORD,
+		       ROUND(SUM(T2.KPI_03), 2) KPI_03
+		  FROM (SELECT <isEqual property="kpiLevel" compareValue="1">
+		                   T.KPI_ID_1_NAME KPI_NAME,
+		                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_1) KPI_VALUE_DESC,
+		               </isEqual>
+		               <isEqual property="kpiLevel" compareValue="2">
+		                   T.KPI_ID_2_NAME KPI_NAME,
+		                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_2) KPI_VALUE_DESC,
+		               </isEqual>
+		               <isEqual property="kpiLevel" compareValue="3">
+		                   T.KPI_ID_3_NAME KPI_NAME,
+		                   SUM(T.KPI_VALUE) OVER(PARTITION BY T.KPI_ID_3) KPI_VALUE_DESC,
+		               </isEqual>
+		               T.KPI_ID_3 KPI_ID
+		          FROM CW_DM.CW_WS_HOME_4_KPI_RELATION T
+	               <isEqual property="kpiLevel" compareValue="1">
+	                  WHERE T.KPI_ID_1 = '$kpiId$'
+	               </isEqual>
+	               <isEqual property="kpiLevel" compareValue="2">
+	                  WHERE T.KPI_ID_2 = '$kpiId$'
+	               </isEqual>
+	               <isEqual property="kpiLevel" compareValue="3">
+	                  WHERE T.KPI_ID_3 = '$kpiId$'
+	               </isEqual>) T1,
+		       CW_DM.CW_WS_HOME_4_1 T2,
+		       (SELECT T.AREA_NO, T.AREA_DESC, T.SELECT_ORD
+		          FROM HN_DMCODE.DMCODE_AREA_CW_VIEW T
+		         WHERE T.SELECT_SHOW = '1') T3
+		 WHERE T1.KPI_ID = T2.KPI_ID
+		   AND T2.ORG_ID = T3.AREA_NO
+		   AND T2.PARENT_ORG_ID = '$areaNo$'
+		   AND T2.MONTH_ID = '$monthId$'
+		 GROUP BY T1.KPI_NAME, T1.KPI_VALUE_DESC, T3.AREA_DESC, T3.SELECT_ORD)
+		 ORDER BY KPI_03 DESC
+	</select>
+
+	<!-- 第五部分  现金流完成情况 -->
+	<select id="getP5RingCharData" resultClass="java.util.HashMap">
+		SELECT ROUND(T.XJSR_WC / 2, 2) XJSR_WC,
+		       ROUND(T.XJSR_WC * 100, 2) XJSR_WC_2,
+		       ROUND(T.XJSR_MB * 100, 2) || '%' XJSR_MB,
+		       CASE
+		         WHEN #areaNo# = 'root' THEN
+		          '北十第' || T.XJSR_WCL
+		         ELSE
+		          '全省第' || T.XJSR_WCL
+		       END XJSR_WCL
+		  FROM CW_DM.CW_WS_HOME_5_1 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+	</select>
+	<select id="getP5tableData" resultClass="java.util.HashMap">
+		SELECT B.KPI_NAME, B.ORD,  A.*
+		  FROM (SELECT T.*
+		          FROM CW_DM.CW_WS_HOME_5_2 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND T.ORG_ID = #areaNo#) A,
+		       HN_DMCODE.DMCODE_CW_KPI B
+		 WHERE A.KPI_ID = B.KPI_ID
+		   AND B.MODULE_ID = 'home.part5.2'
+		 ORDER BY B.ORD
+	</select>
+	<select id="getP5LineCharData" resultClass="java.util.HashMap">
+		SELECT B.KPI_NAME, A.X_COL, A.Y_COL Y_COL1, ROUND(NVL(C.Y_COL, 0) / 10000, 2) Y_COL2
+		  FROM (SELECT SUBSTR(T.MONTH_ID, 5, 2) X_COL, ROUND(T.VALUE_L / 10000, 2) Y_COL, T.KPI_ID
+		          FROM CW_DM.CW_WS_HOME_5_2 T
+		         WHERE T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#
+		           AND SUBSTR(T.MONTH_ID, 0, 4) = SUBSTR(#monthId#, 0, 4)) A,
+		       HN_DMCODE.DMCODE_CW_KPI B,
+		       (SELECT SUBSTR(T.MONTH_ID, 5, 2) X_COL, T.VALUE_L Y_COL, T.KPI_ID
+		          FROM CW_DM.CW_WS_HOME_5_2 T
+		         WHERE T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#
+		           AND SUBSTR(T.MONTH_ID, 0, 4) = TO_CHAR(ADD_MONTHS(TO_DATE(#monthId#, 'YYYYMM'), -12), 'YYYY')) C
+		 WHERE A.KPI_ID = B.KPI_ID
+		   AND B.MODULE_ID = 'home.part5.2'
+		   AND B.KPI_ID = #kpiId#
+		   AND A.X_COL = C.X_COL(+)
+		 ORDER BY A.X_COL
+	</select>
+   	<select id="part5Line" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.VALUE_L VALUE_L
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, NVL(T.VALUE_L, 0) VALUE_L
+		          FROM CW_DM.CW_WS_HOME_5_2 T, HN_DMCODE.DMCODE_CW_KPI A
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#
+		           AND T.KPI_ID = A.KPI_ID
+		           AND A.MODULE_ID = 'home.part5.2') B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+	<!-- 第六部分  提质增效重点指标完成情况 -->
+   	<select id="part6Table" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID,
+		       A.KPI_NAME KPI_NAME,
+		       NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME_SHOW,
+		       T.VALUE_L,
+		       T.VALUE_BH,
+		       A.RST1,A.RST2,A.RST3,A.RST4,A.RST5,A.RST6,A.RST7
+		  FROM CW_DM.CW_WS_HOME_6_1 T, HN_DMCODE.DMCODE_CW_KPI A
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+		   AND T.KPI_ID = A.KPI_ID
+		   AND A.MODULE_ID = 'home.part6.1'
+		 ORDER BY A.ORD
+    </select>
+
+   	<select id="part6Map" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC, A.AREA_NO, NVL(T.VALUE_BH, 0) VALUE_BH
+		  FROM (SELECT T.ORG_ID, T.VALUE_BH
+		          FROM CW_DM.CW_WS_HOME_6_1 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND T.PARENT_ORG_ID = 'root'
+		           AND T.KPI_ID = #kpiId#) T,
+		       HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE A.AREA_NO = T.ORG_ID(+)
+		   AND A.IS_AREA = '1'
+		 ORDER BY NVL(T.VALUE_BH, 0) DESC
+    </select>
+
+   	<select id="part6Line" resultClass="java.util.HashMap">
+		SELECT A.MONTH_ID, B.VALUE_L VALUE_L
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.VALUE_L
+		          FROM CW_DM.CW_WS_HOME_6_1 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #areaNo#
+		           AND T.KPI_ID = #kpiId#) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+
+	<!-- 第七部分  综合网格运营情况 -->
+
+	<!-- 第八部分  资产负债情况 -->
+	<select id="part8Table" resultClass="java.util.HashMap">
+		SELECT A.KPI_ID,
+           A.KPI_NAME KPI_NAME,
+           NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME_SHOW,
+           t.VALUE_L,
+           t.VALUE_ADD,
+           t.VALUE_ZF,
+           t.VALUE_FIR_ADD,
+           t.VALUE_FIR_ZF,
+           A.RST1
+           FROM CW_DM.CW_WS_HOME_8_1 T, HN_DMCODE.DMCODE_CW_KPI A 
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID = #areaNo#
+		   AND T.KPI_ID = A.KPI_ID
+		   AND A.MODULE_ID = 'home.part8.1'
+		 ORDER BY A.ORD
+    </select>
+    
+    <select id="part8Line" resultClass="java.util.HashMap" remapResults="true">
+		SELECT A.MONTH_ID,
+		<isEqual property="kpiId" compareValue="1">
+			ROUND(B.ROE, 2) THIS_VALUE 
+		</isEqual>
+		<isEqual property="kpiId" compareValue="2">
+			ROUND(B.ZCZZL, 2) THIS_VALUE 
+		</isEqual>
+		<isEqual property="kpiId" compareValue="3">
+			ROUND(B.FZL*100,2) FZL,(100-ROUND(B.FZL*100,2)) NFZL 
+		</isEqual>
+		  FROM HN_DMCODE.CODE_MONTH A,
+		       (SELECT SUBSTR(T.MONTH_ID, 5) MONTH_ID, T.ROE,t.zczzl,FZL  
+		          FROM CW_DM.CW_WS_HOME_8_2 T
+		         WHERE T.MONTH_ID LIKE '$year$%'
+		           AND T.MONTH_ID <![CDATA[ <= ]]> #monthId#
+		           AND T.ORG_ID = #areaNo#
+		         ) B
+		 WHERE A.MONTH_ID = B.MONTH_ID(+)
+		 ORDER BY A.ORD
+    </select>
+    
+    <select id="part8Pie" resultClass="java.util.HashMap" remapResults="true">
+		SELECT 
+			ROUND(NVL(t.FZL, 0)*100,2) FZL,(100-ROUND(NVL(t.FZL, 0)*100,2)) NFZL 
+		
+		          FROM CW_DM.CW_WS_HOME_8_2 T 
+		         WHERE T.MONTH_ID = #monthId# 
+		           AND T.ORG_ID = #areaNo#
+    </select>
+
+</sqlMap>

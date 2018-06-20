@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+    <form-beans >
+        <form-bean name="userFormTest" type="com.bonc.portal.struts2.portal.UserFormTest" ></form-bean>
+    </form-beans>
+    <global-exceptions />
+    <global-forwards />
+    <action-mappings >
+        <action path="/userTestAction"  type="com.bonc.portal.struts2.portal.UserTestAction" name="userFormTest" parameter="method" scope="request" validate="true" input="/login.jsp"  >
+            <forward name="login" path="/login.jsp"/>
+            <forward name="success" path="/success.jsp"/>
+        </action>
+    </action-mappings>
+
+</struts-config>

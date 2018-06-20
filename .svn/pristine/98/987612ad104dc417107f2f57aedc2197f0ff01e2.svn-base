@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.xjlts.yyqkfx">
+
+<!-- 周佳韬 -->
+<!--资产table表格数据 -->
+   	<select id="InfoMoneyTable" resultClass="java.util.HashMap">
+ 		SELECT A.AREA_DESC,
+           		T.KPI_01, T.KPI_02, T.KPI_03,
+           		T.KPI_04, T.KPI_05, T.KPI_06, 
+	         	T.KPI_07, T.KPI_08, T.KPI_09,
+	         	T.KPI_11, T.KPI_12, T.KPI_13,
+	         	T.KPI_14
+         FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+              (SELECT * 
+              FROM CW_DM.CW_RPT_XJL_QKJK_2_1 T
+              WHERE MONTH_ID = #monthId#
+  			  	<isNotEqual property="areaNo" compareValue="root">
+	   			  		AND T.ORG_ID = #areaNo#
+	 		  	</isNotEqual>
+              ) T
+         WHERE A.AREA_NO=T.ORG_ID
+         
+    </select>
+
+	<!--  得到chart-->
+	<select id="queryMoneyChart" resultClass="java.util.HashMap" >
+	SELECT A.AREA_DESC,
+		   round(T.KPI_09*100,2) KPI_09,
+		   round(T.KPI_11*100,2) KPI_11
+         FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW WHERE IS_AREA = '1') A,
+              (SELECT *
+               FROM CW_DM.CW_RPT_XJL_QKJK_2_1 T
+              WHERE MONTH_ID = #monthId#) T
+         WHERE A.AREA_NO=T.ORG_ID
+	</select>
+
+	<!-- 杨佩钰start -->
+	<!-- 营业欠款表格数据 -->
+	<select id="getTableList" resultClass="java.util.HashMap">
+		SELECT C.LEVEL_ID LEVEL_ID,
+	       C.LEVEL_NAME LEVEL_NAME,
+	       T.KPI_01 KPI_01,
+	       T.KPI_02 KPI_02,
+           T.KPI_03 KPI_03,
+           T.KPI_04 KPI_04,
+           T.KPI_05 KPI_05,
+           T.KPI_06 KPI_06,
+           T.KPI_07 KPI_07,
+           T.KPI_08 KPI_08,
+           T.KPI_09 KPI_09,
+           T.KPI_10 KPI_10,
+           T.KPI_11 KPI_11,
+           T.KPI_12 KPI_12,
+           T.KPI_13 KPI_13,
+	       T.KPI_14 KPI_14,
+           T.KPI_15 KPI_15,
+           T.KPI_16 KPI_16
+        FROM CW_DM.CW_RPT_XJL_QKJK_1_1 T,HN_DMCODE.DIM_NODE_ID_N_STATIC_V C
+        WHERE T.MONTH_ID = #monthId#
+        AND T.ORG_ID = C.LEVEL_ID
+        AND T.PARENT_ORG_ID = #areaNo#
+        ORDER BY T.KPI_15
+	</select>
+	
+	<!-- 营业欠款图表数据 -->
+	<select id="getBusinessArrearsBarChart" resultClass="java.util.HashMap">
+		SELECT 
+        C.LEVEL_NAME LEVEL_NAME,
+		TO_CHAR(T.KPI_10,'9999999990.99') KPI_10,
+		TO_CHAR(T.KPI_13,'9999999990.99') KPI_13,
+		TO_CHAR(T.KPI_15*100,'9999999990.99') AS KPI_15
+		FROM CW_DM.CW_RPT_XJL_QKJK_1_1 T, 
+    (SELECT * FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+    WHERE A.PARENT_ID = #areaNo#) C
+		WHERE C.LEVEL_ID = T.ORG_ID
+		AND T.MONTH_ID = #monthId#
+		ORDER BY T.KPI_15
+	</select>
+<!-- 杨佩钰end -->
+
+<!-- 周佳韬star -->
+	<!-- 表格的数据 -->
+	<select id="getTableInfo" resultClass="java.util.HashMap">
+ 		 SELECT A.AREA_DESC,A.AREA_NO,
+               T.KPI_01, T.KPI_02,
+               T.KPI_03, T.KPI_04,
+               T.KPI_05, T.KPI_06
+         FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+              (SELECT *
+                FROM CW_DM.CW_RPT_XJL_QKJK_3_1 T
+              WHERE 	
+			  	MONTH_ID = #monthId#
+              )T
+         WHERE A.AREA_NO=T.ORG_ID
+    </select>
+    
+    <!-- title的数据 -->
+    <select id="getTitleInfo" resultClass="java.util.HashMap">
+ 		 SELECT A.AREA_DESC,A.AREA_NO,
+               T.KPI_01, T.KPI_02,
+               T.KPI_03, T.KPI_04,
+               T.KPI_05
+         FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+              (SELECT *
+                FROM  CW_DM.CW_RPT_XJL_QKJK_3_3 T
+              WHERE 	
+			  	   MONTH_ID = #monthId#
+               AND org_id = #areaNo#
+              )T
+         WHERE A.AREA_NO=T.ORG_ID
+    </select>
+    
+    <select id="getMapTable" resultClass="java.util.HashMap">
+ 		SELECT A.AREA_DESC,T.DEPT_NAME,
+        	   T.KPI_01, T.KPI_02,
+        	   T.KPI_03
+         FROM ( SELECT *
+              FROM HN_DMCODE.DMCODE_AREA_CW_VIEW) A,
+              (SELECT *
+                FROM CW_DM.CW_RPT_XJL_QKJK_3_2 T
+              WHERE   
+              MONTH_ID = #monthId#
+              AND org_id = #areaNo#
+              )T
+         WHERE A.AREA_NO=T.ORG_ID
+    </select>
+
+
+<!-- 周佳韬end -->
+<!-- 李林林 -->
+	<select id="getChangeTableList" resultClass="java.util.HashMap">
+		SELECT A.LEVEL_ID,
+		       A.LEVEL_NAME,
+		       TO_CHAR(T.KPI_01,'9999999990.99') KPI_01,
+		       TO_CHAR(T.KPI_02,'9999999990.99') KPI_02,
+		       TO_CHAR(T.KPI_03,'9999999990.99') KPI_03,
+		       TO_CHAR(T.KPI_04,'9999999990.99') KPI_04,
+		       TO_CHAR(T.KPI_05,'9999999990.99') KPI_05,
+		       TO_CHAR(T.KPI_06,'9999999990.99') KPI_06,
+		       TO_CHAR(T.KPI_07,'9999999990.99') KPI_07
+		  FROM (SELECT *
+		          FROM CW_DM.CW_RPT_XJL_QKJK_4_1 T
+		         WHERE T.MONTH_ID = #monthId#) T,
+		       (SELECT *
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		         WHERE A.LEVEL_ID = #areaNo#
+		            OR A.PARENT_ID = #areaNo#
+		         ORDER BY A.PARENT_ID, A.ORD) A
+		 WHERE T.ORG_ID(+) = A.LEVEL_ID
+	</select>
+	<select id="getMapChart" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC, A.AREA_NO, NVL(T.KPI_07, 0) KPI_07
+		  FROM (SELECT T.ORG_ID, T.KPI_07
+		          FROM CW_DM.CW_RPT_XJL_QKJK_4_1 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND T.PARENT_ORG_ID = 'root') T,
+		       HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE A.AREA_NO = T.ORG_ID(+)
+		   AND A.IS_AREA = '1'
+		 ORDER BY NVL(T.KPI_07, 0) DESC
+	</select>
+	<select id="getChangeTableDetailList" resultClass="java.util.HashMap">
+		SELECT T.DEPT_ID,
+		       T.DEPT_NAME,
+		       TO_CHAR(T.KPI_01,'9999999990.99') KPI_01,
+		       TO_CHAR(T.KPI_02,'9999999990.99') KPI_02,
+		       TO_CHAR(T.KPI_03,'9999999990.99') KPI_03
+		  FROM CW_DM.CW_RPT_XJL_QKJK_4_2 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID   = #areaNo_mapClick#
+	</select>
+	<select id="getWarnText_" resultClass="java.util.HashMap">
+		SELECT NVL(A.PARENT_ID,0) PARENT_ID
+		  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		 WHERE A.LEVEL_ID = #levelId#
+	</select>
+	<select id="getWarnText" resultClass="java.util.HashMap">
+		SELECT TO_CHAR(T.KPI_01, '9999999990.99') KPI_01,
+		       TO_CHAR(T.KPI_02, '9999999990.99') KPI_02,
+		       TO_CHAR(T.KPI_03, '9999999990.99') KPI_03
+		  FROM CW_DM.CW_RPT_XJL_QKJK_4_3 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID   = #levelId#
+	</select>
+<!-- END -->
+
+<!-- 超限的sql语句 -->
+<select id="getChangeTableList2" resultClass="java.util.HashMap">
+		SELECT A.LEVEL_ID,
+		       A.LEVEL_NAME,
+		       KPI_01,
+		       KPI_02,
+		       KPI_03,
+		       KPI_04,
+		       KPI_05,
+		       KPI_06
+		  FROM (SELECT *
+		          FROM CW_DM.CW_RPT_XJL_QKJK_3_1 T
+		         WHERE T.MONTH_ID = #monthId#) T,
+		       (SELECT *
+		          FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		         WHERE A.LEVEL_ID = #areaNo#
+		            OR A.PARENT_ID = #areaNo#
+		         ORDER BY A.PARENT_ID, A.ORD) A
+		 WHERE T.ORG_ID(+) = A.LEVEL_ID
+	</select>
+	<select id="getMapChart2" resultClass="java.util.HashMap">
+		SELECT A.AREA_DESC, A.AREA_NO, NVL(T.KPI_01, 0) KPI_01
+		  FROM (SELECT T.ORG_ID, T.KPI_01
+		          FROM CW_DM.CW_RPT_XJL_QKJK_3_1 T
+		         WHERE T.MONTH_ID = #monthId#
+		           AND T.PARENT_ORG_ID = 'root') T,
+		       HN_DMCODE.DMCODE_AREA_CW_VIEW A
+		 WHERE A.AREA_NO = T.ORG_ID(+)
+		   AND A.IS_AREA = '1'
+		 ORDER BY NVL(T.KPI_01, 0) DESC
+	</select>
+	<select id="getChangeTableDetailList2" resultClass="java.util.HashMap">
+		SELECT T.DEPT_ID,
+		       T.DEPT_NAME,
+		       TO_CHAR(T.KPI_01,'9999999990.99') KPI_01,
+		       TO_CHAR(T.KPI_02,'9999999990.99') KPI_02,
+		       TO_CHAR(T.KPI_03,'9999999990.99') KPI_03
+		  FROM CW_DM.CW_RPT_XJL_QKJK_3_2 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID   = #areaNo_mapClick#
+	</select>
+	<select id="getWarnText2_" resultClass="java.util.HashMap">
+		SELECT NVL(A.PARENT_ID,0) PARENT_ID
+		  FROM HN_DMCODE.DIM_NODE_ID_N_STATIC_V A
+		 WHERE A.LEVEL_ID = #levelId#
+	</select>
+	<select id="getWarnText2" resultClass="java.util.HashMap">
+		SELECT TO_CHAR(T.KPI_01, '9999999990.99') KPI_01,
+		       TO_CHAR(T.KPI_02, '9999999990.99') KPI_02,
+		       TO_CHAR(T.KPI_03, '9999999990.99') KPI_03,
+		       TO_CHAR(T.KPI_04, '9999999990.99') KPI_04,
+		       TO_CHAR(T.KPI_05, '9999999990.99') KPI_05
+		  FROM CW_DM.CW_RPT_XJL_QKJK_3_3 T
+		 WHERE T.MONTH_ID = #monthId#
+		   AND T.ORG_ID   = #levelId#
+	</select>
+
+
+</sqlMap>

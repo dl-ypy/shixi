@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cw.rpt.kpikh">
+	<!-- lzh -->
+	<select id="KpiKhZbTable" resultClass="java.util.HashMap">
+	SELECT A.KPI_ID, NVL(A.KPI_NAME_SHOW, A.KPI_NAME) KPI_NAME, A.HAVE_CHILDREN,
+	       T.KPI_UNIT, T.KPI_01, T.KPI_02, T.KPI_03, T.KPI_04, T.KPI_05, T.KPI_06
+	  FROM (SELECT *
+	          FROM CW_DM.CW_KPIKH_DB_ALLP T
+	         WHERE T.MONTH_ID = #monthId#
+	           AND T.ORG_ID = #areaNo#) T,
+	       (SELECT A.*
+	          FROM HN_DMCODE.DMCODE_CW_KPI A
+	         WHERE A.MODULE_ID = 'kpi.skh'
+	            AND A.IS_VALID = '1'
+	   		<isEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID IS NULL
+	        </isEqual>
+	   		<isNotEqual property="kpiId" compareValue="-1">
+	           AND A.PARENT_ID = #kpiId#
+	   		</isNotEqual>
+	        ) A
+	 WHERE T.KPI_ID(+) = A.KPI_ID
+	 ORDER BY A.ORD
+	</select>
+	<!-- fcf -->
+	<select id="selectKhzbQSLineChar" resultClass="java.util.HashMap">
+	    SELECT T2.KPI_NAME, T1.MONTH_ID, T1.KPI_ID, T1.KPI_01
+		  FROM CW_DM.CW_KPIKH_DB_ALLP T1,
+		       (SELECT T.KPI_ID, T.KPI_NAME
+		          FROM hn_dmcode.DMCODE_CW_KPI t
+		         WHERE module_id = 'kpi.skh') T2
+		 WHERE T1.KPI_ID = T2.KPI_ID
+		   AND T1.ORG_ID = '$areaNo$'
+		   AND SUBSTR(T1.MONTH_ID, 1, 4) = SUBSTR('$monthId$', 1, 4)
+		   AND T1.KPI_ID = '$kpiId$'
+		 ORDER BY T1.MONTH_ID ASC
+	</select>
+</sqlMap>

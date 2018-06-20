@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="pure" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://java.sun.com/xml/ns/javaee" 
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">	
+	
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>	
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!--<filter>
+		 <description> 模拟用户登陆 </description>
+		 <filter-name>SimulateLoginFilter</filter-name>
+		 <filter-class>com.bonc.pure.extend.filter.SimulateLoginFilter</filter-class>
+		 <init-param>
+            <param-name>loginId</param-name>
+            <param-value>admin</param-value>
+         </init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>SimulateLoginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>-->
+	
+	<!-- 
+	<listener>
+		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+	</listener>
+	<filter>
+		<description> 单点登录,如果使用单点登出，须配置SingleSignOutHttpSessionListener监听器  </description>
+		<filter-name>SSO Filter</filter-name>
+		<filter-class>com.bonc.sso.client.SSOFilter</filter-class>
+		<init-param>
+			<description> CAS客户端地址 </description>
+			<param-name>serverName</param-name>
+			<param-value>192.168.6.36:9080</param-value>
+		</init-param>
+		<init-param>
+			<description> CAS服务器地址全路径 </description>
+			<param-name>casServerUrlPrefix</param-name>
+			<param-value>http://192.168.6.36:9080/cas</param-value>
+		</init-param>
+		<init-param>
+			<description> CAS服务器登录地址 全路径 </description>
+			<param-name>casServerLoginUrl</param-name>
+			<param-value>http://192.168.6.36:9080/cas/login</param-value>
+		</init-param>
+		<init-param>
+			<description> 是否启用单点登出 </description>
+			<param-name>singleSignOut</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<description> 单点登录忽略校验URL </description>
+			<param-name>skipUrls</param-name>
+			<param-value>/out.jsp,/index.jsp,/struts/.*,/resources/*,.*\.(css|js|jpg|jpeg|bmp|png|gif|ico)$</param-value>
+		</init-param>
+		<init-param>
+			<description> 登录成功后的的用户信息准备 须实现com.bonc.pure.sso.client.ILoginUserHand 接口 </description>
+			<param-name>loginUserHandle</param-name>
+			<param-value>com.bonc.sso.client.impl.PureAuthHandleImpl</param-value>
+		</init-param>
+		<init-param>
+			<description> 可选参数，客户端应用使用的字符集，如果已经有其他的地方设置过了，则会忽略这个配置。默认将使用UTF-8作为默认字符集 </description>
+			<param-name>characterEncoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<description> 解决读取CAS server端返用户扩展信息中文乱码问题 </description>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>SSO Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> -->
+	
+	<filter>
+		<description> struts2过滤器 </description>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+		<init-param>
+			<param-name>actionPackages</param-name>
+            <param-value>com.bonc.pure.web.action</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/struts/*</url-pattern>
+	</filter-mapping>
+	
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<session-config>
+		<session-timeout>90</session-timeout>
+	</session-config>
+
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>/WEB-INF/struts-config.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>3</param-value>
+		</init-param>
+		<init-param>
+			<param-name>detail</param-name>
+			<param-value>3</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	<jsp-config>
+		<taglib>
+			<taglib-uri>http://www.bonc.com.cn/tags-bonc</taglib-uri>
+			<taglib-location>/WEB-INF/struts1Tag/struts-bonc.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://jakarta.apache.org/struts/tags-template</taglib-uri>
+			<taglib-location>/WEB-INF/struts1Tag/struts-template.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://struts.apache.org/tags-bean</taglib-uri>
+			<taglib-location>/WEB-INF/struts1Tag/struts-bean.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://struts.apache.org/tags-html</taglib-uri>
+			<taglib-location>/WEB-INF/struts1Tag/struts-html.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://struts.apache.org/tags-logic</taglib-uri>
+			<taglib-location>/WEB-INF/struts1Tag/struts-logic.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://struts.apache.org/tags-tiles</taglib-uri>
+			<taglib-location>/WEB-INF/struts1Tag/struts-tiles.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://struts.apache.org/tags-nested</taglib-uri>
+			<taglib-location>/WEB-INF/struts1Tag/struts-nested.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
+</web-app>
